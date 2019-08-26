@@ -4,7 +4,3 @@
 set(dependencies
 )
 set(protected ON)
-
-if(PYTHONLIBS_FOUND)
-    set(EnableByDefault ON)
-endif()

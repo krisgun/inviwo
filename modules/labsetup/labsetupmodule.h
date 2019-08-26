@@ -10,17 +10,15 @@
 
 #pragma once
 
-#include <modules/dd2257setup/dd2257setupmoduledefine.h>
+#include <modules/labsetup/labsetupmoduledefine.h>
 #include <inviwo/core/common/inviwomodule.h>
 
-namespace inviwo
-{
+namespace inviwo {
 
-class IVW_MODULE_DD2257SETUP_API DD2257SetupModule : public InviwoModule
-{
+class IVW_MODULE_LABSETUP_API LabSetupModule : public InviwoModule {
 public:
-    DD2257SetupModule(InviwoApplication* app);
-    virtual ~DD2257SetupModule() = default;
+    LabSetupModule(InviwoApplication* app);
+    virtual ~LabSetupModule() = default;
 };
 
-} // namespace
+}  // namespace inviwo

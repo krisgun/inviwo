@@ -121,7 +121,7 @@
             <Module name="assimp" version="0" />
             <Module name="OpenGLQt" version="0" />
             <Module name="CImg" version="0" />
-            <Module name="DD2257Setup" version="0">
+            <Module name="LabSetup" version="0">
                 <Processors>
                     <Processor content="org.inviwo.ConnectPoints" />
                 </Processors>
@@ -163,9 +163,9 @@
                 <Properties>
                     <Property type="org.inviwo.FileProperty" identifier="filename">
                         <displayName content="Geometry file" />
-                        <absolutePath content="D:/Projekte/Vorlesungen/Code/InviwoTeach/modules/dd2257setup/data/workspaces/CamelHeadSilhouette.obj" />
+                        <absolutePath content="D:/Projekte/Vorlesungen/Code/InviwoTeach/modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
                         <workspaceRelativePath content="CamelHeadSilhouette.obj" />
-                        <ivwdataRelativePath content="../modules/dd2257setup/data/workspaces/CamelHeadSilhouette.obj" />
+                        <ivwdataRelativePath content="../modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
                         <nameFilter>
                             <filter>
                                 <extension content="*" />

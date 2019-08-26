@@ -140,21 +140,21 @@
                 </Processors>
             </Module>
             <Module name="PVM" version="0" />
-            <Module name="DD2257Lab0" version="0">
+            <Module name="LabSetupLab0" version="0">
                 <Processors>
                     <Processor content="org.inviwo.DigitWalker" />
                 </Processors>
             </Module>
-            <Module name="DD2257Lab1" version="0">
+            <Module name="LabSetupLab1" version="0">
                 <Processors>
-                    <Processor content="org.inviwo.CSVSourceDD2257" />
-                    <Processor content="org.inviwo.ParallelCoordinatesDD2257" />
+                    <Processor content="org.inviwo.CSVSourceLabSetup" />
+                    <Processor content="org.inviwo.ParallelCoordinatesLabSetup" />
                     <Processor content="org.inviwo.ScatterPlot" />
                     <Processor content="org.inviwo.Generate2DData" />
-                    <Processor content="org.inviwo.Plot2DRendererDD2257" />
+                    <Processor content="org.inviwo.Plot2DRendererLabSetup" />
                 </Processors>
             </Module>
-            <Module name="DD2257Lab2" version="0">
+            <Module name="LabSetupLab2" version="0">
                 <Processors>
                     <Processor content="org.inviwo.MarchingSquares" />
                 </Processors>

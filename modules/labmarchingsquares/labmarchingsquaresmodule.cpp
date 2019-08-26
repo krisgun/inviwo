@@ -10,16 +10,14 @@
 
 #include <labmarchingsquares/labmarchingsquaresmodule.h>
 #include <labmarchingsquares/marchingsquares.h>
-#include <labmarchingsquares/utils/amirameshvolumereader.h>
 
-namespace inviwo
-{
+namespace inviwo {
 
-LabMarchingSquaresModule::LabMarchingSquaresModule(InviwoApplication* app) : InviwoModule(app, "LabMarchingSquares")
-    
+LabMarchingSquaresModule::LabMarchingSquaresModule(InviwoApplication* app)
+    : InviwoModule(app, "LabMarchingSquares")
+
 {
-	registerProcessor<MarchingSquares>();
-	registerDataReader(util::make_unique<AmiraMeshVolumeReader>());
+    registerProcessor<MarchingSquares>();
 }
 
-} // namespace
+}  // namespace inviwo
