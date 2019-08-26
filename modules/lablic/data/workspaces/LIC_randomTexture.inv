@@ -131,7 +131,7 @@
                 </Processors>
             </Module>
             <Module name="CImg" version="0" />
-            <Module name="DD2257Setup" version="0">
+            <Module name="LabSetup" version="0">
                 <Processors>
                     <Processor content="org.inviwo.ConnectPoints" />
                 </Processors>
@@ -147,11 +147,11 @@
                     <Processor content="org.inviwo.MarchingSquares" />
                 </Processors>
             </Module>
-            <Module name="DD2257Lab3" version="0">
+            <Module name="LabSetupLab3" version="0">
                 <Processors>
                     <Processor content="org.inviwo.EulerRK4Comparison" />
                     <Processor content="org.inviwo.StreamlineIntegrator" />
-                    <Processor content="org.inviwo.VectorFieldGeneratorDD2257" />
+                    <Processor content="org.inviwo.VectorFieldGeneratorLabSetup" />
                 </Processors>
             </Module>
         </Modules>

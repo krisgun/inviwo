@@ -1,11 +1,11 @@
 #--------------------------------------------------------------------
-# Inviwo DD2257Setup Module
-ivw_module(DD2257Setup)
+# Inviwo LabSetup Module
+ivw_module(LabSetup)
 
 #--------------------------------------------------------------------
 # Add header files
 set(HEADER_FILES
-    #${CMAKE_CURRENT_SOURCE_DIR}/dd2257setupprocessor.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/labsetupprocessor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/connectpoints.h
 )
 #~ ivw_group("Header Files" ${HEADER_FILES})
@@ -13,7 +13,7 @@ set(HEADER_FILES
 #--------------------------------------------------------------------
 # Add source files
 set(SOURCE_FILES
-    #${CMAKE_CURRENT_SOURCE_DIR}/dd2257setupprocessor.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/labsetupprocessor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/connectpoints.cpp
 )
 ivw_group("Sources" ${SOURCE_FILES} ${HEADER_FILES})
@@ -22,7 +22,7 @@ ivw_group("Sources" ${SOURCE_FILES} ${HEADER_FILES})
 #--------------------------------------------------------------------
 # Add shaders
 set(SHADER_FILES
-    #${CMAKE_CURRENT_SOURCE_DIR}/glsl/dd2257setupprocessor.frag
+    #${CMAKE_CURRENT_SOURCE_DIR}/glsl/labsetupprocessor.frag
 )
 ivw_group("Shader Files" ${SHADER_FILES})
 
@@ -30,7 +30,7 @@ ivw_group("Shader Files" ${SHADER_FILES})
 #--------------------------------------------------------------------
 # Add Unittests
 set(TEST_FILES
-	#${CMAKE_CURRENT_SOURCE_DIR}/tests/unittests/dd2257setup-test.cpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/tests/unittests/labsetup-test.cpp
 )
 ivw_add_unittest(${TEST_FILES})
 

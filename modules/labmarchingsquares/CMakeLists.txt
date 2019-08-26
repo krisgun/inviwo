@@ -7,7 +7,6 @@ ivw_module(LabMarchingSquares)
 set(HEADER_FILES
     #${CMAKE_CURRENT_SOURCE_DIR}/processor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/marchingsquares.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/amirameshvolumereader.h
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/setminmaxdatamap.h
 )
 #~ ivw_group("Header Files" ${HEADER_FILES})
@@ -17,7 +16,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     #${CMAKE_CURRENT_SOURCE_DIR}/processor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/marchingsquares.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/amirameshvolumereader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/setminmaxdatamap.cpp
 )
 ivw_group("Sources" ${SOURCE_FILES} ${HEADER_FILES})

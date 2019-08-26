@@ -121,7 +121,7 @@
             <Module name="assimp" version="0" />
             <Module name="OpenGLQt" version="0" />
             <Module name="CImg" version="0" />
-            <Module name="DD2257Setup" version="0">
+            <Module name="LabSetup" version="0">
                 <Processors>
                     <Processor content="org.inviwo.ConnectPoints" />
                 </Processors>
