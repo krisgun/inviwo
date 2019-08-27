@@ -5,4 +5,3 @@ set(dependencies
     InviwoDataFrameModule  
     InviwoFontRenderingModule
 )
-set(EnableByDefault ON)

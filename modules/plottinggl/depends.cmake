@@ -11,4 +11,3 @@ set(dependencies
     InviwoFontRenderingModule
     InviwoUserInterfaceGLModule
 )
-set(EnableByDefault ON)

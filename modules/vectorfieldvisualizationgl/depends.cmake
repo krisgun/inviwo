@@ -6,4 +6,3 @@ set(dependencies
     InviwoBaseGLModule  
     InviwoVectorFieldVisualizationModule  
 )
-set(EnableByDefault ON)

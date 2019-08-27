@@ -6,4 +6,3 @@ set(dependencies
     InviwoEigenUtilsModule  
     InviwoBrushingAndLinkingModule  
 )
-set(EnableByDefault ON)
