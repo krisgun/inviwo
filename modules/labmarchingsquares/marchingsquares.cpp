@@ -10,7 +10,6 @@
 
 #include <labmarchingsquares/marchingsquares.h>
 #include <inviwo/core/util/utilities.h>
-#include <labmarchingsquares/utils/scalarVectorField.h>
 
 namespace inviwo {
 
