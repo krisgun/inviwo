@@ -1,5 +1,5 @@
 /*********************************************************************
- *  Author  : Himangshu Saikia, Wiebke Koepp, ...
+ *  Author  : Himangshu Saikia, Wiebke Koepp, Anke Friederici
  *  Init    : Monday, September 11, 2017 - 12:58:42
  *
  *  Project : KTH Inviwo Modules
@@ -10,7 +10,6 @@
 
 #include <labmarchingsquares/marchingsquares.h>
 #include <inviwo/core/util/utilities.h>
-#include <labutils/scalarvectorfield.h>
 
 namespace inviwo {
 
@@ -101,31 +100,13 @@ void MarchingSquares::process() {
         return;
     }
 
-    // This results in a shared pointer to a volume
+    // Create a structured grid from the input volume
     auto vol = inData.getData();
-
-    /////////////////////////////////////////////////////////////////////
-    // Example code:
-    auto testField = VectorField2::createFieldFromVolume(vol);
-    dvec2 testPos(0.01, 0.005);
-    std::cout << "Inside? " << testField.isInside(testPos) << std::endl;
-
-    ivec2 testIdx = {4, 2};
-    std::cout << "Index? " << testIdx << std::endl;
-    std::cout << "Index position? " << testField.getPositionAtVertex(testIdx * 100) << std::endl;
-
-    std::cout << "Value? " << testField.interpolate(testPos) << std::endl;
-
-    std::cout << "Derivative?\n\t" << testField.derive(testPos) << std::endl;
-
-    auto newField = VectorField3({3, 7, 2});
-    newField.setValueAtVertex({1, 2, 3}, {4.2, 13.37, 1.7});
-    std::cout << "Set and read: " << newField.getValueAtVertex({1, 2, 3}) << std::endl;
-    std::cout << "Is it zero?: " << newField.getValueAtVertex({0, 1, 2}) << std::endl;
+    auto grid = ScalarField2::createFieldFromVolume(vol);
 
     // Extract the minimum and maximum value from the input data
-    const double minValue = vol->dataMap_.valueRange[0];
-    const double maxValue = vol->dataMap_.valueRange[1];
+    const double minValue = grid.getMinValue();
+    const double maxValue = grid.getMaxValue();
 
     // Set the range for the isovalue to that minimum and maximum
     propIsoValue.setMinValue(minValue);
@@ -142,33 +123,24 @@ void MarchingSquares::process() {
     // Log...() displays the identifier of the processor (thus with multiple processors of the
     // same kind you would not know which one the information is coming from
 
-    // Retreive data in a form that we can access it
-    const VolumeRAM* vr = vol->getRepresentation<VolumeRAM>();
-    const size3_t dims = vol->getDimensions();
+    // Get the definition of our structured grid with
+    // - number of vertices in each dimension {nx, ny}
+    const ivec2 nVertPerDim = grid.getNumVerticesPerDim();
+    // - bounding box {xmin, ymin} - {xmax, ymax}
+    const dvec2 bBoxMin = grid.getBBoxMin();
+    const dvec2 bBoxMax = grid.getBBoxMax();
+    // - cell size {dx, dy}
+    const dvec2 cellSize = grid.getCellSize();
 
-    // Initialize mesh and vertices
+    // Values at the vertex positions can be accessed by the indices of the vertex
+    // with index i ranging between [0, nx-1] and j in [0, ny-1]
+    ivec2 ij = {0, 0};
+    double valueAt00 = grid.getValueAtVertex(ij);
+    LogProcessorInfo("The value at (0,0) is: " << valueAt00 << ".");
+
+    // Initialize the output: mesh and vertices
     auto mesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> vertices;
-
-    // Values within the input data are accessed by the function below
-    // It's input is the VolumeRAM from above, the dimensions of the volume
-    // and the indeces i and j of the position to be accessed where
-    // i is in [0, dims.x-1] and j is in [0, dims.y-1]
-    float valueat00 = getInputValue(vr, dims, 0, 0);
-    LogProcessorInfo("Value at (0,0) is: " << valueat00);
-    // You can assume that dims.z = 1 and do not need to consider others cases
-
-    // TODO (Bonus) Gaussian filter
-    // Our input is const, but you need to compute smoothed data and write it somewhere
-    // Create an editable volume like this:
-    // Volume volSmoothed(vol->getDimensions(), vol->getDataFormat());
-    // auto vrSmoothed = volSmoothed.getEditableRepresentation<VolumeRAM>();
-    // Values can be set with
-    // vrSmoothed->setFromDouble(vec3(i,j,0), value);
-    // getting values works with an editable volume as well
-    // getInputValue(vrSmoothed, dims, 0, 0);
-
-    // Grid
 
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
@@ -180,8 +152,7 @@ void MarchingSquares::process() {
         // lines/trianges/quads. Here two vertices make up a line segment.
         auto indexBufferGrid = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
-        // Draw a line segment from v1 to v2 with a color, the coordinates in the final
-        // image range from 0 to 1 for both x and y
+        // Draw a line segment from v1 to v2 with a the given color for the grid
         vec2 v1 = vec2(0.5, 0.5);
         vec2 v2 = vec2(0.7, 0.7);
         drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), vertices);
@@ -189,10 +160,22 @@ void MarchingSquares::process() {
 
     // Iso contours
 
+    // TODO (Bonus) Gaussian filter
+    // Our input is const (i.e. cannot be altered), but you need to compute smoothed data and write
+    // it somewhere
+    // Create an editable structured grid with ScalarField2 smoothedField =
+    // ScalarField2(nVertPerDim, bBoxMin, bBoxMax - bBoxMin); Values can be set with
+    // smoothedField.setValueAtVertex({0, 0}, 4.2);
+    // and read again in the same way as before
+    // smoothedField.getValueAtVertex(ij);
+
     if (propMultiple.get() == 0) {
         // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
         // and color it with the specified color (propIsoColor)
-    } else {
+
+    }
+
+    else {
         // TODO: Draw the given number (propNumContours) of isolines between
         // the minimum and maximum value
 
@@ -213,18 +196,6 @@ void MarchingSquares::process() {
 
     mesh->addVertices(vertices);
     meshOut.setData(mesh);
-}  // namespace inviwo
-
-double MarchingSquares::getInputValue(const VolumeRAM* data, const size3_t dims, const size_t i,
-                                      const size_t j) {
-    // Check if the indices are withing the dimensions of the volume
-    if (i < dims.x && j < dims.y) {
-        return data->getAsDouble(size3_t(i, j, 0));
-    } else {
-        LogProcessorError(
-            "Attempting to access data outside the boundaries of the volume, value is set to 0");
-        return 0;
-    }
 }
 
 void MarchingSquares::drawLineSegment(const vec2& v1, const vec2& v2, const vec4& color,
