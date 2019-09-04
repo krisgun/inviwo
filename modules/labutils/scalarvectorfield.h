@@ -80,7 +80,6 @@ public:
      */
     void setValueAtVertex(const IndexType& idx, const VectorType& newValue);
 
-
     /**
      * \brief Interpolates the data using bi- or tri-linear interpolation.
      *
@@ -95,7 +94,6 @@ public:
      * @param pos A world position, i.e., dependent on where the field is places in space.
      */
     DerivativeType derive(const PositionType& pos) const;
-
 
     /** Returns the number of grid vertices in each dimension. */
     const IndexType& getNumVerticesPerDim() const { return size_; }
@@ -187,14 +185,11 @@ Field<Dim, VecDim>::Field(std::shared_ptr<const inviwo::Volume> volume)
     size3_t numElements = volume->getDimensions();
     for (int d = 0; d < Dim; ++d) size_[d] = numElements[d];
 
-    auto& transform = volume->getCoordinateTransformer();
-
-    auto mat = transform.getMatrix(CoordinateSpace::Index, CoordinateSpace::World);
+    auto mat = volume->getModelMatrix();
     std::cout << mat << std::endl;
     for (int d = 0; d < Dim; ++d) {
         offset_[d] = mat[3][d];
         extent_[d] = mat[d][d];
-        IVW_ASSERT(mat[d + 1][d + 1] == 0, "Assuming volume is axis-aligned.");
     }
 
     minValue_ = sample({0, 0, 0});
@@ -356,7 +351,7 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::worldPosFromGridCo
 
 template <int Dim, int VecDim>
 void Field<Dim, VecDim>::setValueAtVertex(const Field<Dim, VecDim>::IndexType& idx,
-                                     const Field<Dim, VecDim>::VectorType& newValue) {
+                                          const Field<Dim, VecDim>::VectorType& newValue) {
     size3_t idxT(0);
     for (int d = 0; d < Dim; ++d) idxT[d] = idx[d];
 
@@ -400,8 +395,8 @@ typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::deriveInGridCoor
         minPos[d] = std::max(minPos[d] - 0.5, 0.0);
         maxPos[d] = std::min(minPos[d] + 0.5, static_cast<double>(size_[d] - 1));
 
-        partDiff =
-            (interpolateInGridCoords(maxPos) - interpolateInGridCoords(minPos)) / (maxPos[d] - minPos[d]);
+        partDiff = (interpolateInGridCoords(maxPos) - interpolateInGridCoords(minPos)) /
+                   (maxPos[d] - minPos[d]);
         derivative[d] = partDiff;
     }
     return derivative;
@@ -419,8 +414,8 @@ typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::sampleDerivative
         minIdx[d] = std::max(minIdx[d] - 1, 0);
         maxIdx[d] = std::min(minIdx[d] + 1, size_[d] - 1);
 
-        partDiff =
-            (interpolateInGridCoords(maxIdx) - interpolateInGridCoords(minIdx)) / (maxIdx[d] - minIdx[d]);
+        partDiff = (interpolateInGridCoords(maxIdx) - interpolateInGridCoords(minIdx)) /
+                   (maxIdx[d] - minIdx[d]);
         derivative[d] = partDiff;
     }
     return derivative;
