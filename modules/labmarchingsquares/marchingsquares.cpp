@@ -10,6 +10,7 @@
 
 #include <labmarchingsquares/marchingsquares.h>
 #include <inviwo/core/util/utilities.h>
+#include <labutils/scalarvectorfield.h>
 
 namespace inviwo {
 
@@ -103,6 +104,27 @@ void MarchingSquares::process() {
     // This results in a shared pointer to a volume
     auto vol = inData.getData();
 
+    /////////////////////////////////////////////////////////////////////
+    // Example code:
+    auto testField = VectorField2::createFieldFromVolume(vol);
+    dvec2 testPos(0.01, 0.005);
+    std::cout << "Inside? " << testField.isInside(testPos) << std::endl;
+
+    ivec2 testIdx = {4, 2};
+    std::cout << "Index? " << testIdx << std::endl;
+    std::cout << "Index position? " << testField.getPositionAtVertex(testIdx * 100) << std::endl;
+
+    std::cout << "Value? " << testField.sampleInWorldCoords(testPos) << std::endl;
+
+    std::cout << "Derivative?\n\t" << testField.sampleDerivativeInWorldCoords(testPos) << std::endl;
+    std::cout << "Derivative Indexed?\n\t" << testField.sampleDerivativeAtVertex(testIdx)
+              << std::endl;
+
+    auto newField = VectorField3({3, 7, 2});
+    newField.setAtVertex({1, 2, 3}, {4.2, 13.37, 1.7});
+    std::cout << "Set and read: " << newField.sampleAtVertex({1, 2, 3}) << std::endl;
+    std::cout << "Is it zero?: " << newField.sampleAtVertex({0, 1, 2}) << std::endl;
+
     // Extract the minimum and maximum value from the input data
     const double minValue = vol->dataMap_.valueRange[0];
     const double maxValue = vol->dataMap_.valueRange[1];
@@ -193,7 +215,7 @@ void MarchingSquares::process() {
 
     mesh->addVertices(vertices);
     meshOut.setData(mesh);
-}
+}  // namespace inviwo
 
 double MarchingSquares::getInputValue(const VolumeRAM* data, const size3_t dims, const size_t i,
                                       const size_t j) {
