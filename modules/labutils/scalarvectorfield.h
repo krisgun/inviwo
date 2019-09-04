@@ -246,7 +246,7 @@ typename Field<Dim, VecDim>::IndexType Field<Dim, VecDim>::getLowerIndex(
     IndexType idx;
     for (int d = 0; d < Dim; ++d) {
         IVW_ASSERT(extent_[d] >= 0, "0 dimension detected! D" << d);
-        idx[d] = static_cast<int>(((pos[d] - offset_[d]) * size_[d]) / extent_[d]);
+        idx[d] = static_cast<int>(((pos[d] - offset_[d]) * (size_[d] - 1)) / extent_[d]);
     }
     return idx;
 }
@@ -257,7 +257,7 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getPositionAtVerte
     typename Field<Dim, VecDim>::PositionType pos;
     for (int d = 0; d < Dim; ++d)
         pos[d] = static_cast<int>((extent_[d] * static_cast<double>(idx[d])) /
-                                      static_cast<double>(size_[d]) +
+                                      static_cast<double>(size_[d] - 1) +
                                   offset_[d]);
     return pos;
 }
@@ -335,7 +335,8 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::gridCoordsFromWorl
     const typename Field<Dim, VecDim>::PositionType& pos) const {
 
     typename Field<Dim, VecDim>::PositionType relativePos(0);
-    for (int d = 0; d < Dim; ++d) relativePos[d] = ((pos[d] - offset_[d]) * size_[d]) / extent_[d];
+    for (int d = 0; d < Dim; ++d)
+        relativePos[d] = ((pos[d] - offset_[d]) * (size_[d] - 1)) / extent_[d];
 
     return relativePos;
 }
@@ -345,7 +346,7 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::worldPosFromGridCo
     const typename Field<Dim, VecDim>::PositionType& pos) const {
 
     typename Field<Dim, VecDim>::PositionType worldPos(0);
-    for (int d = 0; d < Dim; ++d) worldPos[d] = (pos[d] * extent_[d] / size_[d]) + offset_[d];
+    for (int d = 0; d < Dim; ++d) worldPos[d] = (pos[d] * extent_[d] / (size_[d] - 1)) + offset_[d];
 
     return worldPos;
 }
@@ -374,7 +375,7 @@ void Field<Dim, VecDim>::setAtVertex(const Field<Dim, VecDim>::IndexType& idx,
 template <int Dim, int VecDim>
 typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getCellSize() const {
     Field<Dim, VecDim>::PositionType cellSize;
-    for (int d = 0; d < Dim; ++d) cellSize[d] = extent_[d] / size_[d];
+    for (int d = 0; d < Dim; ++d) cellSize[d] = extent_[d] / (size_[d] - 1);
     return cellSize;
 }
 
