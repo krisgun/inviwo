@@ -125,7 +125,7 @@ public:
     const PositionType& getMinWorldCoord() const { return offset_; }
 
     /** Get the maximum world coordinate, i.e., the position of vertex size_-1. */
-    const PositionType& getMaxWorldCoord() const { return offset_ + extent_; }
+    PositionType getMaxWorldCoord() const { return offset_ + extent_; }
 
     /** Get the extent of the world coordinate, i.e., the maximum distance between vertices. */
     const PositionType& getExtent() const { return extent_; }
