@@ -21,25 +21,23 @@
 #include <inviwo/core/properties/transferfunctionproperty.h>
 #include <inviwo/core/datastructures/volume/volumeram.h>
 #include <inviwo/core/datastructures/geometry/basicmesh.h>
+#include <labutils/scalarvectorfield.h>
 
-namespace inviwo
-{
+namespace inviwo {
 
 /** \docpage{org.inviwo.MarchingSquares, Marching Squares}
     ![](org.inviwo.MarchingSquares.png?classIdentifier=org.inviwo.MarchingSquares)
 
     Extraction of isocontours in 2D with the marching squares algorithm.
-    
+
     ### Inports
-      * __data__ The input here is 2-dimensional scalar field (thus a single
-      value within each voxel) but it is represented by a 3-dimensional volume. 
-      This processor deals with 2-dimensional data only, therefore it is assumed 
-      the z-dimension will have size 1 otherwise the 0th slice of the volume 
-      will be processed
-    
+      * __data__ The input is a 2-dimensional scalar field (with a single value at each position
+      represented in a 2-dimension uniform structured grid.
+
+
     ### Outports
       * __mesh__ The output mesh contains (possibly multiple) iso contours as well as gridlines
-    
+
     ### Properties
       * __propShowGrid__ Display grid lines if true, do not display grid lines if false.
       * __propGridColor__ Color of the grid lines
@@ -47,41 +45,35 @@ namespace inviwo
       * __propMultiple__ Display of one iso contour or multiple
       * __propIsoValue__ Iso value for one iso contour
       * __propIsoColor__ Color for iso contour(s)
-      * __propNumContours__ Number of isocontours to be displayed between minimum and maximum data value
+      * __propNumContours__ Number of isocontours to be displayed between minimum and maximum data
+   value
       * __propIsoTransferFunc__ Transfer function to be used to color those multiple contours
 */
-class IVW_MODULE_LABMARCHINGSQUARES_API MarchingSquares : public Processor
-{ 
-//Friends
-//Types
+class IVW_MODULE_LABMARCHINGSQUARES_API MarchingSquares : public Processor {
+    // Friends
+    // Types
 public:
-
-//Construction / Deconstruction
+    // Construction / Deconstruction
 public:
     MarchingSquares();
     virtual ~MarchingSquares() = default;
 
-//Methods
+    // Methods
 public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
 
 protected:
-    ///Our main computation function
+    /// Our main computation function
     virtual void process() override;
 
     // (TODO: Helper functions can be defined here and then implemented in the .cpp)
 
-    // Get the input value from a 2-dimensional scalar field represented by a 3-dimensional volume
-    double getInputValue(const VolumeRAM* data, const size3_t dims, 
-        const size_t i, const size_t j);
-  
     // Draw a line segment from v1 to v2 with a color
     void drawLineSegment(const vec2& v1, const vec2& v2, const vec4& color,
-        IndexBufferRAM* indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
-	
+                         IndexBufferRAM* indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
 
-//Ports
+    // Ports
 public:
     // Input data
     VolumeInport inData;
@@ -89,7 +81,7 @@ public:
     // Output mesh
     MeshOutport meshOut;
 
-//Properties
+    // Properties
 public:
     // Basic settings
     BoolProperty propShowGrid;
@@ -97,15 +89,14 @@ public:
     TemplateOptionProperty<int> propDeciderType;
     TemplateOptionProperty<int> propMultiple;
     // Properties for choosing a single iso contour by value
-    FloatProperty propIsoValue;
+    DoubleProperty propIsoValue;
     FloatVec4Property propIsoColor;
-    // Properties for multiple iso contours 
+    // Properties for multiple iso contours
     IntProperty propNumContours;
     TransferFunctionProperty propIsoTransferFunc;
 
-//Attributes
+    // Attributes
 private:
-
 };
 
-} // namespace
+}  // namespace inviwo
