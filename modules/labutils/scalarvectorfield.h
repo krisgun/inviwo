@@ -66,25 +66,11 @@ public:
     PositionType getPositionAtVertex(const IndexType& idx) const;
 
     /**
-     * \brief Get the value at any point in the field.
-     *
-     * @param pos A world position, i.e., dependent on where the field is placed in space.
-     */
-    VectorType sampleInWorldCoords(const PositionType& pos) const;
-
-    /**
-     * \brief Get the value at any point in the field.
-     *
-     * @param pos A grid position, i.e., a floating value between 0 and size_.
-     */
-    VectorType sampleInGridCoords(const PositionType& pos) const;
-
-    /**
      * \brief Get the value directly at a vertex.
      *
      * @param idx A vertex index.
      */
-    VectorType sampleAtVertex(const IndexType& idx) const;
+    VectorType getValueAtVertex(const IndexType& idx) const;
 
     /**
      * \brief Set the value at any vertex in the field.
@@ -92,7 +78,15 @@ public:
      * @param idx A vertex index.
      * @param newValue Value to be set at that index.
      */
-    void setAtVertex(const IndexType& idx, const VectorType& newValue);
+    void setValueAtVertex(const IndexType& idx, const VectorType& newValue);
+
+
+    /**
+     * \brief Interpolates the data using bi- or tri-linear interpolation.
+     *
+     * @param pos A location inside the bounding box of the field.
+     */
+    VectorType interpolate(const PositionType& pos) const;
 
     /**
      * \brief Get the derivative at any point in the field.
@@ -100,35 +94,17 @@ public:
      *
      * @param pos A world position, i.e., dependent on where the field is places in space.
      */
-    DerivativeType sampleDerivativeInWorldCoords(const PositionType& pos) const;
+    DerivativeType derive(const PositionType& pos) const;
 
-    /**
-     * \brief Get the derivative at any point in the field.
-     * Returns the gradient or Jacobian.
-     *
-     * @param pos A grid position, i.e., a floating value between 0 and size_.
-     */
-    DerivativeType sampleDerivativeInGridCoords(const PositionType& pos) const;
 
-    /**
-     * \brief Get the derivative directly at a vertex.
-     * Returns the gradient or Jacobian.
-     *
-     * @param idx A vertex index.
-     */
-    DerivativeType sampleDerivativeAtVertex(const IndexType& idx) const;
-
-    /** Get the number of vertices. */
-    const IndexType& getNumVertices() const { return size_; }
+    /** Returns the number of grid vertices in each dimension. */
+    const IndexType& getNumVerticesPerDim() const { return size_; }
 
     /** Get the minimum world coordinate, i.e., the position of vertex 0. */
-    const PositionType& getMinWorldCoord() const { return offset_; }
+    const PositionType& getBBoxMin() const { return offset_; }
 
     /** Get the maximum world coordinate, i.e., the position of vertex size_-1. */
-    PositionType getMaxWorldCoord() const { return offset_ + extent_; }
-
-    /** Get the extent of the world coordinate, i.e., the maximum distance between vertices. */
-    const PositionType& getExtent() const { return extent_; }
+    const PositionType& getBBoxMax() const { return offset_ + extent_; }
 
     /** Get the world extent of a single cell (rectangle or cuboid). */
     PositionType getCellSize() const;
@@ -138,6 +114,33 @@ public:
 
     /** Get maximum value, component-wise. */
     const VectorType& getMaxValue() { return maxValue_; }
+
+protected:
+    /** Get the extent of the world coordinate, i.e., the maximum distance between vertices. */
+    const PositionType& getExtent() const { return extent_; }
+
+    /**
+     * \brief Interpolates the data using bi- or tri-linear interpolation.
+     *
+     * @param pos A grid position, i.e., a floating value between 0 and size_.
+     */
+    VectorType interpolateInGridCoords(const PositionType& pos) const;
+
+    /**
+     * \brief Get the derivative at any point in the field.
+     * Returns the gradient or Jacobian.
+     *
+     * @param pos A grid position, i.e., a floating value between 0 and size_.
+     */
+    DerivativeType deriveInGridCoords(const PositionType& pos) const;
+
+    /**
+     * \brief Get the derivative directly at a vertex.
+     * Returns the gradient or Jacobian.
+     *
+     * @param idx A vertex index.
+     */
+    DerivativeType sampleDerivativeAtVertex(const IndexType& idx) const;
 
     /**
      * \brief Convert a grid position into a world position.
@@ -276,13 +279,13 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sample(const size3_t
 }
 
 template <int Dim, int VecDim>
-typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sampleInWorldCoords(
+typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::interpolate(
     const typename Field<Dim, VecDim>::PositionType& pos) const {
-    return sampleInGridCoords(gridCoordsFromWorldPos(pos));
+    return interpolateInGridCoords(gridCoordsFromWorldPos(pos));
 }
 
 template <int Dim, int VecDim>
-typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sampleInGridCoords(
+typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::interpolateInGridCoords(
     const typename Field<Dim, VecDim>::PositionType& relPos) const {
     typename Field<Dim, VecDim>::IndexType idxMin;
     typename Field<Dim, VecDim>::PositionType fracIdx;
@@ -322,7 +325,7 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sampleInGridCoords(
 }
 
 template <int Dim, int VecDim>
-typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sampleAtVertex(
+typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::getValueAtVertex(
     const typename Field<Dim, VecDim>::IndexType& idx) const {
     size3_t idxT(0);
     for (int d = 0; d < Dim; ++d) idxT[d] = idx[d];
@@ -352,7 +355,7 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::worldPosFromGridCo
 }
 
 template <int Dim, int VecDim>
-void Field<Dim, VecDim>::setAtVertex(const Field<Dim, VecDim>::IndexType& idx,
+void Field<Dim, VecDim>::setValueAtVertex(const Field<Dim, VecDim>::IndexType& idx,
                                      const Field<Dim, VecDim>::VectorType& newValue) {
     size3_t idxT(0);
     for (int d = 0; d < Dim; ++d) idxT[d] = idx[d];
@@ -380,13 +383,13 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getCellSize() cons
 }
 
 template <int Dim, int VecDim>
-typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::sampleDerivativeInWorldCoords(
+typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::derive(
     const PositionType& pos) const {
-    return sampleDerivativeInGridCoords(gridCoordsFromWorldPos(pos));
+    return deriveInGridCoords(gridCoordsFromWorldPos(pos));
 }
 
 template <int Dim, int VecDim>
-typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::sampleDerivativeInGridCoords(
+typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::deriveInGridCoords(
     const typename Field<Dim, VecDim>::PositionType& relPos) const {
     typename Field<Dim, VecDim>::DerivativeType derivative;
     typename Field<Dim, VecDim>::VectorType partDiff;
@@ -398,7 +401,7 @@ typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::sampleDerivative
         maxPos[d] = std::min(minPos[d] + 0.5, static_cast<double>(size_[d] - 1));
 
         partDiff =
-            (sampleInGridCoords(maxPos) - sampleInGridCoords(minPos)) / (maxPos[d] - minPos[d]);
+            (interpolateInGridCoords(maxPos) - interpolateInGridCoords(minPos)) / (maxPos[d] - minPos[d]);
         derivative[d] = partDiff;
     }
     return derivative;
@@ -417,7 +420,7 @@ typename Field<Dim, VecDim>::DerivativeType Field<Dim, VecDim>::sampleDerivative
         maxIdx[d] = std::min(minIdx[d] + 1, size_[d] - 1);
 
         partDiff =
-            (sampleInGridCoords(maxIdx) - sampleInGridCoords(minIdx)) / (maxIdx[d] - minIdx[d]);
+            (interpolateInGridCoords(maxIdx) - interpolateInGridCoords(minIdx)) / (maxIdx[d] - minIdx[d]);
         derivative[d] = partDiff;
     }
     return derivative;

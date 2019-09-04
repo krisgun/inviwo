@@ -114,16 +114,14 @@ void MarchingSquares::process() {
     std::cout << "Index? " << testIdx << std::endl;
     std::cout << "Index position? " << testField.getPositionAtVertex(testIdx * 100) << std::endl;
 
-    std::cout << "Value? " << testField.sampleInWorldCoords(testPos) << std::endl;
+    std::cout << "Value? " << testField.interpolate(testPos) << std::endl;
 
-    std::cout << "Derivative?\n\t" << testField.sampleDerivativeInWorldCoords(testPos) << std::endl;
-    std::cout << "Derivative Indexed?\n\t" << testField.sampleDerivativeAtVertex(testIdx)
-              << std::endl;
+    std::cout << "Derivative?\n\t" << testField.derive(testPos) << std::endl;
 
     auto newField = VectorField3({3, 7, 2});
-    newField.setAtVertex({1, 2, 3}, {4.2, 13.37, 1.7});
-    std::cout << "Set and read: " << newField.sampleAtVertex({1, 2, 3}) << std::endl;
-    std::cout << "Is it zero?: " << newField.sampleAtVertex({0, 1, 2}) << std::endl;
+    newField.setValueAtVertex({1, 2, 3}, {4.2, 13.37, 1.7});
+    std::cout << "Set and read: " << newField.getValueAtVertex({1, 2, 3}) << std::endl;
+    std::cout << "Is it zero?: " << newField.getValueAtVertex({0, 1, 2}) << std::endl;
 
     // Extract the minimum and maximum value from the input data
     const double minValue = vol->dataMap_.valueRange[0];
