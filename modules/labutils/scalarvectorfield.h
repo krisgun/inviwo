@@ -265,7 +265,7 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sample(const size3_t
     if constexpr (IsScalar) return data_->getAsDouble(idxT);
 
     glm::dvec4 values = data_->getAsDVec4(idxT);
-    Field<Dim, VecDim>::VectorType val(0);
+    typename Field<Dim, VecDim>::VectorType val(0);
     if constexpr (IsScalar)
         val = values[0];
     else
