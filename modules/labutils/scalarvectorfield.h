@@ -45,6 +45,12 @@ public:
     Field(const IndexType& size, const PositionType& offset = PositionType(0),
           const PositionType& extent = PositionType(1));
 
+    /** Copy constructor */
+    Field(const Field<Dim, VecDim>& other);
+
+    /** Copy assignment */
+    Field<Dim, VecDim>& operator=(const Field<Dim, VecDim>& other);
+
     /** Default destructor */
     ~Field() {
         if (ownsData_) delete data_;
@@ -231,6 +237,29 @@ Field<Dim, VecDim>::Field(const typename Field<Dim, VecDim>::IndexType& size,
 }
 
 template <int Dim, int VecDim>
+Field<Dim, VecDim>::Field(const Field<Dim, VecDim>& other)
+    : data_(other.data_->clone())
+    , ownsData_(true)
+    , size_(other.size_)
+    , offset_(other.offset_)
+    , extent_(other.extent_)
+    , minValue_(other.minValue_)
+    , maxValue_(other.maxValue_) {}
+
+template <int Dim, int VecDim>
+Field<Dim, VecDim>& Field<Dim, VecDim>::operator=(const Field<Dim, VecDim>& other) {
+    ownsData_ = true;
+    size_ = other.size_;
+    offset_ = other.offset_;
+    extent_ = other.extent_;
+    minValue_ = other.minValue_;
+    maxValue_ = other.maxValue_;
+    data_ = other.data_->clone();
+
+    return *this;
+}
+
+template <int Dim, int VecDim>
 bool Field<Dim, VecDim>::isInside(const typename Field<Dim, VecDim>::PositionType& pos) const {
     for (int d = 0; d < Dim; ++d)
         if (pos[d] < offset_[d] || pos[d] > offset_[d] + extent_[d]) return false;
@@ -322,7 +351,6 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::getValueAtVertex(
     const typename Field<Dim, VecDim>::IndexType& idx) const {
     size3_t idxT(0);
     for (int d = 0; d < Dim; ++d) idxT[d] = idx[d];
-
     return sample(idxT);
 }
 
