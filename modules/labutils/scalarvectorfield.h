@@ -186,7 +186,6 @@ Field<Dim, VecDim>::Field(std::shared_ptr<const inviwo::Volume> volume)
     for (int d = 0; d < Dim; ++d) size_[d] = numElements[d];
 
     auto mat = volume->getModelMatrix();
-    std::cout << mat << std::endl;
     for (int d = 0; d < Dim; ++d) {
         offset_[d] = mat[3][d];
         extent_[d] = mat[d][d];
@@ -254,9 +253,8 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getPositionAtVerte
     const typename Field<Dim, VecDim>::IndexType& idx) const {
     typename Field<Dim, VecDim>::PositionType pos;
     for (int d = 0; d < Dim; ++d)
-        pos[d] = static_cast<int>((extent_[d] * static_cast<double>(idx[d])) /
-                                      static_cast<double>(size_[d] - 1) +
-                                  offset_[d]);
+        pos[d] = extent_[d] * static_cast<double>(idx[d]) / static_cast<double>(size_[d] - 1) +
+                 offset_[d];
     return pos;
 }
 
