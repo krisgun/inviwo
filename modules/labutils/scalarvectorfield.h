@@ -289,20 +289,23 @@ typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getPositionAtVerte
 
 template <int Dim, int VecDim>
 typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::sample(const size3_t& idxT) const {
-    if constexpr (IsScalar) return data_->getAsDouble(idxT);
-
-    glm::dvec4 values = data_->getAsDVec4(idxT);
-    typename Field<Dim, VecDim>::VectorType val(0);
-    if constexpr (IsScalar)
-        val = values[0];
-    else
-        for (int d = 0; d < Dim; ++d) val[d] = values[d];
-    return val;
+    if constexpr (IsScalar) {
+        return data_->getAsDouble(idxT);
+    } else {
+        glm::dvec4 values = data_->getAsDVec4(idxT);
+        typename Field<Dim, VecDim>::VectorType val(0);
+        if constexpr (IsScalar)
+            val = values[0];
+        else
+            for (int d = 0; d < Dim; ++d) val[d] = values[d];
+        return val;
+    }
 }
 
 template <int Dim, int VecDim>
 typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::interpolate(
     const typename Field<Dim, VecDim>::PositionType& pos) const {
+    if (!isInside(pos)) return typename Field<Dim, VecDim>::VectorType(0);
     return interpolateInGridCoords(gridCoordsFromWorldPos(pos));
 }
 

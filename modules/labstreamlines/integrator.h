@@ -10,36 +10,30 @@
 
 #pragma once
 
-#include <labstreamlines/labstreamlinesmoduledefine.h>
 #include <inviwo/core/common/inviwo.h>
 #include <inviwo/core/datastructures/geometry/basicmesh.h>
 #include <inviwo/core/datastructures/volume/volumeram.h>
+#include <labstreamlines/labstreamlinesmoduledefine.h>
+#include <labutils/scalarvectorfield.h>
 
-namespace inviwo
-{
+namespace inviwo {
 
-class IVW_MODULE_LABSTREAMLINES_API Integrator
-{ 
-//Friends
-//Types
+class IVW_MODULE_LABSTREAMLINES_API Integrator {
+
 public:
-
-//Construction / Deconstruction
+    // Construction / Deconstruction
 public:
-    Integrator();
+    Integrator() {}
     virtual ~Integrator() = default;
 
-//Methods
+    // Methods
 public:
-    static vec2 sampleFromField(const VolumeRAM* vr, size3_t dims, const vec2& position);
-
-    // TODO: Implement the methods below (one integration step with either Euler or 
+    // TODO: Implement the methods below (one integration step with either Euler or
     // Runge-Kutte of 4th order integration method)
     // Pass any other properties that influence the integration process
     // Examples would be the stepsize, inegreation direction, ...
-    //static vec2 RK4(const VolumeRAM* vr, size3_t dims, const vec2& position, ...);
-    //static vec2 Euler(const VolumeRAM* vr, size3_t dims, const vec2& position, ...);
-
+    // static dvec2 RK4(const VectorField2& vectorField, const dvec2& position, ...);
+    // static dvec2 Euler(const VectorField2& vectorField, const dvec2& position, ...);
 };
 
-} // namespace
+}  // namespace inviwo

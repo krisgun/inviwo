@@ -10,18 +10,19 @@
 
 #pragma once
 
-#include <labstreamlines/labstreamlinesmoduledefine.h>
 #include <inviwo/core/common/inviwo.h>
-#include <inviwo/core/processors/processor.h>
-#include <inviwo/core/ports/volumeport.h>
-#include <inviwo/core/ports/meshport.h>
-#include <inviwo/core/properties/optionproperty.h>
-#include <inviwo/core/properties/ordinalproperty.h>
-#include <inviwo/core/properties/eventproperty.h>
-#include <inviwo/core/properties/compositeproperty.h>
-#include <inviwo/core/properties/boolproperty.h>
 #include <inviwo/core/datastructures/geometry/basicmesh.h>
 #include <inviwo/core/datastructures/volume/volumeram.h>
+#include <inviwo/core/ports/meshport.h>
+#include <inviwo/core/ports/volumeport.h>
+#include <inviwo/core/processors/processor.h>
+#include <inviwo/core/properties/boolproperty.h>
+#include <inviwo/core/properties/compositeproperty.h>
+#include <inviwo/core/properties/eventproperty.h>
+#include <inviwo/core/properties/optionproperty.h>
+#include <inviwo/core/properties/ordinalproperty.h>
+#include <labstreamlines/labstreamlinesmoduledefine.h>
+#include <labutils/scalarvectorfield.h>
 
 namespace inviwo {
 
@@ -39,23 +40,18 @@ namespace inviwo {
     will be processed.
 
     ### Outports
-    * __outMesh__ The output mesh contains linesegments (no points apart from
-    the start point) for the two streamlines computed with different integration
-    schemes and both starting at a given start point
+    * __outMesh__ The output mesh contains linesegments making up either a single or
+    multiple stream lines
 
     ### Properties
-    * __propSeedMode__ Mode for the number of seeds, either a single start point or
-    multiple
-    * __propStartPoint__ Location of the start point with x-coordinate in
-    [0, number of voxels in x - 1] and y-coordinate in [0, number of voxels in y - 1]
-    * __mouseMoveStart__ Move the start point when a selected mouse button is pressed
-    (default left)
+    * __propSeedMode__ Mode for the number of seeds, either a single start point
+   or multiple
+    * __propStartPoint__ Location of the start point
+    * __mouseMoveStart__ Move the start point when a selected mouse button is
+   pressed (default left)
 */
 
 class IVW_MODULE_LABSTREAMLINES_API StreamlineIntegrator : public Processor {
-// Friends
-// Types
-public:
 
 // Construction / Deconstruction
 public:
@@ -84,9 +80,9 @@ public:
 
 // Properties
 public:
-    EventProperty mouseMoveStart;
     FloatVec2Property propStartPoint;
     TemplateOptionProperty<int> propSeedMode;
+    EventProperty mouseMoveStart;
 
     // TODO: Declare additional properties
     // Some types that you might need are given below
@@ -94,12 +90,10 @@ public:
     // FloatProperty propertyName2;
     // IntVec2Property propertyName3;
     // TemplateOptionProperty<int> propertyName4;
-    // BoolProperty propertyName4;
+    // BoolProperty propertyName5;
 
 // Attributes
 private:
-    // Dimensions of the current vector field
-    size3_t dims;
 };
 
 }  // namespace inviwo
