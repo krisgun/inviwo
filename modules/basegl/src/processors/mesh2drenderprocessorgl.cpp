@@ -62,7 +62,7 @@ Mesh2DRenderProcessorGL::Mesh2DRenderProcessorGL()
     , outport_("outputImage")
     , shader_("mesh2drendering.vert", "mesh2drendering.frag")
     , enableDepthTest_("enableDepthTest", "Enable Depth Test", true)
-
+    , pointSize_("pointSize", "PointSize", 5.0, 1.0, 20.0)
     , top_("top", "Top", 1, -1, 1)
     , bottom_("bottom", "Bottom", 0, -1, 1)
     , left_("left", "Left", 0, -1, 1)
@@ -74,6 +74,8 @@ Mesh2DRenderProcessorGL::Mesh2DRenderProcessorGL()
     imageInport_.setOptional(true);
 
     addProperty(enableDepthTest_);
+
+    addProperty(pointSize_);
 
     addProperty(left_);
     addProperty(right_);
@@ -98,6 +100,8 @@ void Mesh2DRenderProcessorGL::process() {
     shader_.setUniform("projectionMatrix", proj);
 
     utilgl::GlBoolState depthTest(GL_DEPTH_TEST, enableDepthTest_);
+
+    glPointSize(pointSize_.get());
 
     for (auto& drawer : drawers_) {
         utilgl::setShaderUniforms(shader_, *(drawer.second->getMesh()), "geometry_");
