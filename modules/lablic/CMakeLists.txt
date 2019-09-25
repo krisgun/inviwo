@@ -6,8 +6,6 @@ ivw_module(LabLIC)
 # Add header files
 set(HEADER_FILES
     #${CMAKE_CURRENT_SOURCE_DIR}/lablicprocessor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/integrator.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interpolator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/licprocessor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/noisetexturegenerator.h
 )
@@ -17,8 +15,6 @@ set(HEADER_FILES
 # Add source files
 set(SOURCE_FILES
     #${CMAKE_CURRENT_SOURCE_DIR}/lablicprocessor.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/integrator.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interpolator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/licprocessor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/noisetexturegenerator.cpp
 )
