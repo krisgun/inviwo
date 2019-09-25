@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include <lablic/lablicmoduledefine.h>
 #include <inviwo/core/common/inviwo.h>
-#include <inviwo/core/processors/processor.h>
 #include <inviwo/core/ports/imageport.h>
+#include <inviwo/core/processors/processor.h>
 #include <inviwo/core/properties/optionproperty.h>
 #include <inviwo/core/properties/ordinalproperty.h>
+#include <lablic/lablicmoduledefine.h>
 
 namespace inviwo {
 
@@ -23,43 +23,44 @@ namespace inviwo {
     ![](org.inviwo.NoiseTextureGenerator.png?classIdentifier=org.inviwo.NoiseTextureGenerator)
 
     Generates a noise texture with a given number of pixels in x- and y-direction.
-    
+
     ### Outports
       * __outImage__ Generated texture.
-    
+
     ### Properties
       * __texSize__ Size of the texture to be generated.
 */
 class IVW_MODULE_LABLIC_API NoiseTextureGenerator : public Processor {
-// Friends
-// Types
+    // Friends
+    // Types
 public:
-// Construction / Deconstruction
+    // Construction / Deconstruction
 public:
     NoiseTextureGenerator();
     virtual ~NoiseTextureGenerator() = default;
 
-// Methods
+    // Methods
 public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
 
 protected:
-    // Our main computation function
+    /// Our main computation function
     virtual void process() override;
 
-// Ports
+    // Ports
 public:
     ImageOutport texOut_;
-// Properties
+
+    // Properties
 public:
     IntVec2Property texSize_;
 
-// TODO: Declare additional properties
-// IntProperty properyName;
-// TemplateOptionProperty<int> propertyName2;
+    // TODO: Declare additional properties
+    // IntProperty properyName;
+    // TemplateOptionProperty<int> propertyName2;
 
-// Attributes
+    // Attributes
 private:
 };
 

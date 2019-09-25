@@ -8,10 +8,9 @@
  *********************************************************************
  */
 
-#include <lablic/licprocessor.h>
-#include <lablic/integrator.h>
-#include <lablic/interpolator.h>
 #include <inviwo/core/datastructures/volume/volumeram.h>
+#include <lablic/licprocessor.h>
+#include <labstreamlines/integrator.h>
 
 namespace inviwo {
 
@@ -31,9 +30,7 @@ LICProcessor::LICProcessor()
     , volumeIn_("volIn")
     , noiseTexIn_("noiseTexIn")
     , licOut_("licOut")
-
 // TODO: Register additional properties
-
 {
     // Register ports
     addPort(volumeIn_);
@@ -41,9 +38,7 @@ LICProcessor::LICProcessor()
     addPort(licOut_);
 
     // Register properties
-
     // TODO: Register additional properties
-
 }
 
 void LICProcessor::process() {
@@ -57,31 +52,28 @@ void LICProcessor::process() {
     }
 
     auto vol = volumeIn_.getData();
+    const VectorField2 vectorField = VectorField2::createFieldFromVolume(vol);
     vectorFieldDims_ = vol->getDimensions();
-    auto vr = vol->getRepresentation<VolumeRAM>();
 
-    // An accessible form of on image is retrieved analogous to a volume
     auto tex = noiseTexIn_.getData();
+    const RGBAImage texture = RGBAImage::createFromImage(tex);
     texDims_ = tex->getDimensions();
-    auto tr = tex->getRepresentation<ImageRAM>();
 
-    // Prepare the output, it has the same dimensions and datatype as the output
-    // and an editable version is retrieved analogous to a volume
-    auto outImage = tex->clone();
-    auto outLayer = outImage->getColorLayer();
-    auto lr = outLayer->getEditableRepresentation<LayerRAM>();
+    // Prepare the output, it has the same dimensions as the texture and rgba values in [0,255]
+    auto outImage = std::make_shared<Image>(texDims_, DataVec4UInt8::get());
+    RGBAImage licImage(outImage);
 
-    // To access the image at a floating point position, you can call
-    //      Interpolator::sampleFromGrayscaleImage(tr, somePos)
+    std::vector<std::vector<double>> licTexture(texDims_.x, std::vector<double>(texDims_.y, 0.0));
 
     // TODO: Implement LIC and FastLIC
-    // This code instead sets all pixels to the same gray value
-    std::vector<std::vector<double>> licTexture(texDims_.x, std::vector<double>(texDims_.y, 127.0));
+    // This code instead just creates a black image
 
     for (auto j = 0; j < texDims_.y; j++) {
         for (auto i = 0; i < texDims_.x; i++) {
             int val = int(licTexture[i][j]);
-            lr->setFromDVec4(size2_t(i, j), dvec4(val, val, val, 255));
+            // licImage.setPixel(size2_t(i, j), dvec4(val, val, val, 255));
+            // or
+            licImage.setPixelGrayScale(size2_t(i, j), val);
         }
     }
 
