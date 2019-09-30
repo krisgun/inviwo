@@ -67,14 +67,14 @@ dvec4 RGBAImage::sample(PositionType fracIdx) const {
 
 double RGBAImage::sampleGrayScale(PositionType fracIdx) const {
     dvec4 color = sample(fracIdx);
-    return (color[0] + color[1] + color[3]) / 3;
+    return (color[0] + color[1] + color[2]) / 3;
 }
 
 dvec4 RGBAImage::readPixel(IndexType idx) const { return data_->getAsDVec4(idx); }
 
 double RGBAImage::readPixelGrayScale(IndexType idx) const {
     dvec4 color = readPixel(idx);
-    return (color[0] + color[1] + color[3]) / 3;
+    return (color[0] + color[1] + color[2]) / 3;
 }
 
 }  // namespace inviwo
