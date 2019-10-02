@@ -8,8 +8,8 @@
 
 #include <inviwo/core/datastructures/geometry/basicmesh.h>
 #include <inviwo/core/datastructures/volume/volumeram.h>
-#include <labtopo/integrator.h>
-#include <labtopo/interpolator.h>
+#include <labstreamlines/integrator.h>
+#include <labutils/scalarvectorfield.h>
 #include <labtopo/topology.h>
 #include <labtopo/utils/gradients.h>
 
@@ -60,29 +60,65 @@ void Topology::process() {
     auto vol = inData.getData();
 
     // Retreive data in a form that we can access it
-    const VolumeRAM* vr = vol->getRepresentation<VolumeRAM>();
-    uvec3 dims = vr->getDimensions();
+    const VectorField2 vectorField = VectorField2::createFieldFromVolume(vol);
 
-    // Initialize mesh, vertices and index buffers for the two streamlines and the
+    // Initialize mesh, vertices and index buffers for seperatrices
     auto mesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> vertices;
-    // Either add all line segments to this index buffer (one large buffer),
-    // or use several index buffers with connectivity type adjacency.
+
+    // Add a bounding box to the mesh (The 2D mesh renderer will automatically adapt to this)
+    const dvec2& BBoxMin = vectorField.getBBoxMin();
+    const dvec2& BBoxMax = vectorField.getBBoxMax();
+    auto indexBufferBBox = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+    drawLineSegment(BBoxMin, vec2(BBoxMin[0], BBoxMax[1]), vec4(0, 0, 0, 1), indexBufferBBox.get(),
+                    vertices);
+    drawLineSegment(vec2(BBoxMin[0], BBoxMax[1]), BBoxMax, vec4(0, 0, 0, 1), indexBufferBBox.get(),
+                    vertices);
+    drawLineSegment(BBoxMax, vec2(BBoxMax[0], BBoxMin[1]), vec4(0, 0, 0, 1), indexBufferBBox.get(),
+                    vertices);
+    drawLineSegment(vec2(BBoxMax[0], BBoxMin[1]), BBoxMin, vec4(0, 0, 0, 1), indexBufferBBox.get(),
+                    vertices);
+
+    // Either add all line segments to this index buffer (one large buffer, two consecutive points
+    // make up one line), or use several index buffers with connectivity type adjacency.
     auto indexBufferSeparatrices = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+
     auto indexBufferPoints = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
 
     // TODO: Compute the topological skeleton of the input vector field.
     // Find the critical points and color them according to their type.
     // Integrate all separatrices.
-    // You can use your previous integration code (copy it over or call it from
-    // <lablic/integrator.h>).
+
+    size2_t dims = vectorField.getNumVerticesPerDim();
 
     // Looping through all values in the vector field.
-    for (unsigned y = 0; y < dims[1]; ++y)
-        for (unsigned x = 0; x < dims[0]; ++x) dvec2 vectorValue = vr->getAsDVec2(uvec3(x, y, 0));
+    for (int j = 0; j < dims[1]; ++j) {
+        for (int i = 0; i < dims[0]; ++i) {
+            dvec2 vectorValue = vectorField.getValueAtVertex(size2_t(i, j));
+            dvec2 pos = vectorField.getPositionAtVertex(size2_t(i, j));
+            // Computing the jacobian at a position
+            dmat2 jacobian = vectorField.derive(pos);
+            // Doing the eigen analysis
+            auto eigenResult = util::eigenAnalysis(jacobian);
+            // The result of the eigen analysis has attributed eigenvaluesRe eigenvaluesIm and
+            // eigenvectors
+        }
+    }
+
+    // Accessing the colors
+    vec4 colorCenter = ColorsCP[static_cast<int>(TypeCP::Center)];
 
     mesh->addVertices(vertices);
     outMesh.setData(mesh);
+}
+
+void Topology::drawLineSegment(const dvec2& v1, const dvec2& v2, const vec4& color,
+                               IndexBufferRAM* indexBuffer,
+                               std::vector<BasicMesh::Vertex>& vertices) {
+    indexBuffer->add(static_cast<std::uint32_t>(vertices.size()));
+    vertices.push_back({vec3(v1[0], v1[1], 0), vec3(0, 0, 1), vec3(v1[0], v1[1], 0), color});
+    indexBuffer->add(static_cast<std::uint32_t>(vertices.size()));
+    vertices.push_back({vec3(v2[0], v2[1], 0), vec3(0, 0, 1), vec3(v2[0], v2[1], 0), color});
 }
 
 }  // namespace inviwo

@@ -4,4 +4,6 @@
 set(dependencies
     InviwoOpenGLModule
     InviwoBaseGLModule
+    InviwoLabUtilsModule
+    InviwoLabStreamLinesModule
 )
