@@ -38,6 +38,7 @@
 #include <inviwo/core/rendering/meshdrawer.h>
 #include <modules/opengl/shader/shader.h>
 #include <inviwo/core/properties/boolproperty.h>
+#include <inviwo/core/properties/buttonproperty.h>
 #include <vector>
 
 namespace inviwo {
@@ -62,9 +63,12 @@ protected:
     FloatProperty pointSize_;
     FloatProperty top_, bottom_, left_, right_;
 
+    BoolProperty adjustOnDataChange_;
+
     using DrawerMap = std::multimap<const Outport*, std::unique_ptr<MeshDrawer>>;
     DrawerMap drawers_;
     void updateDrawers();
+    void updateBounds();
 };
 
 }  // namespace inviwo
