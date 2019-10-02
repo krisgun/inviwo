@@ -5,24 +5,19 @@ ivw_module(LabTopo)
 #--------------------------------------------------------------------
 # Add header files
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/integrator.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/interpolator.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/topology.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/gradients.h
-    # tnt/jama headers for eigenvector computation
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/tnt/jama_eig.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/tnt/tnt_array1d.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/tnt/tnt_array2d.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/tnt/tnt_math_utils.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils/tnt/tnt_i_refvec.h
+    topology.h
+    utils/gradients.h
+    utils/tnt/jama_eig.h
+    utils/tnt/tnt_array1d.h
+    utils/tnt/tnt_array2d.h
+    utils/tnt/tnt_i_refvec.h
+    utils/tnt/tnt_math_utils.h
 )
 
 #--------------------------------------------------------------------
 # Add source files
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/integrator.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/interpolator.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/topology.cpp
+    topology.cpp
 )
 ivw_group("Sources" ${SOURCE_FILES} ${HEADER_FILES})
 
