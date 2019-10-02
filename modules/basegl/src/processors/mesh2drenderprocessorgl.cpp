@@ -42,6 +42,7 @@
 #include <modules/opengl/shader/shaderutils.h>
 #include <modules/opengl/openglutils.h>
 #include <inviwo/core/datastructures/coordinatetransformer.h>
+#include <modules/base/algorithm/dataminmax.h>
 
 namespace inviwo {
 
@@ -66,7 +67,8 @@ Mesh2DRenderProcessorGL::Mesh2DRenderProcessorGL()
     , top_("top", "Top", 1, -1, 1)
     , bottom_("bottom", "Bottom", 0, -1, 1)
     , left_("left", "Left", 0, -1, 1)
-    , right_("right", "Right", 1, -1, 1) {
+    , right_("right", "Right", 1, -1, 1)
+    , adjustOnDataChange_("adjustBounds", "Adjust bounds on data change", true) {
     addPort(inport_);
     addPort(imageInport_);
     addPort(outport_);
@@ -82,7 +84,13 @@ Mesh2DRenderProcessorGL::Mesh2DRenderProcessorGL()
     addProperty(bottom_);
     addProperty(top_);
 
-    inport_.onChange([this]() { updateDrawers(); });
+    addProperties(adjustOnDataChange_);
+    adjustOnDataChange_.onChange([this]() { updateBounds(); });
+
+    inport_.onChange([this]() {
+        updateDrawers();
+        if (adjustOnDataChange_.get()) updateBounds();
+    });
 }
 
 Mesh2DRenderProcessorGL::~Mesh2DRenderProcessorGL() {}
@@ -141,6 +149,39 @@ void Mesh2DRenderProcessorGL::updateDrawers() {
             drawers_.insert(std::make_move_iterator(ibegin), std::make_move_iterator(iend));
         }
     }
+}
+
+void Mesh2DRenderProcessorGL::updateBounds() {
+    dvec2 BBoxMin(std::numeric_limits<double>::max());
+    dvec2 BBoxMax(std::numeric_limits<double>::lowest());
+
+    for (auto& drawer : drawers_) {
+        auto mesh = drawer.second->getMesh();
+        auto posbuffer = mesh->findBuffer(BufferType::PositionAttrib);
+        if (posbuffer.first) {
+            auto minmax = util::bufferMinMax(posbuffer.first);
+            for (size_t i = 0; i < 2; i++) {
+                BBoxMin[i] = std::min(minmax.first[i], BBoxMin[i]);
+                BBoxMax[i] = std::max(minmax.second[i], BBoxMax[i]);
+            }
+        }
+    }
+
+    left_.setMinValue(BBoxMin[0]);
+    left_.setMaxValue(BBoxMax[0]);
+    left_.set(BBoxMin[0]);
+
+    right_.setMinValue(BBoxMin[0]);
+    right_.setMaxValue(BBoxMax[0]);
+    right_.set(BBoxMax[0]);
+
+    bottom_.setMinValue(BBoxMin[1]);
+    bottom_.setMaxValue(BBoxMax[1]);
+    bottom_.set(BBoxMin[1]);
+
+    top_.setMinValue(BBoxMin[1]);
+    top_.setMaxValue(BBoxMax[1]);
+    top_.set(BBoxMax[1]);
 }
 
 }  // namespace inviwo
