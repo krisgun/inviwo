@@ -28,7 +28,8 @@ namespace inviwo {
 
     ### Inports
       * __data__ The input here is 2-dimensional vector field (with vectors of
-      two components thus two values within each voxel).
+      two components thus two values within each voxel) but it is represented
+      by a 3-dimensional volume.
       This processor deals with 2-dimensional data only, therefore it is assumed
       the z-dimension will have size 1 otherwise the 0th slice of the volume
       will be processed.
