@@ -16,12 +16,12 @@
 namespace inviwo {
 
 const vec4 Topology::ColorsCP[6] = {
-    vec4(1, 1, 0, 1),    // Saddle
-    vec4(0, 0, 1, 1),    // AttractingNode
-    vec4(1, 0, 0, 1),    // RepellingNode
-    vec4(0.5, 0, 1, 1),  // AttractingFocus
-    vec4(1, 0.5, 0, 1),  // RepellingFocus
-    vec4(0, 1, 0, 1)     // Center
+    vec4(1, 1, 0, 1),    // Saddle - Yellow
+    vec4(1, 0, 0, 1),    // AttractingNode - Red
+    vec4(0, 0, 1, 1),    // RepellingNode - Blue
+    vec4(0.5, 0, 1, 1),  // AttractingFocus - Purple
+    vec4(1, 0.5, 0, 1),  // RepellingFocus - Orange
+    vec4(0, 1, 0, 1)     // Center - Green
 };
 
 // The Class Identifier has to be globally unique. Use a reverse DNS naming scheme
