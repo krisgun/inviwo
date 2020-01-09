@@ -3,4 +3,4 @@
 # List modules in the format "Inviwo<ModuleName>Module"
 set(dependencies)
 
-set(EnableByDefault ON)
+set(EnableByDefault OFF)

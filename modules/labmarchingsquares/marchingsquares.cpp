@@ -17,7 +17,7 @@ namespace inviwo {
 const ProcessorInfo MarchingSquares::processorInfo_{
     "org.inviwo.MarchingSquares",  // Class identifier
     "Marching Squares",            // Display name
-    "KTH Lab",                     // Category
+    "KTH Labs",                    // Category
     CodeState::Experimental,       // Code state
     Tags::None,                    // Tags
 };

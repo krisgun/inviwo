@@ -7,3 +7,4 @@ set(dependencies
     InviwoLabUtilsModule
     InviwoLabStreamLinesModule
 )
+set(EnableByDefault OFF)

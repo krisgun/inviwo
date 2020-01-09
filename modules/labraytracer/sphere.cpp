@@ -26,14 +26,16 @@ bool Sphere::closestIntersection(const Ray& ray, double maxLambda,
     // If you detect an intersection, the return type should look similar to this:
     // if(rayIntersectsSphere)
     //{
-    //  intersection = RayIntersection(ray,shared_from_this(),lambda,ray.pointOnRay(lambda),uvw);
+    //  intersection = RayIntersection(ray,shared_from_this(),lambda,normalVec,uvw);
     //  return true;
     //}
     //
-    // Hints :
+    // Hints:
+    // lambda is the distance form the ray origin an the intersection point.
     // Ray origin p_r : ray.getOrigin()
     // Ray direction t_r : ray.getDirection()
-    // Compute the intersection point using ray.pointOnRay(lambda)
+    // If you need the intersection point, use ray.pointOnRay(lambda)
+    // You can ignore the uvw (texture coordinates)
 
     return false;
 }

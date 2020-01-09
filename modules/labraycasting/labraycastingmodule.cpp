@@ -11,13 +11,13 @@
 #include <labraycasting/labraycastingmodule.h>
 #include <labraycasting/compositor.h>
 
-namespace inviwo
-{
+namespace inviwo {
 
-LabRaycastingModule::LabRaycastingModule(InviwoApplication* app) : InviwoModule(app, "DD2320Lab3")
-    
+LabRaycastingModule::LabRaycastingModule(InviwoApplication* app)
+    : InviwoModule(app, "LabRaycasting")
+
 {
-	registerProcessor<Compositor>();
+    registerProcessor<Compositor>();
 }
 
-} // namespace
+}  // namespace inviwo

@@ -20,7 +20,7 @@ namespace inviwo {
 const ProcessorInfo StreamlineIntegrator::processorInfo_{
     "org.inviwo.StreamlineIntegrator",  // Class identifier
     "Streamline Integrator",            // Display name
-    "KTH Lab",                          // Category
+    "KTH Labs",                         // Category
     CodeState::Experimental,            // Code state
     Tags::None,                         // Tags
 };
@@ -31,7 +31,8 @@ StreamlineIntegrator::StreamlineIntegrator()
     : Processor()
     , inData("volIn")
     , outMesh("meshOut")
-    , propStartPoint("startPoint", "Start Point", vec2(0.5, 0.5), vec2(-1), vec2(1), vec2(0.1))
+    , propStartPoint("startPoint", "Start Point", vec2(0.5f, 0.5f), vec2(-1.f), vec2(1.f),
+                     vec2(0.1f))
     , propSeedMode("seedMode", "Seeds")
     , mouseMoveStart(
           "mouseMoveStart", "Move Start", [this](Event *e) { eventMoveStart(e); },

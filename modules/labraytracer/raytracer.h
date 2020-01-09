@@ -37,65 +37,63 @@ namespace inviwo {
     ![](org.inviwo.Raytracer.png?classIdentifier=org.inviwo.Raytracer)
 
     CPU Raytracer. The rendering has to be explicitly triggered with the Render button.
-    
+
     ### Outports
       * __<imageOutport>__ Rendered image.
-      * __<meshOutport>__ Geometry of the scene with wireframes for the camera and the 
-            objects of the scene 
-    
+      * __<meshOutport>__ Geometry of the scene with wireframes for the camera and the
+            objects of the scene
+
     ### Properties
       * __<Render Button>__ Button triggering raytracing.
       * __<Image Size>__ Size of the rendering image (one Ray per pixel)
 */
 
-
 /** \class Raytracer
     \brief A CPU Raytracer
-    
+
     A CPU Raytracer
 
     @author Himangshu Saikia
 */
 class IVW_MODULE_LABRAYTRACER_API Raytracer : public Processor {
-    //Friends
-    //Types
+    // Friends
+    // Types
 public:
-
-    //Construction / Deconstruction
+    // Construction / Deconstruction
 public:
     Raytracer();
     virtual ~Raytracer() = default;
 
-    //Methods
+    // Methods
 public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
 
 protected:
-    ///Our main computation function
+    /// Our main computation function
     virtual void process() override;
     void render();
     void task1();
     void task2();
     void bonusTask();
-    //Ports
+    // Ports
 public:
-    MeshOutport sceneGeometry_;
     ImageOutport image_;
-    //Properties
+    MeshOutport sceneGeometry_;
+    // Properties
 public:
     CameraProperty camera_;
     IntVec2Property imageSize_;
-    ButtonProperty render_;
-    OptionPropertyInt task_;
     FloatVec3Property colorLight_;
     FloatVec3Property diffuseLight_;
     FloatVec3Property ambientLight_;
     FloatVec3Property specularLight_;
-    //Attributes
+    ButtonProperty render_;
+    OptionPropertyInt task_;
+    // Attributes
 private:
     PerspectiveCamera* cam_;
     Scene scene_;
 };
 
-} // namespace
+}  // namespace inviwo
