@@ -28,7 +28,7 @@ const vec4 Topology::ColorsCP[6] = {
 const ProcessorInfo Topology::processorInfo_{
     "org.inviwo.Topology",    // Class identifier
     "Vector Field Topology",  // Display name
-    "KTH Lab",                // Category
+    "KTH Labs",               // Category
     CodeState::Experimental,  // Code state
     Tags::None,               // Tags
 };

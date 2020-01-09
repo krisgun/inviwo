@@ -199,11 +199,20 @@
                     <Processor content="org.inviwo.TextOverlayGL" />
                 </Processors>
             </Module>
-            <Module name="KTHTeachingDemos" version="0">
+            <Module name="LabColor" version="0">
                 <Processors>
-                    <Processor content="org.inviwo.MarchingCubes" />
+                    <Processor content="org.inviwo.ColorMixing" />
+                    <Processor content="org.inviwo.ColorInterpolation" />
                 </Processors>
             </Module>
+            <Module name="LabStreamlines" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.EulerRK4Comparison" />
+                    <Processor content="org.inviwo.StreamlineIntegrator" />
+                    <Processor content="org.inviwo.VectorFieldGeneratorKTHLabs" />
+                </Processors>
+            </Module>
+            <Module name="LabUtils" version="0" />
             <Module name="LabLIC" version="0">
                 <Processors>
                     <Processor content="org.inviwo.LICProcessor" />
@@ -215,16 +224,24 @@
                     <Processor content="org.inviwo.MarchingSquares" />
                 </Processors>
             </Module>
+            <Module name="LabRaycasting" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.Compositor" />
+                </Processors>
+            </Module>
+            <Module name="LabRaytracer" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.Raytracer" />
+                </Processors>
+            </Module>
             <Module name="LabSetup" version="0">
                 <Processors>
                     <Processor content="org.inviwo.ConnectPoints" />
                 </Processors>
             </Module>
-            <Module name="LabStreamlines" version="0">
+            <Module name="LabSubdivision" version="0">
                 <Processors>
-                    <Processor content="org.inviwo.EulerRK4Comparison" />
-                    <Processor content="org.inviwo.StreamlineIntegrator" />
-                    <Processor content="org.inviwo.VectorFieldGeneratorKTHLabs" />
+                    <Processor content="org.inviwo.Chaikin" />
                 </Processors>
             </Module>
             <Module name="LabTopo" version="0">
@@ -232,7 +249,11 @@
                     <Processor content="org.inviwo.Topology" />
                 </Processors>
             </Module>
-            <Module name="LabUtils" version="0" />
+            <Module name="LabTransformations" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.CubeAnimator" />
+                </Processors>
+            </Module>
             <Module name="UserInterfaceGL" version="0">
                 <Processors>
                     <Processor content="org.inviwo.CameraWidget" />
@@ -253,7 +274,7 @@
                     <PortGroup content="default" key="inport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref0" />
+                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref4" />
                 </InPorts>
                 <Properties>
                     <Property type="org.inviwo.CompositeProperty" identifier="inputSize">
@@ -270,7 +291,7 @@
                         <collapsed content="0" />
                     </Property>
                     <Property type="org.inviwo.IntVec2Property" identifier="position">
-                        <value x="299" y="173" />
+                        <value x="293" y="322" />
                     </Property>
                     <Property type="org.inviwo.OptionPropertyEnumInt" identifier="visibleLayer" />
                     <Property type="org.inviwo.IntProperty" identifier="colorLayer_">
@@ -314,42 +335,9 @@
                         <selection content="0" />
                     </MetaDataItem>
                     <MetaDataItem type="org.inviwo.ProcessorWidgetMetaData" key="org.inviwo.ProcessorWidgetMetaData">
-                        <position x="299" y="173" />
-                        <dimensions x="480" y="480" />
+                        <position x="293" y="322" />
+                        <dimensions x="523" y="486" />
                         <visibility content="1" />
-                    </MetaDataItem>
-                </MetaDataMap>
-            </Processor>
-            <Processor type="org.inviwo.Mesh2DRenderProcessorGL" identifier="2D Mesh Renderer" displayName="2D Mesh Renderer">
-                <PortGroups>
-                    <PortGroup content="default" key="imageInport" />
-                    <PortGroup content="default" key="inputMesh" />
-                    <PortGroup content="default" key="outputImage" />
-                </PortGroups>
-                <InPorts>
-                    <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="inputMesh" id="ref6" />
-                    <InPort type="org.inviwo.Image.inport" identifier="imageInport" />
-                </InPorts>
-                <OutPorts>
-                    <OutPort type="org.inviwo.Image.outport" identifier="outputImage" id="ref7" />
-                </OutPorts>
-                <Properties>
-                    <Property type="org.inviwo.BoolProperty" identifier="enableDepthTest" />
-                    <Property type="org.inviwo.FloatProperty" identifier="pointSize" />
-                    <Property type="org.inviwo.FloatProperty" identifier="left">
-                        <value content="-1" />
-                    </Property>
-                    <Property type="org.inviwo.FloatProperty" identifier="right" />
-                    <Property type="org.inviwo.FloatProperty" identifier="bottom">
-                        <value content="-1" />
-                    </Property>
-                    <Property type="org.inviwo.FloatProperty" identifier="top" />
-                </Properties>
-                <MetaDataMap>
-                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
-                        <position x="-700" y="-400" />
-                        <visibility content="1" />
-                        <selection content="0" />
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
@@ -359,16 +347,16 @@
                     <PortGroup content="default" key="meshOut" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.Volume.inport" identifier="inData" id="ref1" />
+                    <InPort type="org.inviwo.Volume.inport" identifier="inData" id="ref6" />
                 </InPorts>
                 <OutPorts>
-                    <OutPort type="org.inviwo.Mesh.outport" identifier="meshOut" id="ref2" />
+                    <OutPort type="org.inviwo.Mesh.outport" identifier="meshOut" id="ref7" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.FloatVec2Property" identifier="startPoint">
                         <minvalue x="-1" y="-1" />
                         <maxvalue x="1" y="1" />
-                        <value x="-0" y="0" />
+                        <value x="0.08429122" y="0.010309219" />
                     </Property>
                     <Property type="org.inviwo.EventProperty" identifier="mouseMoveStart">
                         <MetaDataMap>
@@ -385,12 +373,64 @@
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
+            <Processor type="org.inviwo.Mesh2DRenderProcessorGL" identifier="2D Mesh Renderer" displayName="2D Mesh Renderer">
+                <PortGroups>
+                    <PortGroup content="default" key="imageInport" />
+                    <PortGroup content="default" key="inputMesh" />
+                    <PortGroup content="default" key="outputImage" />
+                </PortGroups>
+                <InPorts>
+                    <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="inputMesh" id="ref2" />
+                    <InPort type="org.inviwo.Image.inport" identifier="imageInport" />
+                </InPorts>
+                <OutPorts>
+                    <OutPort type="org.inviwo.Image.outport" identifier="outputImage" id="ref3" />
+                </OutPorts>
+                <Properties>
+                    <Property type="org.inviwo.BoolProperty" identifier="enableDepthTest" />
+                    <Property type="org.inviwo.FloatProperty" identifier="pointSize">
+                        <value content="9.8102999" />
+                    </Property>
+                    <Property type="org.inviwo.FloatProperty" identifier="left">
+                        <MetaDataMap>
+                            <MetaDataItem type="org.inviwo.StringStringStdUnorderedMapMetaData" key="SavedState" />
+                        </MetaDataMap>
+                        <value content="-1" />
+                    </Property>
+                    <Property type="org.inviwo.FloatProperty" identifier="right">
+                        <MetaDataMap>
+                            <MetaDataItem type="org.inviwo.StringStringStdUnorderedMapMetaData" key="SavedState" />
+                        </MetaDataMap>
+                    </Property>
+                    <Property type="org.inviwo.FloatProperty" identifier="bottom">
+                        <MetaDataMap>
+                            <MetaDataItem type="org.inviwo.StringStringStdUnorderedMapMetaData" key="SavedState" />
+                        </MetaDataMap>
+                        <value content="-1" />
+                    </Property>
+                    <Property type="org.inviwo.FloatProperty" identifier="top">
+                        <MetaDataMap>
+                            <MetaDataItem type="org.inviwo.StringStringStdUnorderedMapMetaData" key="SavedState" />
+                        </MetaDataMap>
+                    </Property>
+                    <Property type="org.inviwo.BoolProperty" identifier="adjustBounds">
+                        <value content="0" />
+                    </Property>
+                </Properties>
+                <MetaDataMap>
+                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
+                        <position x="-700" y="-400" />
+                        <visibility content="1" />
+                        <selection content="0" />
+                    </MetaDataItem>
+                </MetaDataMap>
+            </Processor>
             <Processor type="org.inviwo.VectorFieldGeneratorKTHLabs" identifier="Vector Field Generator" displayName="Vector Field Generator">
                 <PortGroups>
                     <PortGroup content="default" key="outport" />
                 </PortGroups>
                 <OutPorts>
-                    <OutPort type="org.inviwo.Volume.outport" identifier="outport" id="ref3" />
+                    <OutPort type="org.inviwo.Volume.outport" identifier="outport" id="ref5" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.Size_tProperty" identifier="xSize" />
@@ -422,10 +462,10 @@
                     <PortGroup content="default" key="outport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref4" />
+                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref0" />
                 </InPorts>
                 <OutPorts>
-                    <OutPort type="org.inviwo.Image.outport" identifier="outport" id="ref5" />
+                    <OutPort type="org.inviwo.Image.outport" identifier="outport" id="ref1" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.OptionPropertyEnumInt" identifier="backgroundStyle">
@@ -456,20 +496,20 @@
         </Processors>
         <Connections>
             <Connection>
-                <OutPort type="org.inviwo.Image.outport" identifier="outport" reference="ref5" />
-                <InPort type="org.inviwo.Image.inport" identifier="inport" reference="ref0" />
-            </Connection>
-            <Connection>
-                <OutPort type="org.inviwo.Mesh.outport" identifier="meshOut" reference="ref2" />
-                <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="inputMesh" reference="ref6" />
-            </Connection>
-            <Connection>
-                <OutPort type="org.inviwo.Image.outport" identifier="outputImage" reference="ref7" />
+                <OutPort type="org.inviwo.Image.outport" identifier="outport" reference="ref1" />
                 <InPort type="org.inviwo.Image.inport" identifier="inport" reference="ref4" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.Volume.outport" identifier="outport" reference="ref3" />
-                <InPort type="org.inviwo.Volume.inport" identifier="inData" reference="ref1" />
+                <OutPort type="org.inviwo.Mesh.outport" identifier="meshOut" reference="ref7" />
+                <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="inputMesh" reference="ref2" />
+            </Connection>
+            <Connection>
+                <OutPort type="org.inviwo.Image.outport" identifier="outputImage" reference="ref3" />
+                <InPort type="org.inviwo.Image.inport" identifier="inport" reference="ref0" />
+            </Connection>
+            <Connection>
+                <OutPort type="org.inviwo.Volume.outport" identifier="outport" reference="ref5" />
+                <InPort type="org.inviwo.Volume.inport" identifier="inData" reference="ref6" />
             </Connection>
         </Connections>
     </ProcessorNetwork>
@@ -485,8 +525,8 @@
         <Canvases>
             <CanvasImage>
                 <name content="Canvas" />
-                <size x="256" y="256" />
-                <base64 content="/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEAAQADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoorJ8U+LND8DaFda34k1nT/D+i2u37RqOqXSW1vDuYIu+RyFXLMqjJ5LAdTQBrUVU0nVrHX9KstT0y9t9R029hS5tby0lWWGeJ1DJIjqSGVlIIYEgggirdABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFcp8Uvhb4Y+NPgTU/BvjLTP7Z8N6l5X2uy+0SweZ5cqSp88TK4w8aHhhnGDwSK6uigDJ8J+FtL8DeFdG8N6Ja/YtF0eyh0+xtvMaTyYIkEcabnJZsKoGWJJxySa1qKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//Z" />
+                <size x="275" y="256" />
+                <base64 content="/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEAARMDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKK+Kv21v+CkP/DH3xT0rwb/AMK7/wCEt+3aLFq/23+2/sWzfPPF5ez7PJnHkZ3bh97GOMn7VoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDivGvwQ+HXxK1WLU/F/gHwv4q1KKEW0d5rejW15MkQZmEYeRGIUM7nbnGWJ7mu1oooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" />
             </CanvasImage>
         </Canvases>
         <Network>

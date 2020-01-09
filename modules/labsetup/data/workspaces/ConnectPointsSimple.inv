@@ -2,13 +2,66 @@
 <InviwoWorkspace version="2">
     <InviwoSetup>
         <Modules>
-            <Module name="Core" version="0" />
+            <Module name="Core" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.Image.outport.metasource" />
+                    <Processor content="org.inviwo.Image.outport.metasink" />
+                    <Processor content="org.inviwo.CompositeProcessor" />
+                    <Processor content="org.inviwo.Mesh.outport.metasink" />
+                    <Processor content="org.inviwo.Mesh.outport.metasource" />
+                    <Processor content="org.inviwo.Volume.outport.metasink" />
+                    <Processor content="org.inviwo.Volume.outport.metasource" />
+                    <Processor content="org.inviwo.Volume.shared_ptr.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Volume.shared_ptr.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Buffer.outport.metasink" />
+                    <Processor content="org.inviwo.Buffer.outport.metasource" />
+                    <Processor content="org.inviwo.LightSource.outport.metasink" />
+                    <Processor content="org.inviwo.LightSource.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2FLOAT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2FLOAT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2FLOAT64.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2FLOAT64.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2INT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2INT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3FLOAT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3FLOAT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3FLOAT64.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3FLOAT64.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3INT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3INT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4FLOAT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4FLOAT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4FLOAT64.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4FLOAT64.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4INT32.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4INT32.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2FLOAT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2FLOAT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2FLOAT64.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2FLOAT64.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec2INT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec2INT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3FLOAT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3FLOAT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3FLOAT64.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3FLOAT64.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec3INT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec3INT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4FLOAT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4FLOAT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4FLOAT64.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4FLOAT64.vector.outport.metasource" />
+                    <Processor content="org.inviwo.Vec4INT32.vector.outport.metasink" />
+                    <Processor content="org.inviwo.Vec4INT32.vector.outport.metasource" />
+                    <Processor content="org.inviwo.CompositeProcessorCInviwoinviwoteachingvt19dataworkspacescompositesVolumeRaycasterCompositeinv" />
+                </Processors>
+            </Module>
             <Module name="OpenGL" version="0">
                 <Processors>
                     <Processor content="org.inviwo.CanvasGL" />
                 </Processors>
             </Module>
-            <Module name="Base" version="2">
+            <Module name="Base" version="3">
                 <Processors>
                     <Processor content="org.inviwo.ConvexHull2DProcessor" />
                     <Processor content="org.inviwo.CubeProxyGeometry" />
@@ -18,12 +71,16 @@
                     <Processor content="org.inviwo.GeometrySource" />
                     <Processor content="org.inviwo.HeightFieldMapper" />
                     <Processor content="org.inviwo.ImageExport" />
+                    <Processor content="org.inviwo.ImageInformation" />
                     <Processor content="org.inviwo.ImageSnapshot" />
                     <Processor content="org.inviwo.ImageSource" />
                     <Processor content="org.inviwo.ImageSourceSeries" />
+                    <Processor content="org.inviwo.ImageStackVolumeSource" />
                     <Processor content="org.inviwo.LayerDistanceTransformRAM" />
                     <Processor content="org.inviwo.MeshClipping" />
                     <Processor content="org.inviwo.MeshCreator" />
+                    <Processor content="org.inviwo.MeshInformation" />
+                    <Processor content="org.inviwo.MeshMapping" />
                     <Processor content="org.inviwo.NoiseProcessor" />
                     <Processor content="org.inviwo.PixelToBufferProcessor" />
                     <Processor content="org.inviwo.Pointlightsource" />
@@ -34,6 +91,7 @@
                     <Processor content="org.inviwo.VolumeExport" />
                     <Processor content="org.inviwo.BasisTransformGeometry" />
                     <Processor content="org.inviwo.BasisTransformVolume" />
+                    <Processor content="org.inviwo.TrianglesToWireframe" />
                     <Processor content="org.inviwo.WorldTransformGeometry" />
                     <Processor content="org.inviwo.WorldTransformVolume" />
                     <Processor content="org.inviwo.VolumeSlice" />
@@ -59,12 +117,20 @@
                     <Processor content="org.inviwo.RandomMeshGenerator" />
                     <Processor content="org.inviwo.RandomSphereGenerator" />
                     <Processor content="org.inviwo.NoiseVolumeProcessor" />
+                    <Processor content="org.inviwo.BufferToMeshProcessor" />
+                    <Processor content="org.inviwo.ImageToSpatialSampler" />
+                    <Processor content="org.inviwo.CameraFrustum" />
+                    <Processor content="org.inviwo.VolumeSequenceSingleTimestepSampler" />
+                    <Processor content="org.inviwo.VolumeCreator" />
+                    <Processor content="org.inviwo.MeshConverter" />
+                    <Processor content="org.inviwo.VolumeInformation" />
+                    <Processor content="org.inviwo.TFSelector" />
                     <Processor content="org.inviwo.Volume.InputSelector" />
                     <Processor content="org.inviwo.Mesh.InputSelector" />
                     <Processor content="org.inviwo.Image.InputSelector" />
                 </Processors>
             </Module>
-            <Module name="BaseGL" version="3">
+            <Module name="BaseGL" version="4">
                 <Processors>
                     <Processor content="org.inviwo.AxisAlignedCutPlane" />
                     <Processor content="org.inviwo.Background" />
@@ -73,6 +139,7 @@
                     <Processor content="org.inviwo.DrawPoints" />
                     <Processor content="org.inviwo.EntryExitPoints" />
                     <Processor content="org.inviwo.FirstIVWProcessor" />
+                    <Processor content="org.inviwo.GeometryEntryExitPoints" />
                     <Processor content="org.inviwo.HeightFieldRenderGL" />
                     <Processor content="org.inviwo.ImageCompositeProcessorGL" />
                     <Processor content="org.inviwo.ImageLayoutGL" />
@@ -95,16 +162,20 @@
                     <Processor content="org.inviwo.VolumeSliceGL" />
                     <Processor content="org.inviwo.FindEdges" />
                     <Processor content="org.inviwo.ImageBinary" />
+                    <Processor content="org.inviwo.ImageChannelCombine" />
+                    <Processor content="org.inviwo.ImageChannelSelect" />
                     <Processor content="org.inviwo.ImageGamma" />
                     <Processor content="org.inviwo.ImageGradient" />
                     <Processor content="org.inviwo.ImageGrayscale" />
                     <Processor content="org.inviwo.ImageHighPass" />
                     <Processor content="org.inviwo.ImageInvert" />
+                    <Processor content="org.inviwo.ImageLayer" />
                     <Processor content="org.inviwo.ImageLowPass" />
                     <Processor content="org.inviwo.ImageMapping" />
                     <Processor content="org.inviwo.ImageNormalization" />
                     <Processor content="org.inviwo.ImageResample" />
                     <Processor content="org.inviwo.ImageScaling" />
+                    <Processor content="org.inviwo.SplitImage" />
                     <Processor content="org.inviwo.VectorMagnitude" />
                     <Processor content="org.inviwo.VolumeBinary" />
                     <Processor content="org.inviwo.VolumeCombiner" />
@@ -117,28 +188,43 @@
                     <Processor content="org.inviwo.VolumeShader" />
                 </Processors>
             </Module>
-            <Module name="QtWidget" version="0" />
+            <Module name="CImg" version="0" />
+            <Module name="Animation" version="0" />
+            <Module name="QtWidgets" version="0" />
+            <Module name="AnimationQt" version="0" />
             <Module name="assimp" version="0" />
             <Module name="OpenGLQt" version="0" />
-            <Module name="CImg" version="0" />
-            <Module name="LabSetup" version="0">
+            <Module name="FontRendering" version="3">
                 <Processors>
-                    <Processor content="org.inviwo.ConnectPoints" />
+                    <Processor content="org.inviwo.TextOverlayGL" />
                 </Processors>
             </Module>
-            <Module name="DH2320Lab1" version="0">
+            <Module name="LabColor" version="0">
                 <Processors>
-                    <Processor content="org.inviwo.CubeAnimator" />
-                </Processors>
-            </Module>
-            <Module name="DH2320Lab2" version="0">
-                <Processors>
-                    <Processor content="org.inviwo.Chaikin" />
                     <Processor content="org.inviwo.ColorMixing" />
                     <Processor content="org.inviwo.ColorInterpolation" />
                 </Processors>
             </Module>
-            <Module name="DD2320Lab3" version="0">
+            <Module name="LabStreamlines" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.EulerRK4Comparison" />
+                    <Processor content="org.inviwo.StreamlineIntegrator" />
+                    <Processor content="org.inviwo.VectorFieldGeneratorKTHLabs" />
+                </Processors>
+            </Module>
+            <Module name="LabUtils" version="0" />
+            <Module name="LabLIC" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.LICProcessor" />
+                    <Processor content="org.inviwo.NoiseTextureGenerator" />
+                </Processors>
+            </Module>
+            <Module name="LabMarchingSquares" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.MarchingSquares" />
+                </Processors>
+            </Module>
+            <Module name="LabRaycasting" version="0">
                 <Processors>
                     <Processor content="org.inviwo.Compositor" />
                 </Processors>
@@ -148,281 +234,47 @@
                     <Processor content="org.inviwo.Raytracer" />
                 </Processors>
             </Module>
+            <Module name="LabSetup" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.ConnectPoints" />
+                </Processors>
+            </Module>
+            <Module name="LabSubdivision" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.Chaikin" />
+                </Processors>
+            </Module>
+            <Module name="LabTopo" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.Topology" />
+                </Processors>
+            </Module>
+            <Module name="LabTransformations" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.CubeAnimator" />
+                </Processors>
+            </Module>
+            <Module name="UserInterfaceGL" version="0">
+                <Processors>
+                    <Processor content="org.inviwo.CameraWidget" />
+                    <Processor content="org.inviwo.CropWidget" />
+                    <Processor content="org.inviwo.GLUIProcessor" />
+                    <Processor content="org.inviwo.PresentationProcessor" />
+                    <Processor content="org.inviwo.GLUITestProcessor" />
+                </Processors>
+            </Module>
+            <Module name="png" version="0" />
         </Modules>
     </InviwoSetup>
     <ProcessorNetwork>
-        <ProcessorNetworkVersion content="15" />
+        <ProcessorNetworkVersion content="16" />
         <Processors>
-            <Processor type="org.inviwo.GeometrySource" identifier="Mesh Source">
-                <PortGroups>
-                    <PortGroup content="default" key="data" />
-                </PortGroups>
-                <OutPorts>
-                    <OutPort type="org.inviwo.MeshOutport" identifier="data" id="ref1" />
-                </OutPorts>
-                <Properties>
-                    <Property type="org.inviwo.FileProperty" identifier="filename">
-                        <displayName content="Geometry file" />
-                        <absolutePath content="D:/Projekte/Vorlesungen/Code/InviwoTeach/modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
-                        <workspaceRelativePath content="CamelHeadSilhouette.obj" />
-                        <ivwdataRelativePath content="../modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
-                        <nameFilter>
-                            <filter>
-                                <extension content="*" />
-                                <description content="All Files" />
-                            </filter>
-                            <filter>
-                                <extension content="3ds" />
-                                <description content="Discreet 3DS Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="lxo" />
-                                <description content="LightWave/Modo Object Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="md2" />
-                                <description content="Quake II Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ms3d" />
-                                <description content="Milkshape 3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="3d" />
-                                <description content="Unreal Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="raw" />
-                                <description content="Raw Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="lwo" />
-                                <description content="LightWave/Modo Object Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="obj" />
-                                <description content="Wavefront Object Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="off" />
-                                <description content="OFF Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="mdl" />
-                                <description content="Quake Mesh / 3D GameStudio Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="x" />
-                                <description content="Direct3D XFile Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="iv" />
-                                <description content="VRML1 Importer .iv (&apos;dirty&apos; hack)." />
-                            </filter>
-                            <filter>
-                                <extension content="scn" />
-                                <description content="TrueSpace Object Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="q3s" />
-                                <description content="Quick3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="prj" />
-                                <description content="Discreet 3DS Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="md3" />
-                                <description content="Quake III Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="xml" />
-                                <description content="Irrlicht Scene Reader" />
-                            </filter>
-                            <filter>
-                                <extension content="ply" />
-                                <description content="Stanford Polygon Library (PLY) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ifc" />
-                                <description content="Industry Foundation Classes (IFC) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ask" />
-                                <description content="ASE Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ase" />
-                                <description content="ASE Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="hmp" />
-                                <description content="3D GameStudio Heightmap (HMP) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="smd" />
-                                <description content="Valve SMD Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="irr" />
-                                <description content="Irrlicht Scene Reader" />
-                            </filter>
-                            <filter>
-                                <extension content="vta" />
-                                <description content="Valve SMD Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="mesh" />
-                                <description content="Ogre3D Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="mdc" />
-                                <description content="Return To Castle Wolfenstein Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="md5mesh" />
-                                <description content="Doom 3 / MD5 Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="dae" />
-                                <description content="Collada Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="md5camera" />
-                                <description content="Doom 3 / MD5 Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="nff" />
-                                <description content="Neutral File Format Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="zgl" />
-                                <description content="XGL Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="md5anim" />
-                                <description content="Doom 3 / MD5 Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="mot" />
-                                <description content="LightWave Scene Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="stl" />
-                                <description content="Stereolithography (STL) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="bvh" />
-                                <description content="BVH Importer (MoCap)" />
-                            </filter>
-                            <filter>
-                                <extension content="dxf" />
-                                <description content="Drawing Interchange Format (DXF) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ac3d" />
-                                <description content="AC3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="enff" />
-                                <description content="Neutral File Format Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ac" />
-                                <description content="AC3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="uc" />
-                                <description content="Unreal Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="mesh.xml" />
-                                <description content="Ogre3D Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="acc" />
-                                <description content="AC3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="xml" />
-                                <description content="Irrlicht Mesh Reader" />
-                            </filter>
-                            <filter>
-                                <extension content="irrmesh" />
-                                <description content="Irrlicht Mesh Reader" />
-                            </filter>
-                            <filter>
-                                <extension content="q3o" />
-                                <description content="Quick3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="b3d" />
-                                <description content="BlitzBasic 3D Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ter" />
-                                <description content="Terragen Heightmap Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="csm" />
-                                <description content="CharacterStudio Motion Importer (MoCap)" />
-                            </filter>
-                            <filter>
-                                <extension content="lws" />
-                                <description content="LightWave Scene Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="cob" />
-                                <description content="TrueSpace Object Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="blend" />
-                                <description content="Blender 3D Importer &#x0A;http://www.blender3d.org" />
-                            </filter>
-                            <filter>
-                                <extension content="pk3" />
-                                <description content="Quake III BSP Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ndo" />
-                                <description content="Nendo Mesh Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="ifczip" />
-                                <description content="Industry Foundation Classes (IFC) Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="xgl" />
-                                <description content="XGL Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="fbx" />
-                                <description content="Autodesk FBX Importer" />
-                            </filter>
-                            <filter>
-                                <extension content="wrl" />
-                                <description content="VRML (.wrl) Importer" />
-                            </filter>
-                        </nameFilter>
-                        <acceptMode content="0" />
-                        <fileMode content="0" />
-                    </Property>
-                    <Property type="org.inviwo.ButtonProperty" identifier="reload" />
-                </Properties>
-                <MetaDataMap>
-                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
-                        <position x="-250" y="-500" />
-                        <visibility content="1" />
-                        <selection content="1" />
-                    </MetaDataItem>
-                </MetaDataMap>
-            </Processor>
-            <Processor type="org.inviwo.CanvasGL" identifier="Canvas">
+            <Processor type="org.inviwo.CanvasGL" identifier="Canvas" displayName="Canvas">
                 <PortGroups>
                     <PortGroup content="default" key="inport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.ImageInport" identifier="inport" id="ref0" />
+                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref3" />
                 </InPorts>
                 <Properties>
                     <Property type="org.inviwo.CompositeProperty" identifier="inputSize">
@@ -430,22 +282,18 @@
                             <Property type="org.inviwo.IntVec2Property" identifier="dimensions" />
                             <Property type="org.inviwo.BoolProperty" identifier="enableCustomInputDimensions" />
                             <Property type="org.inviwo.IntVec2Property" identifier="customInputDimensions">
-                                <visible content="0" />
                                 <readonly content="1" />
                                 <value x="1324" y="628" />
                             </Property>
-                            <Property type="org.inviwo.BoolProperty" identifier="keepAspectRatio">
-                                <visible content="0" />
-                            </Property>
+                            <Property type="org.inviwo.BoolProperty" identifier="keepAspectRatio" />
                             <Property type="org.inviwo.FloatProperty" identifier="aspectRatioScaling">
-                                <visible content="0" />
                                 <value content="2" />
                             </Property>
                         </Properties>
                         <collapsed content="0" />
                     </Property>
                     <Property type="org.inviwo.IntVec2Property" identifier="position">
-                        <value x="2143" y="407" />
+                        <value x="813" y="634" />
                     </Property>
                     <Property type="org.inviwo.OptionPropertyEnumInt" identifier="visibleLayer" />
                     <Property type="org.inviwo.IntProperty" identifier="colorLayer_">
@@ -463,20 +311,21 @@
                         <absolutePath content="" />
                         <workspaceRelativePath content="" />
                         <ivwdataRelativePath content="" />
-                        <nameFilter>
-                            <filter>
-                                <extension content="*" />
-                                <description content="All Files" />
-                            </filter>
-                        </nameFilter>
+                        <selectedExtension>
+                            <extension content="*" />
+                            <description content="All Files" />
+                        </selectedExtension>
                         <acceptMode content="0" />
                         <fileMode content="4" />
                     </Property>
                     <Property type="org.inviwo.OptionPropertyString" identifier="fileExt" />
                     <Property type="org.inviwo.ButtonProperty" identifier="saveLayer" />
                     <Property type="org.inviwo.ButtonProperty" identifier="saveLayerToFile" />
-                    <Property type="org.inviwo.ButtonProperty" identifier="toggleFullscreen" />
-                    <Property type="org.inviwo.EventProperty" identifier="fullscreen">
+                    <Property type="org.inviwo.BoolProperty" identifier="fullscreen" />
+                    <Property type="org.inviwo.EventProperty" identifier="fullscreenEvent">
+                        <Event />
+                    </Property>
+                    <Property type="org.inviwo.EventProperty" identifier="saveLayerEvent">
                         <Event />
                     </Property>
                     <Property type="org.inviwo.BoolProperty" identifier="allowContextMenu" />
@@ -488,22 +337,633 @@
                         <selection content="0" />
                     </MetaDataItem>
                     <MetaDataItem type="org.inviwo.ProcessorWidgetMetaData" key="org.inviwo.ProcessorWidgetMetaData">
-                        <position x="2143" y="407" />
+                        <position x="813" y="634" />
                         <dimensions x="662" y="314" />
                         <visibility content="1" />
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
-            <Processor type="org.inviwo.Background" identifier="Background">
+            <Processor type="org.inviwo.GeometrySource" identifier="Mesh Source" displayName="Mesh Source">
+                <PortGroups>
+                    <PortGroup content="default" key="data" />
+                </PortGroups>
+                <OutPorts>
+                    <OutPort type="org.inviwo.Mesh.outport" identifier="data" id="ref2" />
+                </OutPorts>
+                <Properties>
+                    <Property type="org.inviwo.FileProperty" identifier="filename">
+                        <displayName content="Geometry file" />
+                        <absolutePath content="C:/Inviwo/inviwo-teaching-vt19/modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
+                        <workspaceRelativePath content="CamelHeadSilhouette.obj" />
+                        <ivwdataRelativePath content="../modules/labsetup/data/workspaces/CamelHeadSilhouette.obj" />
+                        <selectedExtension>
+                            <extension content="obj" />
+                            <description content="Wavefront Object Importer" />
+                        </selectedExtension>
+                        <acceptMode content="0" />
+                        <fileMode content="0" />
+                    </Property>
+                    <Property type="org.inviwo.OptionPropertyFileExtension" identifier="reader">
+                        <options>
+                            <option>
+                                <id content=".assbin Importer (*.assbin)" />
+                                <name content=".assbin Importer (*.assbin)" />
+                                <value>
+                                    <extension content="assbin" />
+                                    <description content=".assbin Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="3D GameStudio Heightmap (HMP) Importer (*.hmp)" />
+                                <name content="3D GameStudio Heightmap (HMP) Importer (*.hmp)" />
+                                <value>
+                                    <extension content="hmp" />
+                                    <description content="3D GameStudio Heightmap (HMP) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="3mf Importer (*.3mf)" />
+                                <name content="3mf Importer (*.3mf)" />
+                                <value>
+                                    <extension content="3mf" />
+                                    <description content="3mf Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="AC3D Importer (*.ac)" />
+                                <name content="AC3D Importer (*.ac)" />
+                                <value>
+                                    <extension content="ac" />
+                                    <description content="AC3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="AC3D Importer (*.ac3d)" />
+                                <name content="AC3D Importer (*.ac3d)" />
+                                <value>
+                                    <extension content="ac3d" />
+                                    <description content="AC3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="AC3D Importer (*.acc)" />
+                                <name content="AC3D Importer (*.acc)" />
+                                <value>
+                                    <extension content="acc" />
+                                    <description content="AC3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="ASE Importer (*.ase)" />
+                                <name content="ASE Importer (*.ase)" />
+                                <value>
+                                    <extension content="ase" />
+                                    <description content="ASE Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="ASE Importer (*.ask)" />
+                                <name content="ASE Importer (*.ask)" />
+                                <value>
+                                    <extension content="ask" />
+                                    <description content="ASE Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Additive manufacturing file format(AMF) Importer (*.amf)" />
+                                <name content="Additive manufacturing file format(AMF) Importer (*.amf)" />
+                                <value>
+                                    <extension content="amf" />
+                                    <description content="Additive manufacturing file format(AMF) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Autodesk FBX Importer (*.fbx)" />
+                                <name content="Autodesk FBX Importer (*.fbx)" />
+                                <value>
+                                    <extension content="fbx" />
+                                    <description content="Autodesk FBX Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="BVH Importer (MoCap) (*.bvh)" />
+                                <name content="BVH Importer (MoCap) (*.bvh)" />
+                                <value>
+                                    <extension content="bvh" />
+                                    <description content="BVH Importer (MoCap)" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Blender 3D Importer &#x0A;http://www.blender3d.org (*.blend)" />
+                                <name content="Blender 3D Importer &#x0A;http://www.blender3d.org (*.blend)" />
+                                <value>
+                                    <extension content="blend" />
+                                    <description content="Blender 3D Importer &#x0A;http://www.blender3d.org" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="BlitzBasic 3D Importer (*.b3d)" />
+                                <name content="BlitzBasic 3D Importer (*.b3d)" />
+                                <value>
+                                    <extension content="b3d" />
+                                    <description content="BlitzBasic 3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="CharacterStudio Motion Importer (MoCap) (*.csm)" />
+                                <name content="CharacterStudio Motion Importer (MoCap) (*.csm)" />
+                                <value>
+                                    <extension content="csm" />
+                                    <description content="CharacterStudio Motion Importer (MoCap)" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Collada Importer (*.dae)" />
+                                <name content="Collada Importer (*.dae)" />
+                                <value>
+                                    <extension content="dae" />
+                                    <description content="Collada Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Direct3D XFile Importer (*.x)" />
+                                <name content="Direct3D XFile Importer (*.x)" />
+                                <value>
+                                    <extension content="x" />
+                                    <description content="Direct3D XFile Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Discreet 3DS Importer (*.3ds)" />
+                                <name content="Discreet 3DS Importer (*.3ds)" />
+                                <value>
+                                    <extension content="3ds" />
+                                    <description content="Discreet 3DS Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Discreet 3DS Importer (*.prj)" />
+                                <name content="Discreet 3DS Importer (*.prj)" />
+                                <value>
+                                    <extension content="prj" />
+                                    <description content="Discreet 3DS Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Doom 3 / MD5 Mesh Importer (*.md5anim)" />
+                                <name content="Doom 3 / MD5 Mesh Importer (*.md5anim)" />
+                                <value>
+                                    <extension content="md5anim" />
+                                    <description content="Doom 3 / MD5 Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Doom 3 / MD5 Mesh Importer (*.md5camera)" />
+                                <name content="Doom 3 / MD5 Mesh Importer (*.md5camera)" />
+                                <value>
+                                    <extension content="md5camera" />
+                                    <description content="Doom 3 / MD5 Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Doom 3 / MD5 Mesh Importer (*.md5mesh)" />
+                                <name content="Doom 3 / MD5 Mesh Importer (*.md5mesh)" />
+                                <value>
+                                    <extension content="md5mesh" />
+                                    <description content="Doom 3 / MD5 Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Drawing Interchange Format (DXF) Importer (*.dxf)" />
+                                <name content="Drawing Interchange Format (DXF) Importer (*.dxf)" />
+                                <value>
+                                    <extension content="dxf" />
+                                    <description content="Drawing Interchange Format (DXF) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Extensible 3D(X3D) Importer (*.x3d)" />
+                                <name content="Extensible 3D(X3D) Importer (*.x3d)" />
+                                <value>
+                                    <extension content="x3d" />
+                                    <description content="Extensible 3D(X3D) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Extensible 3D(X3D) Importer (*.x3db)" />
+                                <name content="Extensible 3D(X3D) Importer (*.x3db)" />
+                                <value>
+                                    <extension content="x3db" />
+                                    <description content="Extensible 3D(X3D) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Industry Foundation Classes (IFC) Importer (*.ifc)" />
+                                <name content="Industry Foundation Classes (IFC) Importer (*.ifc)" />
+                                <value>
+                                    <extension content="ifc" />
+                                    <description content="Industry Foundation Classes (IFC) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Industry Foundation Classes (IFC) Importer (*.ifczip)" />
+                                <name content="Industry Foundation Classes (IFC) Importer (*.ifczip)" />
+                                <value>
+                                    <extension content="ifczip" />
+                                    <description content="Industry Foundation Classes (IFC) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Industry Foundation Classes (IFC) Importer (*.stp)" />
+                                <name content="Industry Foundation Classes (IFC) Importer (*.stp)" />
+                                <value>
+                                    <extension content="stp" />
+                                    <description content="Industry Foundation Classes (IFC) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Irrlicht Mesh Reader (*.irrmesh)" />
+                                <name content="Irrlicht Mesh Reader (*.irrmesh)" />
+                                <value>
+                                    <extension content="irrmesh" />
+                                    <description content="Irrlicht Mesh Reader" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Irrlicht Mesh Reader (*.xml)" />
+                                <name content="Irrlicht Mesh Reader (*.xml)" />
+                                <value>
+                                    <extension content="xml" />
+                                    <description content="Irrlicht Mesh Reader" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Irrlicht Scene Reader (*.irr)" />
+                                <name content="Irrlicht Scene Reader (*.irr)" />
+                                <value>
+                                    <extension content="irr" />
+                                    <description content="Irrlicht Scene Reader" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Irrlicht Scene Reader (*.xml)" />
+                                <name content="Irrlicht Scene Reader (*.xml)" />
+                                <value>
+                                    <extension content="xml" />
+                                    <description content="Irrlicht Scene Reader" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="LightWave Scene Importer (*.lws)" />
+                                <name content="LightWave Scene Importer (*.lws)" />
+                                <value>
+                                    <extension content="lws" />
+                                    <description content="LightWave Scene Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="LightWave Scene Importer (*.mot)" />
+                                <name content="LightWave Scene Importer (*.mot)" />
+                                <value>
+                                    <extension content="mot" />
+                                    <description content="LightWave Scene Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="LightWave/Modo Object Importer (*.lwo)" />
+                                <name content="LightWave/Modo Object Importer (*.lwo)" />
+                                <value>
+                                    <extension content="lwo" />
+                                    <description content="LightWave/Modo Object Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="LightWave/Modo Object Importer (*.lxo)" />
+                                <name content="LightWave/Modo Object Importer (*.lxo)" />
+                                <value>
+                                    <extension content="lxo" />
+                                    <description content="LightWave/Modo Object Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="MMD Importer (*.pmx)" />
+                                <name content="MMD Importer (*.pmx)" />
+                                <value>
+                                    <extension content="pmx" />
+                                    <description content="MMD Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Milkshape 3D Importer (*.ms3d)" />
+                                <name content="Milkshape 3D Importer (*.ms3d)" />
+                                <value>
+                                    <extension content="ms3d" />
+                                    <description content="Milkshape 3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Nendo Mesh Importer (*.ndo)" />
+                                <name content="Nendo Mesh Importer (*.ndo)" />
+                                <value>
+                                    <extension content="ndo" />
+                                    <description content="Nendo Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Neutral File Format Importer (*.enff)" />
+                                <name content="Neutral File Format Importer (*.enff)" />
+                                <value>
+                                    <extension content="enff" />
+                                    <description content="Neutral File Format Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Neutral File Format Importer (*.nff)" />
+                                <name content="Neutral File Format Importer (*.nff)" />
+                                <value>
+                                    <extension content="nff" />
+                                    <description content="Neutral File Format Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="OFF Importer (*.off)" />
+                                <name content="OFF Importer (*.off)" />
+                                <value>
+                                    <extension content="off" />
+                                    <description content="OFF Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Ogre3D Mesh Importer (*.mesh)" />
+                                <name content="Ogre3D Mesh Importer (*.mesh)" />
+                                <value>
+                                    <extension content="mesh" />
+                                    <description content="Ogre3D Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Ogre3D Mesh Importer (*.mesh.xml)" />
+                                <name content="Ogre3D Mesh Importer (*.mesh.xml)" />
+                                <value>
+                                    <extension content="mesh.xml" />
+                                    <description content="Ogre3D Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Open Game Engine Exchange (*.ogex)" />
+                                <name content="Open Game Engine Exchange (*.ogex)" />
+                                <value>
+                                    <extension content="ogex" />
+                                    <description content="Open Game Engine Exchange" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quake II Mesh Importer (*.md2)" />
+                                <name content="Quake II Mesh Importer (*.md2)" />
+                                <value>
+                                    <extension content="md2" />
+                                    <description content="Quake II Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quake III BSP Importer (*.pk3)" />
+                                <name content="Quake III BSP Importer (*.pk3)" />
+                                <value>
+                                    <extension content="pk3" />
+                                    <description content="Quake III BSP Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quake III Mesh Importer (*.md3)" />
+                                <name content="Quake III Mesh Importer (*.md3)" />
+                                <value>
+                                    <extension content="md3" />
+                                    <description content="Quake III Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quake Mesh / 3D GameStudio Mesh Importer (*.mdl)" />
+                                <name content="Quake Mesh / 3D GameStudio Mesh Importer (*.mdl)" />
+                                <value>
+                                    <extension content="mdl" />
+                                    <description content="Quake Mesh / 3D GameStudio Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quick3D Importer (*.q3o)" />
+                                <name content="Quick3D Importer (*.q3o)" />
+                                <value>
+                                    <extension content="q3o" />
+                                    <description content="Quick3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Quick3D Importer (*.q3s)" />
+                                <name content="Quick3D Importer (*.q3s)" />
+                                <value>
+                                    <extension content="q3s" />
+                                    <description content="Quick3D Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Raw Importer (*.raw)" />
+                                <name content="Raw Importer (*.raw)" />
+                                <value>
+                                    <extension content="raw" />
+                                    <description content="Raw Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Return To Castle Wolfenstein Mesh Importer (*.mdc)" />
+                                <name content="Return To Castle Wolfenstein Mesh Importer (*.mdc)" />
+                                <value>
+                                    <extension content="mdc" />
+                                    <description content="Return To Castle Wolfenstein Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Silo SIB Importer (*.sib)" />
+                                <name content="Silo SIB Importer (*.sib)" />
+                                <value>
+                                    <extension content="sib" />
+                                    <description content="Silo SIB Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Stanford Polygon Library (PLY) Importer (*.ply)" />
+                                <name content="Stanford Polygon Library (PLY) Importer (*.ply)" />
+                                <value>
+                                    <extension content="ply" />
+                                    <description content="Stanford Polygon Library (PLY) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="StepFile Importer (*.stp)" />
+                                <name content="StepFile Importer (*.stp)" />
+                                <value>
+                                    <extension content="stp" />
+                                    <description content="StepFile Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Stereolithography (STL) Importer (*.stl)" />
+                                <name content="Stereolithography (STL) Importer (*.stl)" />
+                                <value>
+                                    <extension content="stl" />
+                                    <description content="Stereolithography (STL) Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Terragen Heightmap Importer (*.ter)" />
+                                <name content="Terragen Heightmap Importer (*.ter)" />
+                                <value>
+                                    <extension content="ter" />
+                                    <description content="Terragen Heightmap Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="TrueSpace Object Importer (*.cob)" />
+                                <name content="TrueSpace Object Importer (*.cob)" />
+                                <value>
+                                    <extension content="cob" />
+                                    <description content="TrueSpace Object Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="TrueSpace Object Importer (*.scn)" />
+                                <name content="TrueSpace Object Importer (*.scn)" />
+                                <value>
+                                    <extension content="scn" />
+                                    <description content="TrueSpace Object Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Unreal Mesh Importer (*.3d)" />
+                                <name content="Unreal Mesh Importer (*.3d)" />
+                                <value>
+                                    <extension content="3d" />
+                                    <description content="Unreal Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Unreal Mesh Importer (*.uc)" />
+                                <name content="Unreal Mesh Importer (*.uc)" />
+                                <value>
+                                    <extension content="uc" />
+                                    <description content="Unreal Mesh Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="VRML1 Importer .iv (&apos;dirty&apos; hack). (*.iv)" />
+                                <name content="VRML1 Importer .iv (&apos;dirty&apos; hack). (*.iv)" />
+                                <value>
+                                    <extension content="iv" />
+                                    <description content="VRML1 Importer .iv (&apos;dirty&apos; hack)." />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Valve SMD Importer (*.smd)" />
+                                <name content="Valve SMD Importer (*.smd)" />
+                                <value>
+                                    <extension content="smd" />
+                                    <description content="Valve SMD Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Valve SMD Importer (*.vta)" />
+                                <name content="Valve SMD Importer (*.vta)" />
+                                <value>
+                                    <extension content="vta" />
+                                    <description content="Valve SMD Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="Wavefront Object Importer (*.obj)" />
+                                <name content="Wavefront Object Importer (*.obj)" />
+                                <value>
+                                    <extension content="obj" />
+                                    <description content="Wavefront Object Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="XGL Importer (*.xgl)" />
+                                <name content="XGL Importer (*.xgl)" />
+                                <value>
+                                    <extension content="xgl" />
+                                    <description content="XGL Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="XGL Importer (*.zgl)" />
+                                <name content="XGL Importer (*.zgl)" />
+                                <value>
+                                    <extension content="zgl" />
+                                    <description content="XGL Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="glTF Importer (*.glb)" />
+                                <name content="glTF Importer (*.glb)" />
+                                <value>
+                                    <extension content="glb" />
+                                    <description content="glTF Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="glTF Importer (*.gltf)" />
+                                <name content="glTF Importer (*.gltf)" />
+                                <value>
+                                    <extension content="gltf" />
+                                    <description content="glTF Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="glTF2 Importer (*.glb)" />
+                                <name content="glTF2 Importer (*.glb)" />
+                                <value>
+                                    <extension content="glb" />
+                                    <description content="glTF2 Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="glTF2 Importer (*.gltf)" />
+                                <name content="glTF2 Importer (*.gltf)" />
+                                <value>
+                                    <extension content="gltf" />
+                                    <description content="glTF2 Importer" />
+                                </value>
+                            </option>
+                            <option>
+                                <id content="noreader" />
+                                <name content="No available reader" />
+                                <value>
+                                    <extension content="" />
+                                    <description content="" />
+                                </value>
+                            </option>
+                        </options>
+                        <selectedIdentifier content="Wavefront Object Importer (*.obj)" />
+                    </Property>
+                    <Property type="org.inviwo.ButtonProperty" identifier="reload" />
+                </Properties>
+                <MetaDataMap>
+                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
+                        <position x="-250" y="-500" />
+                        <visibility content="1" />
+                        <selection content="0" />
+                    </MetaDataItem>
+                </MetaDataMap>
+            </Processor>
+            <Processor type="org.inviwo.Background" identifier="Background" displayName="Background">
                 <PortGroups>
                     <PortGroup content="default" key="inport" />
                     <PortGroup content="default" key="outport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.ImageInport" identifier="inport" id="ref2" />
+                    <InPort type="org.inviwo.Image.inport" identifier="inport" id="ref11" />
                 </InPorts>
                 <OutPorts>
-                    <OutPort type="org.inviwo.ImageOutport" identifier="outport" id="ref3" />
+                    <OutPort type="org.inviwo.Image.outport" identifier="outport" id="ref12" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.OptionPropertyEnumInt" identifier="backgroundStyle">
@@ -531,18 +991,18 @@
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
-            <Processor type="org.inviwo.GeometryRenderGL" identifier="Mesh Renderer">
+            <Processor type="org.inviwo.GeometryRenderGL" identifier="Mesh Renderer" displayName="Mesh Renderer">
                 <PortGroups>
                     <PortGroup content="default" key="geometry" />
                     <PortGroup content="default" key="image" />
                     <PortGroup content="default" key="imageInport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.MeshFlatMultiInport" identifier="geometry" id="ref4" />
-                    <InPort type="org.inviwo.ImageInport" identifier="imageInport" id="ref5" />
+                    <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="geometry" id="ref4" />
+                    <InPort type="org.inviwo.Image.inport" identifier="imageInport" id="ref5" />
                 </InPorts>
                 <OutPorts>
-                    <OutPort type="org.inviwo.ImageOutport" identifier="image" id="ref6" />
+                    <OutPort type="org.inviwo.Image.outport" identifier="image" id="ref6" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.CameraProperty" identifier="camera" id="ref7">
@@ -635,27 +1095,39 @@
                             <Property type="org.inviwo.FloatVec3Property" identifier="lightPosition">
                                 <semantics semantics="Spherical" />
                             </Property>
-                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorAmbient">
-                                <semantics semantics="Color" />
-                            </Property>
-                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorDiffuse">
-                                <semantics semantics="Color" />
-                            </Property>
-                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorSpecular">
-                                <semantics semantics="Color" />
-                            </Property>
+                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorAmbient" />
+                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorDiffuse" />
+                            <Property type="org.inviwo.FloatVec3Property" identifier="lightColorSpecular" />
                             <Property type="org.inviwo.FloatProperty" identifier="materialShininess" />
                             <Property type="org.inviwo.BoolProperty" identifier="applyLightAttenuation" />
                             <Property type="org.inviwo.FloatVec3Property" identifier="lightAttenuation" />
                         </Properties>
                         <collapsed content="1" />
                     </Property>
-                    <Property type="org.inviwo.Trackball" identifier="trackball">
+                    <Property type="org.inviwo.CameraTrackball" identifier="trackball">
                         <Properties>
+                            <Property type="org.inviwo.OptionPropertyInt" identifier="trackballMethod" />
+                            <Property type="org.inviwo.FloatProperty" identifier="sensitivity" />
+                            <Property type="org.inviwo.FloatProperty" identifier="movementSpeed">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.BoolProperty" identifier="fixUp">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.OptionPropertyInt" identifier="worldUp">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.FloatVec3Property" identifier="customWup">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.FloatProperty" identifier="verticalAngleLimit">
+                                <visible content="0" />
+                            </Property>
                             <Property type="org.inviwo.BoolProperty" identifier="handleEvents" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowHorizontalPanning" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowVerticalPanning" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowZoom" />
+                            <Property type="org.inviwo.BoolProperty" identifier="allowWheelZoom" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowHorziontalRotation" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowVerticalRotation" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowViewAxisRotation" />
@@ -664,7 +1136,11 @@
                             <Property type="org.inviwo.EventProperty" identifier="trackballRotate">
                                 <Event />
                             </Property>
-                            <Property type="org.inviwo.EventProperty" identifier="trackballZoom">
+                            <Property type="org.inviwo.EventProperty" identifier="mouseZoom">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="wheelZoom">
+                                <visible content="0" />
                                 <Event />
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="trackballPan">
@@ -675,6 +1151,24 @@
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="mouseReset">
                                 <visible content="0" />
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveUp">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveLeft">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveDown">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveRight">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveForward">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveBackward">
                                 <Event />
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="stepRotateUp">
@@ -732,37 +1226,18 @@
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
-            <Processor type="org.inviwo.ConnectPoints" identifier="ConnectPoints">
-                <PortGroups>
-                    <PortGroup content="default" key="InLines" />
-                    <PortGroup content="default" key="OutLines" />
-                </PortGroups>
-                <InPorts>
-                    <InPort type="org.inviwo.MeshMultiInport" identifier="InLines" id="ref11" />
-                </InPorts>
-                <OutPorts>
-                    <OutPort type="org.inviwo.MeshOutport" identifier="OutLines" id="ref12" />
-                </OutPorts>
-                <MetaDataMap>
-                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
-                        <position x="-250" y="-400" />
-                        <visibility content="1" />
-                        <selection content="0" />
-                    </MetaDataItem>
-                </MetaDataMap>
-            </Processor>
-            <Processor type="org.inviwo.PointRenderer" identifier="Point Renderer">
+            <Processor type="org.inviwo.PointRenderer" identifier="Point Renderer" displayName="Point Renderer">
                 <PortGroups>
                     <PortGroup content="default" key="geometry" />
                     <PortGroup content="default" key="image" />
                     <PortGroup content="default" key="imageInport" />
                 </PortGroups>
                 <InPorts>
-                    <InPort type="org.inviwo.MeshFlatMultiInport" identifier="geometry" id="ref8" />
-                    <InPort type="org.inviwo.ImageInport" identifier="imageInport" />
+                    <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="geometry" id="ref8" />
+                    <InPort type="org.inviwo.Image.inport" identifier="imageInport" />
                 </InPorts>
                 <OutPorts>
-                    <OutPort type="org.inviwo.ImageOutport" identifier="image" id="ref9" />
+                    <OutPort type="org.inviwo.Image.outport" identifier="image" id="ref9" />
                 </OutPorts>
                 <Properties>
                     <Property type="org.inviwo.FloatProperty" identifier="pointSize">
@@ -837,12 +1312,30 @@
                         </Properties>
                         <collapsed content="1" />
                     </Property>
-                    <Property type="org.inviwo.Trackball" identifier="trackball">
+                    <Property type="org.inviwo.CameraTrackball" identifier="trackball">
                         <Properties>
+                            <Property type="org.inviwo.OptionPropertyInt" identifier="trackballMethod" />
+                            <Property type="org.inviwo.FloatProperty" identifier="sensitivity" />
+                            <Property type="org.inviwo.FloatProperty" identifier="movementSpeed">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.BoolProperty" identifier="fixUp">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.OptionPropertyInt" identifier="worldUp">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.FloatVec3Property" identifier="customWup">
+                                <visible content="0" />
+                            </Property>
+                            <Property type="org.inviwo.FloatProperty" identifier="verticalAngleLimit">
+                                <visible content="0" />
+                            </Property>
                             <Property type="org.inviwo.BoolProperty" identifier="handleEvents" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowHorizontalPanning" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowVerticalPanning" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowZoom" />
+                            <Property type="org.inviwo.BoolProperty" identifier="allowWheelZoom" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowHorziontalRotation" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowVerticalRotation" />
                             <Property type="org.inviwo.BoolProperty" identifier="allowViewAxisRotation" />
@@ -851,7 +1344,11 @@
                             <Property type="org.inviwo.EventProperty" identifier="trackballRotate">
                                 <Event />
                             </Property>
-                            <Property type="org.inviwo.EventProperty" identifier="trackballZoom">
+                            <Property type="org.inviwo.EventProperty" identifier="mouseZoom">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="wheelZoom">
+                                <visible content="0" />
                                 <Event />
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="trackballPan">
@@ -862,6 +1359,24 @@
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="mouseReset">
                                 <visible content="0" />
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveUp">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveLeft">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveDown">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveRight">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveForward">
+                                <Event />
+                            </Property>
+                            <Property type="org.inviwo.EventProperty" identifier="moveBackward">
                                 <Event />
                             </Property>
                             <Property type="org.inviwo.EventProperty" identifier="stepRotateUp">
@@ -910,41 +1425,60 @@
                     </MetaDataItem>
                 </MetaDataMap>
             </Processor>
+            <Processor type="org.inviwo.ConnectPoints" identifier="ConnectPoints" displayName="Connect Points">
+                <PortGroups>
+                    <PortGroup content="default" key="InLines" />
+                    <PortGroup content="default" key="OutLines" />
+                </PortGroups>
+                <InPorts>
+                    <InPort type="org.inviwo.Mesh.multi.inport" identifier="InLines" id="ref0" />
+                </InPorts>
+                <OutPorts>
+                    <OutPort type="org.inviwo.Mesh.outport" identifier="OutLines" id="ref1" />
+                </OutPorts>
+                <MetaDataMap>
+                    <MetaDataItem type="org.inviwo.ProcessorMetaData" key="org.inviwo.ProcessorMetaData">
+                        <position x="-250" y="-400" />
+                        <visibility content="1" />
+                        <selection content="0" />
+                    </MetaDataItem>
+                </MetaDataMap>
+            </Processor>
         </Processors>
         <Connections>
             <Connection>
-                <OutPort type="org.inviwo.ImageOutport" identifier="outport" reference="ref3" />
-                <InPort type="org.inviwo.ImageInport" identifier="inport" reference="ref0" />
+                <OutPort type="org.inviwo.Image.outport" identifier="outport" reference="ref12" />
+                <InPort type="org.inviwo.Image.inport" identifier="inport" reference="ref3" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.ImageOutport" identifier="image" reference="ref6" />
-                <InPort type="org.inviwo.ImageInport" identifier="inport" reference="ref2" />
+                <OutPort type="org.inviwo.Image.outport" identifier="image" reference="ref6" />
+                <InPort type="org.inviwo.Image.inport" identifier="inport" reference="ref11" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.ImageOutport" identifier="image" reference="ref9" />
-                <InPort type="org.inviwo.ImageInport" identifier="imageInport" reference="ref5" />
+                <OutPort type="org.inviwo.Image.outport" identifier="image" reference="ref9" />
+                <InPort type="org.inviwo.Image.inport" identifier="imageInport" reference="ref5" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.MeshOutport" identifier="data" reference="ref1" />
-                <InPort type="org.inviwo.MeshMultiInport" identifier="InLines" reference="ref11" />
+                <OutPort type="org.inviwo.Mesh.outport" identifier="data" reference="ref2" />
+                <InPort type="org.inviwo.Mesh.multi.inport" identifier="InLines" reference="ref0" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.MeshOutport" identifier="OutLines" reference="ref12" />
-                <InPort type="org.inviwo.MeshFlatMultiInport" identifier="geometry" reference="ref4" />
+                <OutPort type="org.inviwo.Mesh.outport" identifier="OutLines" reference="ref1" />
+                <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="geometry" reference="ref4" />
             </Connection>
             <Connection>
-                <OutPort type="org.inviwo.MeshOutport" identifier="data" reference="ref1" />
-                <InPort type="org.inviwo.MeshFlatMultiInport" identifier="geometry" reference="ref8" />
+                <OutPort type="org.inviwo.Mesh.outport" identifier="data" reference="ref2" />
+                <InPort type="org.inviwo.Mesh.flat.multi.inport" identifier="geometry" reference="ref8" />
             </Connection>
         </Connections>
         <PropertyLinks>
             <PropertyLink>
                 <SourceProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref7" />
-                <DestinationProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref7" />
+                <DestinationProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref10" />
             </PropertyLink>
             <PropertyLink>
                 <SourceProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref7" />
-                <DestinationProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref10" />
+                <DestinationProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref7" />
             </PropertyLink>
             <PropertyLink>
                 <SourceProperty type="org.inviwo.CameraProperty" identifier="camera" reference="ref10" />
@@ -965,4 +1499,81 @@
             <data content='&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;InviwoWorkspace version=&quot;2&quot; type=&quot;org.inviwo.FloatMat4Property&quot; identifier=&quot;matrix_&quot;&gt;&lt;MetaDataMap&gt;&lt;MetaDataItem type=&quot;org.inviwo.StringStringStdUnorderedMapMetaData&quot; key=&quot;SavedState&quot; /&gt;&lt;/MetaDataMap&gt;&lt;minvalue&gt;&lt;row0 x=&quot;-10&quot; y=&quot;-10&quot; z=&quot;-10&quot; w=&quot;-10&quot; /&gt;&lt;row1 x=&quot;-10&quot; y=&quot;-10&quot; z=&quot;-10&quot; w=&quot;-10&quot; /&gt;&lt;row2 x=&quot;-10&quot; y=&quot;-10&quot; z=&quot;-10&quot; w=&quot;-10&quot; /&gt;&lt;row3 x=&quot;-10&quot; y=&quot;-10&quot; z=&quot;-10&quot; w=&quot;-10&quot; /&gt;&lt;/minvalue&gt;&lt;value&gt;&lt;row0 x=&quot;1&quot; y=&quot;0&quot; z=&quot;0&quot; w=&quot;0&quot; /&gt;&lt;row1 x=&quot;0&quot; y=&quot;1&quot; z=&quot;0&quot; w=&quot;0&quot; /&gt;&lt;row2 x=&quot;0&quot; y=&quot;0&quot; z=&quot;1&quot; w=&quot;0&quot; /&gt;&lt;row3 x=&quot;-5&quot; y=&quot;-0.34200001&quot; z=&quot;0&quot; w=&quot;1&quot; /&gt;&lt;/value&gt;&lt;/InviwoWorkspace&gt;' />
         </Preset>
     </PropertyPresets>
+    <WorkspaceAnnotations>
+        <Properties>
+            <Property type="org.inviwo.StringProperty" identifier="title" />
+            <Property type="org.inviwo.StringProperty" identifier="author" />
+            <Property type="org.inviwo.StringProperty" identifier="tags" />
+            <Property type="org.inviwo.StringProperty" identifier="categories" />
+            <Property type="org.inviwo.StringProperty" identifier="description" />
+        </Properties>
+        <Canvases>
+            <CanvasImage>
+                <name content="Canvas" />
+                <size x="540" y="256" />
+                <base64 content="/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEAAhwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoooo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" />
+            </CanvasImage>
+        </Canvases>
+        <Network>
+            <name content="Network" />
+            <size x="256" y="256" />
+            <base64 content="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" />
+        </Network>
+    </WorkspaceAnnotations>
+    <Animation />
+    <AnimationController>
+        <Properties>
+            <Property type="org.inviwo.CompositeProperty" identifier="PlayOptions">
+                <Properties>
+                    <Property type="org.inviwo.OptionPropertyInt" identifier="PlayFirstLastTimeOption" />
+                    <Property type="org.inviwo.DoubleMinMaxProperty" identifier="PlayFirstLastTime">
+                        <visible content="0" />
+                    </Property>
+                    <Property type="org.inviwo.DoubleProperty" identifier="PlayFramesPerSecond" />
+                    <Property type="org.inviwo.OptionPropertyEnumInt" identifier="PlayMode" />
+                </Properties>
+                <collapsed content="1" />
+            </Property>
+            <Property type="org.inviwo.CompositeProperty" identifier="RenderOptions">
+                <Properties>
+                    <Property type="org.inviwo.OptionPropertyInt" identifier="RenderFirstLastTimeOption" />
+                    <Property type="org.inviwo.DoubleMinMaxProperty" identifier="RenderFirstLastTime">
+                        <visible content="0" />
+                    </Property>
+                    <Property type="org.inviwo.OptionPropertyInt" identifier="RenderSizeOptions" />
+                    <Property type="org.inviwo.OptionPropertyInt" identifier="RenderSizeAspectRatio">
+                        <visible content="0" />
+                    </Property>
+                    <Property type="org.inviwo.IntVec2Property" identifier="RenderSize">
+                        <visible content="0" />
+                    </Property>
+                    <Property type="org.inviwo.IntProperty" identifier="RenderNumFrames" />
+                    <Property type="org.inviwo.DirectoryProperty" identifier="RenderLocationDir">
+                        <absolutePath content="" />
+                        <workspaceRelativePath content="" />
+                        <ivwdataRelativePath content="" />
+                        <selectedExtension>
+                            <extension content="" />
+                            <description content="" />
+                        </selectedExtension>
+                        <acceptMode content="0" />
+                        <fileMode content="4" />
+                    </Property>
+                    <Property type="org.inviwo.StringProperty" identifier="RenderLocationBaseName" />
+                    <Property type="org.inviwo.OptionPropertyString" identifier="RenderImageExtension" />
+                    <Property type="org.inviwo.ButtonProperty" identifier="RenderAction" />
+                    <Property type="org.inviwo.ButtonProperty" identifier="RenderActionStop">
+                        <visible content="0" />
+                    </Property>
+                </Properties>
+                <collapsed content="1" />
+            </Property>
+            <Property type="org.inviwo.CompositeProperty" identifier="ControlOptions">
+                <Properties>
+                    <Property type="org.inviwo.ButtonProperty" identifier="ControlInsertPauseFrame" />
+                </Properties>
+                <collapsed content="1" />
+            </Property>
+        </Properties>
+    </AnimationController>
 </InviwoWorkspace>

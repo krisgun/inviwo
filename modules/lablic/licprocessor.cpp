@@ -17,7 +17,7 @@ namespace inviwo {
 // The Class Identifier has to be globally unique. Use a reverse DNS naming scheme
 const ProcessorInfo LICProcessor::processorInfo_{
     "org.inviwo.LICProcessor",  // Class identifier
-    "LICProcessor",             // Display name
+    "LIC",                      // Display name
     "KTH Labs",                 // Category
     CodeState::Experimental,    // Code state
     Tags::None,                 // Tags

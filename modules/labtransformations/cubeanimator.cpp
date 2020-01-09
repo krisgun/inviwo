@@ -18,7 +18,7 @@ const ProcessorInfo CubeAnimator::processorInfo_
 {
     "org.inviwo.CubeAnimator",      // Class identifier
     "Cube Animator",                // Display name
-    "VisGra",                 // Category
+    "KTH Labs",                 // Category
     CodeState::Experimental,  // Code state
     Tags::None,               // Tags
 };

@@ -19,7 +19,7 @@ namespace inviwo {
 const ProcessorInfo EulerRK4Comparison::processorInfo_{
     "org.inviwo.EulerRK4Comparison",  // Class identifier
     "Euler RK4 Comparison",           // Display name
-    "KTH Lab",                        // Category
+    "KTH Labs",                       // Category
     CodeState::Experimental,          // Code state
     Tags::None,                       // Tags
 };
@@ -49,7 +49,6 @@ EulerRK4Comparison::EulerRK4Comparison()
 
     // TODO: Register additional properties
     // addProperty(propertyName);
-
 }
 
 void EulerRK4Comparison::eventMoveStart(Event* event) {

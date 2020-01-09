@@ -16,8 +16,8 @@ namespace kth {
 // The Class Identifier has to be globally unique. Use a reverse DNS naming scheme
 const ProcessorInfo ConnectPoints::processorInfo_{
     "org.inviwo.ConnectPoints",  // Class identifier
-    "ConnectPoints",             // Display name
-    "LabSetup",                    // Category
+    "Connect Points",            // Display name
+    "KTH Labs",                  // Category
     CodeState::Experimental,     // Code state
     Tags::None,                  // Tags
 };

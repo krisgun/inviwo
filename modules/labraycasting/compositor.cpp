@@ -16,7 +16,7 @@ namespace inviwo {
 const ProcessorInfo Compositor::processorInfo_{
     "org.inviwo.Compositor",  // Class identifier
     "Compositor",             // Display name
-    "Undefined",              // Category
+    "KTH Labs",               // Category
     CodeState::Experimental,  // Code state
     Tags::None,               // Tags
 };
@@ -78,10 +78,8 @@ void Compositor::process() {
     dims_ = vol->getDimensions();
 
     // Prepare the output
-    auto outImage = std::make_shared<Image>();
+    auto outImage = std::make_shared<Image>(size2_t(dims_.x, dims_.y), DataVec4Float32::get());
     auto outLayer = outImage->getColorLayer();
-    outLayer->setDimensions(size2_t(dims_.x, dims_.y));
-    outLayer->setDataFormat(DataVec4Float32::get());
     auto lr = outLayer->getEditableRepresentation<LayerRAM>();
 
     // Actually compute and set the output
