@@ -1,0 +1,1 @@
+description of the LabColor module
