@@ -59,7 +59,7 @@ void CubeAnimator::process()
     auto matrix = mesh->getWorldMatrix();
 
     // Transform the mesh (TODO)
-    matrix *= glm::translate(vec3(radius_.get(), 0, 0));
+    matrix = glm::translate(vec3(radius_.get(), 0, 0)) * matrix;
 
     // Update
     mesh->setWorldMatrix(matrix);
