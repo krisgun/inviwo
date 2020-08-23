@@ -8,4 +8,4 @@ set(dependencies
     InviwoCImgModule
     InviwoFontRenderingModule
 )
-set(EnableByDefault ON)
+set(EnableByDefault OFF)
