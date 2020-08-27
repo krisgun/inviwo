@@ -40,6 +40,9 @@
 #include <QGraphicsScene>
 #include <warn/pop>
 
+#include <unordered_map>
+#include <memory>
+
 class QKeyEvent;
 
 namespace inviwo {
