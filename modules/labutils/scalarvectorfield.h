@@ -17,6 +17,7 @@ public:
 
     /** Integer vertex indices. */
     typedef glm::vec<Dim, glm::i32, glm::defaultp> IndexType;
+    typedef glm::i32 IndexElementType;
 
     /** Position in the grid (world or grid coordinates). */
     typedef glm::vec<Dim, glm::f64, glm::defaultp> PositionType;
@@ -108,7 +109,7 @@ public:
     const PositionType& getBBoxMin() const { return offset_; }
 
     /** Get the maximum world coordinate, i.e., the position of vertex size_-1. */
-    const PositionType& getBBoxMax() const { return offset_ + extent_; }
+    const PositionType getBBoxMax() const { return offset_ + extent_; }
 
     /** Get the world extent of a single cell (rectangle or cuboid). */
     PositionType getCellSize() const;
@@ -189,7 +190,7 @@ Field<Dim, VecDim>::Field(std::shared_ptr<const inviwo::Volume> volume)
     IVW_ASSERT(volume->getRepresentation<VolumeRAM>(), "No valid volume RAM representation.");
     data_ = const_cast<VolumeRAM*>(volume->getRepresentation<VolumeRAM>());
     size3_t numElements = volume->getDimensions();
-    for (int d = 0; d < Dim; ++d) size_[d] = numElements[d];
+    for (int d = 0; d < Dim; ++d) size_[d] = static_cast<IndexElementType>(numElements[d]);
 
     auto mat = volume->getModelMatrix();
     for (int d = 0; d < Dim; ++d) {
@@ -325,7 +326,7 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::interpolateInGridCoo
 
     size3_t offset(0);
 
-    Field<Dim, VecDim>::VectorType val(0);
+    VectorType val(0);
     for (offset[0] = 0; offset[0] < Interp[0]; ++offset[0]) {
         for (offset[1] = 0; offset[1] < Interp[1]; ++offset[1]) {
             for (offset[2] = 0; offset[2] < Interp[2]; ++offset[2]) {
