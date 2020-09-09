@@ -17,7 +17,7 @@ namespace inviwo {
 const ProcessorInfo MarchingSquares::processorInfo_{
     "org.inviwo.MarchingSquares",  // Class identifier
     "Marching Squares",            // Display name
-    "KTH Labs",                    // Category
+    "KTH Lab",                     // Category
     CodeState::Experimental,       // Code state
     Tags::None,                    // Tags
 };
@@ -27,7 +27,8 @@ const ProcessorInfo MarchingSquares::getProcessorInfo() const { return processor
 MarchingSquares::MarchingSquares()
     : Processor()
     , inData("volumeIn")
-    , meshOut("meshOut")
+    , meshOut("meshIsoOut")
+    , meshGridOut("meshGridOut")
     , propShowGrid("showGrid", "Show Grid")
     , propGridColor("gridColor", "Grid Lines Color", vec4(0.0f, 0.0f, 0.0f, 1.0f), vec4(0.0f),
                     vec4(1.0f), vec4(0.1f), InvalidationLevel::InvalidOutput,
@@ -42,6 +43,7 @@ MarchingSquares::MarchingSquares()
     // Register ports
     addPort(inData);
     addPort(meshOut);
+    addPort(meshGridOut);
 
     // Register properties
     addProperty(propShowGrid);
@@ -138,9 +140,23 @@ void MarchingSquares::process() {
     double valueAt00 = grid.getValueAtVertex(ij);
     LogProcessorInfo("The value at (0,0) is: " << valueAt00 << ".");
 
-    // Initialize the output: mesh and vertices
-    auto mesh = std::make_shared<BasicMesh>();
-    std::vector<BasicMesh::Vertex> vertices;
+    // Initialize the output: mesh and vertices for the grid and bounding box
+    auto gridmesh = std::make_shared<BasicMesh>();
+    std::vector<BasicMesh::Vertex> gridvertices;
+
+    auto indexBufferBBox = gridmesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+    // bottomLeft to topLeft
+    drawLineSegment(bBoxMin, vec2(bBoxMin[0], bBoxMax[1]), propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // topLeft to topRight
+    drawLineSegment(vec2(bBoxMin[0], bBoxMax[1]), bBoxMax, propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // topRight to bottomRight
+    drawLineSegment(bBoxMax, vec2(bBoxMax[0], bBoxMin[1]), propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // bottomRight to bottomLeft
+    drawLineSegment(vec2(bBoxMax[0], bBoxMin[1]), bBoxMin, propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
 
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
@@ -150,12 +166,12 @@ void MarchingSquares::process() {
         // that are placed into the Vertex vector defining our mesh.
         // An index buffer specifies which of those vertices should be grouped into to make up
         // lines/trianges/quads. Here two vertices make up a line segment.
-        auto indexBufferGrid = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+        auto indexBufferGrid = gridmesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
         // Draw a line segment from v1 to v2 with a the given color for the grid
         vec2 v1 = vec2(0.5, 0.5);
         vec2 v2 = vec2(0.7, 0.7);
-        drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), vertices);
+        drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
     }
 
     // Iso contours
@@ -168,6 +184,9 @@ void MarchingSquares::process() {
     // smoothedField.setValueAtVertex({0, 0}, 4.2);
     // and read again in the same way as before
     // smoothedField.getValueAtVertex(ij);
+    // Initialize the output: mesh and vertices
+    auto mesh = std::make_shared<BasicMesh>();
+    std::vector<BasicMesh::Vertex> vertices;
 
     if (propMultiple.get() == 0) {
         // TODO: Draw a single isoline at the specified isovalue (propIsoValue)

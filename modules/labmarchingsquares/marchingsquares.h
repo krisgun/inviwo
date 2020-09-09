@@ -1,5 +1,5 @@
 /*********************************************************************
- *  Author  : Himangshu Saikia, Wiebke Koepp, ...
+ *  Author  : Himangshu Saikia, Wiebke Koepp, Anke Friederici
  *  Init    : Monday, September 11, 2017 - 12:58:42
  *
  *  Project : KTH Inviwo Modules
@@ -36,7 +36,8 @@ namespace inviwo {
 
 
     ### Outports
-      * __mesh__ The output mesh contains (possibly multiple) iso contours as well as gridlines
+      * __isolinesmesh__ Mesh with (possibly multiple) iso contours
+      * __gridmesh__ Mesh with boundling box and potentially grid lines
 
     ### Properties
       * __propShowGrid__ Display grid lines if true, do not display grid lines if false.
@@ -78,8 +79,11 @@ public:
     // Input data
     VolumeInport inData;
 
-    // Output mesh
+    // Output mesh for isolines
     MeshOutport meshOut;
+
+    // Output mesh for bounding box and gridlines
+    MeshOutport meshGridOut;
 
     // Properties
 public:
