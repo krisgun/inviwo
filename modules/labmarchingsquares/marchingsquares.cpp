@@ -174,7 +174,9 @@ void MarchingSquares::process() {
         drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
     }
 
-    // Iso contours
+    // Set the created grid mesh as output
+    gridmesh->addVertices(gridvertices);
+    meshGridOut.setData(gridmesh);
 
     // TODO (Bonus) Gaussian filter
     // Our input is const (i.e. cannot be altered), but you need to compute smoothed data and write
