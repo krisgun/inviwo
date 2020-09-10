@@ -17,6 +17,7 @@ public:
 
     /** Integer vertex indices. */
     typedef glm::vec<Dim, glm::i32, glm::defaultp> IndexType;
+    typedef glm::i32 IndexElementType;
 
     /** Position in the grid (world or grid coordinates). */
     typedef glm::vec<Dim, glm::f64, glm::defaultp> PositionType;
@@ -189,7 +190,7 @@ Field<Dim, VecDim>::Field(std::shared_ptr<const inviwo::Volume> volume)
     IVW_ASSERT(volume->getRepresentation<VolumeRAM>(), "No valid volume RAM representation.");
     data_ = const_cast<VolumeRAM*>(volume->getRepresentation<VolumeRAM>());
     size3_t numElements = volume->getDimensions();
-    for (int d = 0; d < Dim; ++d) size_[d] = numElements[d];
+    for (int d = 0; d < Dim; ++d) size_[d] = static_cast<IndexElementType>(numElements[d]);
 
     auto mat = volume->getModelMatrix();
     for (int d = 0; d < Dim; ++d) {
@@ -325,7 +326,7 @@ typename Field<Dim, VecDim>::VectorType Field<Dim, VecDim>::interpolateInGridCoo
 
     size3_t offset(0);
 
-    Field<Dim, VecDim>::VectorType val(0);
+    VectorType val(0);
     for (offset[0] = 0; offset[0] < Interp[0]; ++offset[0]) {
         for (offset[1] = 0; offset[1] < Interp[1]; ++offset[1]) {
             for (offset[2] = 0; offset[2] < Interp[2]; ++offset[2]) {
@@ -361,7 +362,7 @@ template <int Dim, int VecDim>
 typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::gridCoordsFromWorldPos(
     const typename Field<Dim, VecDim>::PositionType& pos) const {
 
-    typename Field<Dim, VecDim>::PositionType relativePos(0);
+    PositionType relativePos(0);
     for (int d = 0; d < Dim; ++d)
         relativePos[d] = ((pos[d] - offset_[d]) * (size_[d] - 1)) / extent_[d];
 
@@ -401,7 +402,7 @@ void Field<Dim, VecDim>::setValueAtVertex(const Field<Dim, VecDim>::IndexType& i
 
 template <int Dim, int VecDim>
 typename Field<Dim, VecDim>::PositionType Field<Dim, VecDim>::getCellSize() const {
-    Field<Dim, VecDim>::PositionType cellSize;
+    typename Field<Dim, VecDim>::PositionType cellSize;
     for (int d = 0; d < Dim; ++d) cellSize[d] = extent_[d] / (size_[d] - 1);
     return cellSize;
 }
