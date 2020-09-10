@@ -92,14 +92,6 @@ MarchingSquares::MarchingSquares()
         }
     });
 
-    propShowGrid.onChange([this]() {
-        if (propShowGrid.get()) {
-            util::show(propGridColor);
-        } else {
-            util::hide(propGridColor);
-        }
-    });
-
     // Show options based on display of one or multiple iso contours
     propMultiple.onChange([this]() {
         if (propMultiple.get() == 0) {
