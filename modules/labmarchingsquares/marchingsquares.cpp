@@ -17,7 +17,7 @@ namespace inviwo {
 const ProcessorInfo MarchingSquares::processorInfo_{
     "org.inviwo.MarchingSquares",  // Class identifier
     "Marching Squares",            // Display name
-    "KTH Labs",                    // Category
+    "KTH Lab",                     // Category
     CodeState::Experimental,       // Code state
     Tags::None,                    // Tags
 };
@@ -27,12 +27,14 @@ const ProcessorInfo MarchingSquares::getProcessorInfo() const { return processor
 MarchingSquares::MarchingSquares()
     : Processor()
     , inData("volumeIn")
-    , meshOut("meshOut")
+    , meshIsoOut("meshIsoOut")
+    , meshGridOut("meshGridOut")
     , propShowGrid("showGrid", "Show Grid")
     , propGridColor("gridColor", "Grid Lines Color", vec4(0.0f, 0.0f, 0.0f, 1.0f), vec4(0.0f),
                     vec4(1.0f), vec4(0.1f), InvalidationLevel::InvalidOutput,
                     PropertySemantics::Color)
     , propDeciderType("deciderType", "Decider Type")
+    , propRandomSeed("seed", "Random Seed", 0, 0, std::mt19937::max())
     , propMultiple("multiple", "Iso Levels")
     , propIsoValue("isovalue", "Iso Value")
     , propIsoColor("isoColor", "Color", vec4(0.0f, 0.0f, 1.0f, 1.0f), vec4(0.0f), vec4(1.0f),
@@ -41,15 +43,19 @@ MarchingSquares::MarchingSquares()
     , propIsoTransferFunc("isoTransferFunc", "Colors", &inData) {
     // Register ports
     addPort(inData);
-    addPort(meshOut);
+    addPort(meshIsoOut);
+    addPort(meshGridOut);
 
     // Register properties
     addProperty(propShowGrid);
     addProperty(propGridColor);
 
     addProperty(propDeciderType);
-    propDeciderType.addOption("midpoint", "Mid Point", 0);
-    propDeciderType.addOption("asymptotic", "Asymptotic", 1);
+    propDeciderType.addOption("asymptotic", "Asymptotic", 0);
+    propDeciderType.addOption("random", "Random", 1);
+
+    addProperty(propRandomSeed);
+    propRandomSeed.setSemantics(PropertySemantics::Text);
 
     addProperty(propMultiple);
 
@@ -67,7 +73,15 @@ MarchingSquares::MarchingSquares()
     propIsoTransferFunc.get().add(1.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
     propIsoTransferFunc.setCurrentStateAsDefault();
 
-    util::hide(propGridColor, propNumContours, propIsoTransferFunc);
+    util::hide(propGridColor, propRandomSeed, propNumContours, propIsoTransferFunc);
+
+    propDeciderType.onChange([this]() {
+        if (propDeciderType.get() == 1) {
+            util::show(propRandomSeed);
+        } else {
+            util::hide(propRandomSeed);
+        }
+    });
 
     // Show the grid color property only if grid is actually displayed
     propShowGrid.onChange([this]() {
@@ -138,9 +152,33 @@ void MarchingSquares::process() {
     double valueAt00 = grid.getValueAtVertex(ij);
     LogProcessorInfo("The value at (0,0) is: " << valueAt00 << ".");
 
-    // Initialize the output: mesh and vertices
-    auto mesh = std::make_shared<BasicMesh>();
-    std::vector<BasicMesh::Vertex> vertices;
+    // Initialize the output: mesh and vertices for the grid and bounding box
+    auto gridmesh = std::make_shared<BasicMesh>();
+    std::vector<BasicMesh::Vertex> gridvertices;
+
+    auto indexBufferBBox = gridmesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+    // bottomLeft to topLeft
+    drawLineSegment(bBoxMin, vec2(bBoxMin[0], bBoxMax[1]), propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // topLeft to topRight
+    drawLineSegment(vec2(bBoxMin[0], bBoxMax[1]), bBoxMax, propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // topRight to bottomRight
+    drawLineSegment(bBoxMax, vec2(bBoxMax[0], bBoxMin[1]), propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+    // bottomRight to bottomLeft
+    drawLineSegment(vec2(bBoxMax[0], bBoxMin[1]), bBoxMin, propGridColor.get(),
+                    indexBufferBBox.get(), gridvertices);
+
+    // Set the random seed to the one selected in the interface
+    randGenerator.seed(static_cast<std::mt19937::result_type>(propRandomSeed.get()));
+    // You can create a random sample between min and max with
+    float minRand = 0.0;
+    float maxRand = 1.0;
+    float rand = randomValue(minRand, maxRand);
+    LogProcessorInfo("The first random sample for seed " << propRandomSeed.get() << " between "
+                                                         << minRand << " and " << maxRand << " is "
+                                                         << rand << ".");
 
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
@@ -150,15 +188,17 @@ void MarchingSquares::process() {
         // that are placed into the Vertex vector defining our mesh.
         // An index buffer specifies which of those vertices should be grouped into to make up
         // lines/trianges/quads. Here two vertices make up a line segment.
-        auto indexBufferGrid = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+        auto indexBufferGrid = gridmesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
         // Draw a line segment from v1 to v2 with a the given color for the grid
         vec2 v1 = vec2(0.5, 0.5);
         vec2 v2 = vec2(0.7, 0.7);
-        drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), vertices);
+        drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
     }
 
-    // Iso contours
+    // Set the created grid mesh as output
+    gridmesh->addVertices(gridvertices);
+    meshGridOut.setData(gridmesh);
 
     // TODO (Bonus) Gaussian filter
     // Our input is const (i.e. cannot be altered), but you need to compute smoothed data and write
@@ -168,6 +208,9 @@ void MarchingSquares::process() {
     // smoothedField.setValueAtVertex({0, 0}, 4.2);
     // and read again in the same way as before
     // smoothedField.getValueAtVertex(ij);
+    // Initialize the output: mesh and vertices
+    auto mesh = std::make_shared<BasicMesh>();
+    std::vector<BasicMesh::Vertex> vertices;
 
     if (propMultiple.get() == 0) {
         // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
@@ -195,7 +238,11 @@ void MarchingSquares::process() {
     // e.g. for the computation of a single iso contour
 
     mesh->addVertices(vertices);
-    meshOut.setData(mesh);
+    meshIsoOut.setData(mesh);
+}
+
+float MarchingSquares::randomValue(const float min, const float max) const {
+    return min + uniformReal(randGenerator) * (max - min);
 }
 
 void MarchingSquares::drawLineSegment(const vec2& v1, const vec2& v2, const vec4& color,
