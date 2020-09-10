@@ -27,13 +27,14 @@ const ProcessorInfo MarchingSquares::getProcessorInfo() const { return processor
 MarchingSquares::MarchingSquares()
     : Processor()
     , inData("volumeIn")
-    , meshOut("meshIsoOut")
+    , meshIsoOut("meshIsoOut")
     , meshGridOut("meshGridOut")
     , propShowGrid("showGrid", "Show Grid")
     , propGridColor("gridColor", "Grid Lines Color", vec4(0.0f, 0.0f, 0.0f, 1.0f), vec4(0.0f),
                     vec4(1.0f), vec4(0.1f), InvalidationLevel::InvalidOutput,
                     PropertySemantics::Color)
     , propDeciderType("deciderType", "Decider Type")
+    , propRandomSeed("seed", "Random Seed", 0, 0, std::mt19937::max())
     , propMultiple("multiple", "Iso Levels")
     , propIsoValue("isovalue", "Iso Value")
     , propIsoColor("isoColor", "Color", vec4(0.0f, 0.0f, 1.0f, 1.0f), vec4(0.0f), vec4(1.0f),
@@ -42,7 +43,7 @@ MarchingSquares::MarchingSquares()
     , propIsoTransferFunc("isoTransferFunc", "Colors", &inData) {
     // Register ports
     addPort(inData);
-    addPort(meshOut);
+    addPort(meshIsoOut);
     addPort(meshGridOut);
 
     // Register properties
@@ -50,8 +51,11 @@ MarchingSquares::MarchingSquares()
     addProperty(propGridColor);
 
     addProperty(propDeciderType);
-    propDeciderType.addOption("midpoint", "Mid Point", 0);
-    propDeciderType.addOption("asymptotic", "Asymptotic", 1);
+    propDeciderType.addOption("asymptotic", "Asymptotic", 0);
+    propDeciderType.addOption("random", "Random", 1);
+
+    addProperty(propRandomSeed);
+    propRandomSeed.setSemantics(PropertySemantics::Text);
 
     addProperty(propMultiple);
 
@@ -69,9 +73,25 @@ MarchingSquares::MarchingSquares()
     propIsoTransferFunc.get().add(1.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
     propIsoTransferFunc.setCurrentStateAsDefault();
 
-    util::hide(propGridColor, propNumContours, propIsoTransferFunc);
+    util::hide(propGridColor, propRandomSeed, propNumContours, propIsoTransferFunc);
+
+    propDeciderType.onChange([this]() {
+        if (propDeciderType.get() == 1) {
+            util::show(propRandomSeed);
+        } else {
+            util::hide(propRandomSeed);
+        }
+    });
 
     // Show the grid color property only if grid is actually displayed
+    propShowGrid.onChange([this]() {
+        if (propShowGrid.get()) {
+            util::show(propGridColor);
+        } else {
+            util::hide(propGridColor);
+        }
+    });
+
     propShowGrid.onChange([this]() {
         if (propShowGrid.get()) {
             util::show(propGridColor);
@@ -158,6 +178,16 @@ void MarchingSquares::process() {
     drawLineSegment(vec2(bBoxMax[0], bBoxMin[1]), bBoxMin, propGridColor.get(),
                     indexBufferBBox.get(), gridvertices);
 
+    // Set the random seed to the one selected in the interface
+    randGenerator.seed(static_cast<std::mt19937::result_type>(propRandomSeed.get()));
+    // You can create a random sample between min and max with
+    float minRand = 0.0;
+    float maxRand = 1.0;
+    float rand = randomValue(minRand, maxRand);
+    LogProcessorInfo("The first random sample for seed " << propRandomSeed.get() << " between "
+                                                         << minRand << " and " << maxRand << " is "
+                                                         << rand << ".");
+
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
         // TODO: Add grid lines of the given color
@@ -216,7 +246,11 @@ void MarchingSquares::process() {
     // e.g. for the computation of a single iso contour
 
     mesh->addVertices(vertices);
-    meshOut.setData(mesh);
+    meshIsoOut.setData(mesh);
+}
+
+float MarchingSquares::randomValue(const float min, const float max) const {
+    return min + uniformReal(randGenerator) * (max - min);
 }
 
 void MarchingSquares::drawLineSegment(const vec2& v1, const vec2& v2, const vec4& color,
