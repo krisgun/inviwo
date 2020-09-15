@@ -151,12 +151,12 @@ void MarchingSquares::process() {
     // with index i ranging between [0, nx-1] and j in [0, ny-1]
     ivec2 ij = {0, 0};
     double valueAt00 = grid.getValueAtVertex(ij);
-	
+
     for (int i = 0; i < nVertPerDim[0]; i++) {
         for (int j = 0; j < nVertPerDim[1]; j++) {
-			double value = grid.getValueAtVertex({i, j});
-			LogProcessorInfo("Value at ("<< i << ","<< j <<"): " << value);
-		}
+            double value = grid.getValueAtVertex({i, j});
+            LogProcessorInfo("Value at (" << i << "," << j << "): " << value);
+        }
     }
     LogProcessorInfo("Bounding box: min: " << bBoxMin << " max: " << bBoxMax);
     // Initialize the output: mesh and vertices for the grid and bounding box
@@ -231,7 +231,19 @@ void MarchingSquares::process() {
         // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
         // and color it with the specified color (propIsoColor)
 
-    }
+        //mark all vertices
+		std::vector<std::vector<int>> binaryImage(nVertPerDim[0], std::vector<int>(nVertPerDim[1]));
+
+		for(auto i = 0; i < nVertPerDim[0]; ++i) {
+            for(auto j = 0; j < nVertPerDim[1]; ++j) {
+				if (grid.getValueAtVertex({ i,j }) >= propIsoValue) {
+                    binaryImage[i][j] = 1;
+				} else {
+                    binaryImage[i][j] = 0;                
+				}
+			}
+		} 
+	}
 
     else {
         // TODO: Draw the given number (propNumContours) of isolines between
