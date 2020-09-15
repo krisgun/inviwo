@@ -139,7 +139,8 @@ void MarchingSquares::process() {
 
     // Get the definition of our structured grid with
     // - number of vertices in each dimension {nx, ny}
-    const ivec2 nVertPerDim = grid.getNumVerticesPerDim();
+    const ivec2 nVertPerDim = grid.getNumVerticesPerDim();  //[5, 5] for simplegrid
+
     // - bounding box {xmin, ymin} - {xmax, ymax}
     const dvec2 bBoxMin = grid.getBBoxMin();
     const dvec2 bBoxMax = grid.getBBoxMax();
@@ -150,8 +151,14 @@ void MarchingSquares::process() {
     // with index i ranging between [0, nx-1] and j in [0, ny-1]
     ivec2 ij = {0, 0};
     double valueAt00 = grid.getValueAtVertex(ij);
-    LogProcessorInfo("The value at (0,0) is: " << valueAt00 << ".");
-
+	
+    for (int i = 0; i < nVertPerDim[0]; i++) {
+        for (int j = 0; j < nVertPerDim[1]; j++) {
+			double value = grid.getValueAtVertex({i, j});
+			LogProcessorInfo("Value at ("<< i << ","<< j <<"): " << value);
+		}
+    }
+    LogProcessorInfo("Bounding box: min: " << bBoxMin << " max: " << bBoxMax);
     // Initialize the output: mesh and vertices for the grid and bounding box
     auto gridmesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> gridvertices;
@@ -182,7 +189,6 @@ void MarchingSquares::process() {
 
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
-        // TODO: Add grid lines of the given color
 
         // The function drawLineSegments creates two vertices at the specified positions,
         // that are placed into the Vertex vector defining our mesh.
@@ -190,10 +196,19 @@ void MarchingSquares::process() {
         // lines/trianges/quads. Here two vertices make up a line segment.
         auto indexBufferGrid = gridmesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
-        // Draw a line segment from v1 to v2 with a the given color for the grid
-        vec2 v1 = vec2(0.5, 0.5);
-        vec2 v2 = vec2(0.7, 0.7);
-        drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
+        // Grid lines X-axis
+        for (double i = bBoxMin[0] + cellSize[0]; i < bBoxMax[0]; i += cellSize[0]) {
+            vec2 v1 = vec2(i, bBoxMin[1]);
+            vec2 v2 = vec2(i, bBoxMax[1]);
+            drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
+        }
+
+        // Grid lines Y-axis
+        for (double i = bBoxMin[1] + cellSize[1]; i < bBoxMax[1]; i = i + cellSize[1]) {
+            vec2 v1 = vec2(bBoxMin[0], i);
+            vec2 v2 = vec2(bBoxMax[0], i);
+            drawLineSegment(v1, v2, propGridColor.get(), indexBufferGrid.get(), gridvertices);
+        }
     }
 
     // Set the created grid mesh as output
