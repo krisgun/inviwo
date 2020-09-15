@@ -22,6 +22,24 @@ const ProcessorInfo MarchingSquares::processorInfo_{
     Tags::None,                    // Tags
 };
 
+const std::array<std::array<int, 4>, 16> lookupTable = {{
+    {},
+    {0, 3},
+    {0, 1},
+    {1, 3},
+    {1, 2},
+    {0, 1, 2, 3},
+    {0, 2},
+    {2, 3},
+    {2, 3},
+    {0, 2},
+    {0, 1, 2, 3},
+    {1, 2},
+    {1, 3},
+    {0, 1},
+    {0, 3},
+    {}}};
+
 const ProcessorInfo MarchingSquares::getProcessorInfo() const { return processorInfo_; }
 
 MarchingSquares::MarchingSquares()
@@ -231,19 +249,33 @@ void MarchingSquares::process() {
         // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
         // and color it with the specified color (propIsoColor)
 
-        //mark all vertices
-		std::vector<std::vector<int>> binaryImage(nVertPerDim[0], std::vector<int>(nVertPerDim[1]));
+        // mark all vertices
+        std::vector<std::vector<int>> binaryImage(nVertPerDim[0], std::vector<int>(nVertPerDim[1]));
 
-		for(auto i = 0; i < nVertPerDim[0]; ++i) {
-            for(auto j = 0; j < nVertPerDim[1]; ++j) {
-				if (grid.getValueAtVertex({ i,j }) >= propIsoValue) {
+        for (auto i = 0; i < nVertPerDim[0]; ++i) {
+            for (auto j = 0; j < nVertPerDim[1]; ++j) {
+                if (grid.getValueAtVertex({i, j}) >= propIsoValue) {
                     binaryImage[i][j] = 1;
-				} else {
-                    binaryImage[i][j] = 0;                
-				}
-			}
-		} 
-	}
+                } else {
+                    binaryImage[i][j] = 0;
+                }
+                LogProcessorInfo("Binary (" << i << ", " << j << "): " << binaryImage[i][j])
+            }
+        }
+
+        // Build binary index
+        for (auto i = 0; i < nVertPerDim[0] - 1; i++) {
+            for (auto j = 0; j < nVertPerDim[1] - 1; j++) {
+                auto total = 0;
+                total |= binaryImage[i][j];
+                total |= (binaryImage[i + 1][j] << 1);
+                total |= (binaryImage[i + 1][j + 1] << 2);
+                total |= (binaryImage[i][j + 1] << 3);
+
+                LogProcessorInfo("Total, base vertices (" << i << ", " << j << "): " << total)
+            }
+        }
+    }
 
     else {
         // TODO: Draw the given number (propNumContours) of isolines between
