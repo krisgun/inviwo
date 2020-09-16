@@ -296,14 +296,8 @@ void MarchingSquares::process() {
                         break;
                     case (4):
                     case (11): {
-                        LogProcessorInfo("p1: " << p1[0] << ", " << p1[1] << ", " << p1[2])
-                        LogProcessorInfo("p2: " << p2[0] << ", " << p2[1] << ", " << p2[2])
-                        LogProcessorInfo("p3: " << p3[0] << ", " << p3[1] << ", " << p3[2])
-                                             
                         double y = inverseLinearInterpolation(propIsoValue, {p1[2],p2[2]}, {p1[1], p2[1]});
-                        LogProcessorInfo("y: " << y)
                         double x = inverseLinearInterpolation(propIsoValue, {p3[2],p2[2]}, {p3[0], p2[0]});
-                        LogProcessorInfo("x: " << x)
 					                      
                         vec2 v1 = {p1[0], y};
                         vec2 v2 = {x, p2[1]};
@@ -311,18 +305,46 @@ void MarchingSquares::process() {
                         drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
                         break;
                         }
-                    case (5):
-                    case (10):
-                        /*
-                        vec2 v1 = { p0[0] + cellSize[0] / 2, p0[1]};
-                        vec2 v2 = { p1[0], p1[1] + cellSize[1] / 2 };
-                        vec2 v3 = { p2[0] - cellSize[0] / 2, p2[1] };
-                        vec2 v4 = { p3[0], p3[1] - cellSize[0] / 2 };
+                    case (5): 
+                    case (10): {
+						
+                        double e0 = inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]},{p0[0], p1[0]});
+                        double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},{p1[1], p2[1]}); //y-dir
+                        double e2 = inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]},{p2[0], p3[0]});
+                        double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},{p0[1], p3[1]}); //y-dir
 
-                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
-                        drawLineSegment(v3, v4, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
-                        */
+						if (e0 >= e2) {
+							//case 5
+							vec2 v1 = {e0, p0[1]};
+							vec2 v2 = {p1[0], e1};
+							vec2 v3 = {e2, p2[1]};
+							vec2 v4 = {p3[0], e3};
+
+							drawLineSegment(v1, v2, propIsoColor.get(),
+											indexBufferIsoContour.get(),
+											vertices);
+							drawLineSegment(v3, v4, propIsoColor.get(),
+											indexBufferIsoContour.get(),
+											vertices);
+							
+						} else {
+                            vec2 v1 = {e0, p0[1]};
+                            vec2 v2 = {p1[0], e1};
+                            vec2 v3 = {e2, p2[1]};
+                            vec2 v4 = {p3[0], e3};
+
+                            drawLineSegment(
+                                v1, v4, propIsoColor.get(),
+                                indexBufferIsoContour.get(),
+                                vertices);
+                            drawLineSegment(
+                                v2, v3, propIsoColor.get(),
+                                indexBufferIsoContour.get(),
+                                vertices);
+						}
 						break;
+					}
+                 
                     default:
                         break;
                 }
