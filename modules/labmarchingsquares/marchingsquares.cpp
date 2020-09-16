@@ -272,7 +272,45 @@ void MarchingSquares::process() {
                 total |= (binaryImage[i + 1][j + 1] << 2);
                 total |= (binaryImage[i][j + 1] << 3);
 
-                LogProcessorInfo("Total, base vertices (" << i << ", " << j << "): " << total)
+                auto p0 = grid.getPositionAtVertex({ i,j });
+                auto p1 = grid.getPositionAtVertex({ i + 1, j });
+                auto p2 = grid.getPositionAtVertex({ i + 1, j + 1 });
+                auto p3 = grid.getPositionAtVertex({ i, j + 1 });
+                auto indexBufferIsoContour = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+
+                switch (total) {
+                    case (0):
+                    case (15):
+                        break;
+                    case (1):
+                        break;
+                    case (2):
+                    case (13):
+                        break;
+                    case (4):
+                    case (11): {
+                        
+ 
+                        vec2 v1 = {p1[0], p1[1] + cellSize[1]/2};
+                        vec2 v2 = {p3[0]+cellSize[0]/2, p3[1]};
+
+                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
+                        break;
+                        }
+                    case (5):
+                    case (10):
+
+                        vec2 v1 = { p0[0] + cellSize[0] / 2, p0[1]};
+                        vec2 v2 = { p1[0], p1[1] + cellSize[1] / 2 };
+                        vec2 v3 = { p2[0] - cellSize[0] / 2, p2[1] };
+                        vec2 v4 = { p3[0], p3[1] - cellSize[0] / 2 };
+
+                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
+                        drawLineSegment(v3, v4, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -298,6 +336,10 @@ void MarchingSquares::process() {
 
     mesh->addVertices(vertices);
     meshIsoOut.setData(mesh);
+}
+
+double MarchingSquares::inverseLinearInterpolation(const double isoValue, vec2 firstPoint, vec2 secondPoint) {
+    return (isoValue*firstPoint[0] - isoValue*secondPoint[0] + firstPoint[1]*secondPoint[0]);
 }
 
 float MarchingSquares::randomValue(const float min, const float max) const {
