@@ -173,10 +173,10 @@ void MarchingSquares::process() {
     for (int i = 0; i < nVertPerDim[0]; i++) {
         for (int j = 0; j < nVertPerDim[1]; j++) {
             double value = grid.getValueAtVertex({i, j});
-            LogProcessorInfo("Value at (" << i << "," << j << "): " << value);
+            //LogProcessorInfo("Value at (" << i << "," << j << "): " << value);
         }
     }
-    LogProcessorInfo("Bounding box: min: " << bBoxMin << " max: " << bBoxMax);
+    //LogProcessorInfo("Bounding box: min: " << bBoxMin << " max: " << bBoxMax);
     // Initialize the output: mesh and vertices for the grid and bounding box
     auto gridmesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> gridvertices;
@@ -259,47 +259,61 @@ void MarchingSquares::process() {
                 } else {
                     binaryImage[i][j] = 0;
                 }
-                LogProcessorInfo("Binary (" << i << ", " << j << "): " << binaryImage[i][j])
+                //LogProcessorInfo("Binary (" << i << ", " << j << "): " << binaryImage[i][j])
             }
         }
 
         // Build binary index
         for (auto i = 0; i < nVertPerDim[0] - 1; i++) {
             for (auto j = 0; j < nVertPerDim[1] - 1; j++) {
-                auto total = 0;
-                total |= binaryImage[i][j];
-                total |= (binaryImage[i + 1][j] << 1);
-                total |= (binaryImage[i + 1][j + 1] << 2);
-                total |= (binaryImage[i][j + 1] << 3);
+                auto cIndex = 0;
+                cIndex |= binaryImage[i][j];
+                cIndex |= (binaryImage[i + 1][j] << 1);
+                cIndex |= (binaryImage[i + 1][j + 1] << 2);
+                cIndex |= (binaryImage[i][j + 1] << 3);
 
-                auto p0 = grid.getPositionAtVertex({ i,j });
-                auto p1 = grid.getPositionAtVertex({ i + 1, j });
-                auto p2 = grid.getPositionAtVertex({ i + 1, j + 1 });
-                auto p3 = grid.getPositionAtVertex({ i, j + 1 });
+                vec3 p0 = {grid.getPositionAtVertex({ i,j }), grid.getValueAtVertex({i,j})};
+                vec3 p1 = {grid.getPositionAtVertex({ i + 1,j }), grid.getValueAtVertex({i + 1,j})};
+                vec3 p2 = {grid.getPositionAtVertex({ i + 1,j + 1}), grid.getValueAtVertex({i + 1,j + 1})};
+                vec3 p3 = {grid.getPositionAtVertex({ i,j + 1}), grid.getValueAtVertex({i,j + 1})};
+     
                 auto indexBufferIsoContour = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
-                switch (total) {
+                switch (cIndex) {
                     case (0):
                     case (15):
                         break;
                     case (1):
+                    case (14):
+						//interpolera för x (p0,p1) och för y (p0,p3) 
+						//auto x = interpolate(isoline, {z0, z1}, {x0, x1})
+						//auto y = interpolate(isoline, {z0, z1}, {y0, y3})
+						//vec2 v1 = {x , p0[1]};
+						//vec2 v2 = {p0[0], y};
                         break;
                     case (2):
                     case (13):
                         break;
                     case (4):
                     case (11): {
-                        
- 
-                        vec2 v1 = {p1[0], p1[1] + cellSize[1]/2};
-                        vec2 v2 = {p3[0]+cellSize[0]/2, p3[1]};
+                        LogProcessorInfo("p1: " << p1[0] << ", " << p1[1] << ", " << p1[2])
+                        LogProcessorInfo("p2: " << p2[0] << ", " << p2[1] << ", " << p2[2])
+                        LogProcessorInfo("p3: " << p3[0] << ", " << p3[1] << ", " << p3[2])
+                                             
+                        double y = inverseLinearInterpolation(propIsoValue, {p1[2],p2[2]}, {p1[1], p2[1]});
+                        LogProcessorInfo("y: " << y)
+                        double x = inverseLinearInterpolation(propIsoValue, {p3[2],p2[2]}, {p3[0], p2[0]});
+                        LogProcessorInfo("x: " << x)
+					                      
+                        vec2 v1 = {p1[0], y};
+                        vec2 v2 = {x, p2[1]};
 
                         drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
                         break;
                         }
                     case (5):
                     case (10):
-
+                        /*
                         vec2 v1 = { p0[0] + cellSize[0] / 2, p0[1]};
                         vec2 v2 = { p1[0], p1[1] + cellSize[1] / 2 };
                         vec2 v3 = { p2[0] - cellSize[0] / 2, p2[1] };
@@ -307,7 +321,8 @@ void MarchingSquares::process() {
 
                         drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
                         drawLineSegment(v3, v4, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
-                        break;
+                        */
+						break;
                     default:
                         break;
                 }
@@ -338,8 +353,13 @@ void MarchingSquares::process() {
     meshIsoOut.setData(mesh);
 }
 
-double MarchingSquares::inverseLinearInterpolation(const double isoValue, vec2 firstPoint, vec2 secondPoint) {
-    return (isoValue*firstPoint[0] - isoValue*secondPoint[0] + firstPoint[1]*secondPoint[0]);
+double MarchingSquares::inverseLinearInterpolation(const double isoValue, vec2 z, vec2 p) {
+    if (z[0] == isoValue) {
+        return p[0];
+    } else if (z[1] == isoValue) {
+        return p[1];
+    }
+    return p[0] + ((isoValue - z[0])/((z[1]-z[0])/(p[1]-p[0])));
 }
 
 float MarchingSquares::randomValue(const float min, const float max) const {
