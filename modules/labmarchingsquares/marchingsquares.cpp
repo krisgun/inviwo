@@ -145,8 +145,8 @@ void MarchingSquares::process() {
     propIsoValue.setMaxValue(maxValue);
 
     // You can print to the Inviwo console with Log-commands:
-    LogProcessorInfo("This scalar field contains values between " << minValue << " and " << maxValue
-                                                                  << ".");
+    //LogProcessorInfo("This scalar field contains values between " << minValue << " and " << maxValue
+                                                                 // << ".");
     // You can also inform about errors and warnings:
     // LogProcessorWarn("I am warning about something"); // Will print warning message in yellow
     // LogProcessorError("I am letting you know about an error"); // Will print error message in red
@@ -201,9 +201,6 @@ void MarchingSquares::process() {
     float minRand = 0.0;
     float maxRand = 1.0;
     float rand = randomValue(minRand, maxRand);
-    LogProcessorInfo("The first random sample for seed " << propRandomSeed.get() << " between "
-                                                         << minRand << " and " << maxRand << " is "
-                                                         << rand << ".");
 
     // Properties are accessed with propertyName.get()
     if (propShowGrid.get()) {
@@ -284,23 +281,51 @@ void MarchingSquares::process() {
                     case (15):
                         break;
                     case (1):
-                    case (14):
-						//interpolera för x (p0,p1) och för y (p0,p3) 
-						//auto x = interpolate(isoline, {z0, z1}, {x0, x1})
-						//auto y = interpolate(isoline, {z0, z1}, {y0, y3})
-						//vec2 v1 = {x , p0[1]};
-						//vec2 v2 = {p0[0], y};
+                    case (14): {
+                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
+                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
+						
+                        vec2 v1 = { e0, p0[1] };
+                        vec2 v2 = { p3[0], e3 };
+
+                        drawLineSegment(v1, v2, propIsoColor.get(),
+                            indexBufferIsoContour.get(),
+                            vertices);
                         break;
+                    }
                     case (2):
-                    case (13):
+                    case (13): {
+                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
+                        double e1 = inverseLinearInterpolation(propIsoValue, { p1[2], p2[2] }, { p1[1], p2[1] }); //y-dir
+
+                        vec2 v1 = { e0, p0[1] };
+                        vec2 v2 = { p1[0], e1 };
+
+                        drawLineSegment(v1, v2, propIsoColor.get(),
+                            indexBufferIsoContour.get(),
+                            vertices);
+
                         break;
+                        }
+                    case (3):
+                    case (12): {
+                        double e1 = inverseLinearInterpolation(propIsoValue, { p1[2], p2[2] }, { p1[1], p2[1] }); //y-dir
+                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
+
+                        vec2 v1 = { p1[0], e1 };
+                        vec2 v2 = { p3[0], e3 };
+
+                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
+
+                        break;
+                        }
                     case (4):
                     case (11): {
-                        double y = inverseLinearInterpolation(propIsoValue, {p1[2],p2[2]}, {p1[1], p2[1]});
-                        double x = inverseLinearInterpolation(propIsoValue, {p3[2],p2[2]}, {p3[0], p2[0]});
+                        double e1 = inverseLinearInterpolation(propIsoValue, {p1[2],p2[2]}, {p1[1], p2[1]});
+                        double e2 = inverseLinearInterpolation(propIsoValue, {p3[2],p2[2]}, {p3[0], p2[0]});
 					                      
-                        vec2 v1 = {p1[0], y};
-                        vec2 v2 = {x, p2[1]};
+                        vec2 v1 = {p1[0], e1};
+                        vec2 v2 = {e2, p2[1]};
 
                         drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
                         break;
@@ -313,7 +338,18 @@ void MarchingSquares::process() {
                         double e2 = inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]},{p2[0], p3[0]});
                         double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},{p0[1], p3[1]}); //y-dir
 
-						if (e0 >= e2) {
+                        int caseFive = 1;
+
+                        if (propDeciderType.get() == 0) {
+                            if (e2 > e0) {
+                                caseFive = 0;
+                            }
+                        }
+                        else { 
+                            caseFive = randomValue(0, 2);
+                        }
+
+						if (caseFive == 1) {
 							//case 5
 							vec2 v1 = {e0, p0[1]};
 							vec2 v2 = {p1[0], e1};
@@ -328,6 +364,7 @@ void MarchingSquares::process() {
 											vertices);
 							
 						} else {
+                            //case 10
                             vec2 v1 = {e0, p0[1]};
                             vec2 v2 = {p1[0], e1};
                             vec2 v3 = {e2, p2[1]};
@@ -344,7 +381,33 @@ void MarchingSquares::process() {
 						}
 						break;
 					}
-                 
+                    case (6): 
+                    case (9): {
+                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
+                        double e2 = inverseLinearInterpolation(propIsoValue, { p2[2], p3[2] }, { p2[0], p3[0] });
+
+                        vec2 v1 = { e0, p0[1] };
+                        vec2 v2 = { e2, p2[1] };
+                        
+                        drawLineSegment(
+                            v1, v2, propIsoColor.get(),
+                            indexBufferIsoContour.get(),
+                            vertices);
+                        break;
+                        }
+                    case (7):
+                    case (8): {
+                        double e2 = inverseLinearInterpolation(propIsoValue, { p2[2], p3[2] }, { p2[0], p3[0] });
+                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
+                        vec2 v1 = { e2, p2[1] };
+                        vec2 v2 = { p3[0], e3 };
+                        drawLineSegment(
+                            v1, v2, propIsoColor.get(),
+                            indexBufferIsoContour.get(),
+                            vertices);
+
+                        break;
+                        }
                     default:
                         break;
                 }
@@ -355,6 +418,8 @@ void MarchingSquares::process() {
     else {
         // TODO: Draw the given number (propNumContours) of isolines between
         // the minimum and maximum value
+
+
 
         // TODO (Bonus): Use the transfer function property to assign a color
         // The transfer function normalizes the input data and sampling colors
@@ -376,11 +441,6 @@ void MarchingSquares::process() {
 }
 
 double MarchingSquares::inverseLinearInterpolation(const double isoValue, vec2 z, vec2 p) {
-    if (z[0] == isoValue) {
-        return p[0];
-    } else if (z[1] == isoValue) {
-        return p[1];
-    }
     return p[0] + ((isoValue - z[0])/((z[1]-z[0])/(p[1]-p[0])));
 }
 
