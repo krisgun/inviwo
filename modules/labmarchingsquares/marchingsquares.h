@@ -82,7 +82,7 @@ protected:
     double inverseLinearInterpolation(const double isoValue, vec2 z, vec2 p);
 
 	//Renders isoline for value n
-    void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
+    void MarchingSquares::renderIsoline(double isoValue, vec4* color, ScalarField2* grid,
                                         std::shared_ptr<inviwo::BasicMesh> mesh,
                                         std::vector<BasicMesh::Vertex>* vertices);
 

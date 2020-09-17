@@ -87,8 +87,8 @@ MarchingSquares::MarchingSquares()
 
     // The default transfer function has just two blue points
     propIsoTransferFunc.get().clear();
-    propIsoTransferFunc.get().add(0.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    propIsoTransferFunc.get().add(1.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    propIsoTransferFunc.get().add(0.0f, vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    propIsoTransferFunc.get().add(1.0f, vec4(1.0f, 0.0f, 0.0f, 1.0f));
     propIsoTransferFunc.setCurrentStateAsDefault();
 
     util::hide(propGridColor, propRandomSeed, propNumContours, propIsoTransferFunc);
@@ -116,13 +116,13 @@ MarchingSquares::MarchingSquares()
             util::show(propIsoValue, propIsoColor);
             util::hide(propNumContours, propIsoTransferFunc);
         } else {
-            util::hide(propIsoValue);
-            util::show(propIsoColor, propNumContours);
+            //util::hide(propIsoValue);
+            //util::show(propIsoColor, propNumContours);
 
             // TODO (Bonus): Comment out above if you are using the transfer function
             // and comment in below instead
-            // util::hide(propIsoValue, propIsoColor);
-            // util::show(propNumContours, propIsoTransferFunc);
+            util::hide(propIsoValue, propIsoColor);
+            util::show(propNumContours, propIsoTransferFunc);
         }
     });
 }
@@ -243,7 +243,7 @@ void MarchingSquares::process() {
     
     if (propMultiple.get() == 0) {
         //LogProcessorInfo("Hit kommer vi också");
-        renderIsoline(propIsoValue, &grid, mesh, &vertices);
+        renderIsoline(propIsoValue, &propIsoColor.get(), &grid, mesh, &vertices);
     }
     else {
         
@@ -255,9 +255,12 @@ void MarchingSquares::process() {
 
         //LogProcessorInfo("MinVal: " << minValue);
 
-		for (auto k = 1; k <= propNumContours; k++) {
+		for (float k = 1; k <= propNumContours; k++) {
 			LogProcessorInfo("k: " << k);
-			renderIsoline(minValue + k*stepSize, &grid, mesh, &vertices);
+			// propIsoTransferFunc.get().add(0.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
+            vec4 color = propIsoTransferFunc.get().sample(k/(propNumContours+1));
+            LogProcessorInfo("Color: " << color);
+			renderIsoline(minValue + k*stepSize, &color, &grid, mesh, &vertices);
 		}
 
 		 LogProcessorInfo("MaxVal: " << maxValue);
@@ -282,7 +285,7 @@ void MarchingSquares::process() {
     meshIsoOut.setData(mesh);
 }
 
-void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
+void MarchingSquares::renderIsoline(double isoValue, vec4* color, ScalarField2* grid,
                                     std::shared_ptr<inviwo::BasicMesh> mesh,
                                     std::vector<BasicMesh::Vertex>* vertices) {
     // Get the definition of our structured grid with
@@ -338,7 +341,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                     vec2 v1 = {e0, p0[1]};
                     vec2 v2 = {p3[0], e3};
 
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
                     break;
                 }
@@ -352,7 +355,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                     vec2 v1 = {e0, p0[1]};
                     vec2 v2 = {p1[0], e1};
 
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
 
                     break;
@@ -367,7 +370,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                     vec2 v1 = {p1[0], e1};
                     vec2 v2 = {p3[0], e3};
 
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
 
                     break;
@@ -382,7 +385,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                     vec2 v1 = {p1[0], e1};
                     vec2 v2 = {e2, p2[1]};
 
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
                     break;
                 }
@@ -415,9 +418,9 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                         vec2 v3 = {e2, p2[1]};
                         vec2 v4 = {p3[0], e3};
 
-                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                        drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                         *vertices);
-                        drawLineSegment(v3, v4, propIsoColor.get(), indexBufferIsoContour.get(),
+                        drawLineSegment(v3, v4, *color, indexBufferIsoContour.get(),
                                         *vertices);
 
                     } else {
@@ -427,9 +430,9 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                         vec2 v3 = {e2, p2[1]};
                         vec2 v4 = {p3[0], e3};
 
-                        drawLineSegment(v1, v4, propIsoColor.get(), indexBufferIsoContour.get(),
+                        drawLineSegment(v1, v4, *color, indexBufferIsoContour.get(),
                                         *vertices);
-                        drawLineSegment(v2, v3, propIsoColor.get(), indexBufferIsoContour.get(),
+                        drawLineSegment(v2, v3, *color, indexBufferIsoContour.get(),
                                         *vertices);
                     }
                     break;
@@ -444,7 +447,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                     vec2 v1 = {e0, p0[1]};
                     vec2 v2 = {e2, p2[1]};
 
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
                     break;
                 }
@@ -456,7 +459,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                                                            {p0[1], p3[1]});  // y-dir
                     vec2 v1 = {e2, p2[1]};
                     vec2 v2 = {p3[0], e3};
-                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                    drawLineSegment(v1, v2, *color, indexBufferIsoContour.get(),
                                     *vertices);
 
                     break;
