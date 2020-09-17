@@ -81,6 +81,11 @@ protected:
     // Calculates the point where the given isoValue can be found between two points (x0, y0) and (x1, y1)
     double inverseLinearInterpolation(const double isoValue, vec2 z, vec2 p);
 
+	//Renders isoline for value n
+    void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
+                                        std::shared_ptr<inviwo::BasicMesh> mesh,
+                                        std::vector<BasicMesh::Vertex>* vertices);
+
     // Ports
 public:
     // Input data

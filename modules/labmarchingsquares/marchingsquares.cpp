@@ -155,15 +155,14 @@ void MarchingSquares::process() {
     // Log...() displays the identifier of the processor (thus with multiple processors of the
     // same kind you would not know which one the information is coming from
 
-    // Get the definition of our structured grid with
-    // - number of vertices in each dimension {nx, ny}
-    const ivec2 nVertPerDim = grid.getNumVerticesPerDim();  //[5, 5] for simplegrid
 
     // - bounding box {xmin, ymin} - {xmax, ymax}
     const dvec2 bBoxMin = grid.getBBoxMin();
     const dvec2 bBoxMax = grid.getBBoxMax();
     // - cell size {dx, dy}
     const dvec2 cellSize = grid.getCellSize();
+
+	const ivec2 nVertPerDim = grid.getNumVerticesPerDim();  //[5, 5] for simplegrid
 
     // Values at the vertex positions can be accessed by the indices of the vertex
     // with index i ranging between [0, nx-1] and j in [0, ny-1]
@@ -243,176 +242,7 @@ void MarchingSquares::process() {
     std::vector<BasicMesh::Vertex> vertices;
 
     if (propMultiple.get() == 0) {
-        // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
-        // and color it with the specified color (propIsoColor)
-
-        // mark all vertices
-        std::vector<std::vector<int>> binaryImage(nVertPerDim[0], std::vector<int>(nVertPerDim[1]));
-
-        for (auto i = 0; i < nVertPerDim[0]; ++i) {
-            for (auto j = 0; j < nVertPerDim[1]; ++j) {
-                if (grid.getValueAtVertex({i, j}) >= propIsoValue) {
-                    binaryImage[i][j] = 1;
-                } else {
-                    binaryImage[i][j] = 0;
-                }
-                //LogProcessorInfo("Binary (" << i << ", " << j << "): " << binaryImage[i][j])
-            }
-        }
-
-        // Build binary index
-        for (auto i = 0; i < nVertPerDim[0] - 1; i++) {
-            for (auto j = 0; j < nVertPerDim[1] - 1; j++) {
-                auto cIndex = 0;
-                cIndex |= binaryImage[i][j];
-                cIndex |= (binaryImage[i + 1][j] << 1);
-                cIndex |= (binaryImage[i + 1][j + 1] << 2);
-                cIndex |= (binaryImage[i][j + 1] << 3);
-
-                vec3 p0 = {grid.getPositionAtVertex({ i,j }), grid.getValueAtVertex({i,j})};
-                vec3 p1 = {grid.getPositionAtVertex({ i + 1,j }), grid.getValueAtVertex({i + 1,j})};
-                vec3 p2 = {grid.getPositionAtVertex({ i + 1,j + 1}), grid.getValueAtVertex({i + 1,j + 1})};
-                vec3 p3 = {grid.getPositionAtVertex({ i,j + 1}), grid.getValueAtVertex({i,j + 1})};
-     
-                auto indexBufferIsoContour = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
-
-                switch (cIndex) {
-                    case (0):
-                    case (15):
-                        break;
-                    case (1):
-                    case (14): {
-                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
-                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
-						
-                        vec2 v1 = { e0, p0[1] };
-                        vec2 v2 = { p3[0], e3 };
-
-                        drawLineSegment(v1, v2, propIsoColor.get(),
-                            indexBufferIsoContour.get(),
-                            vertices);
-                        break;
-                    }
-                    case (2):
-                    case (13): {
-                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
-                        double e1 = inverseLinearInterpolation(propIsoValue, { p1[2], p2[2] }, { p1[1], p2[1] }); //y-dir
-
-                        vec2 v1 = { e0, p0[1] };
-                        vec2 v2 = { p1[0], e1 };
-
-                        drawLineSegment(v1, v2, propIsoColor.get(),
-                            indexBufferIsoContour.get(),
-                            vertices);
-
-                        break;
-                        }
-                    case (3):
-                    case (12): {
-                        double e1 = inverseLinearInterpolation(propIsoValue, { p1[2], p2[2] }, { p1[1], p2[1] }); //y-dir
-                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
-
-                        vec2 v1 = { p1[0], e1 };
-                        vec2 v2 = { p3[0], e3 };
-
-                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
-
-                        break;
-                        }
-                    case (4):
-                    case (11): {
-                        double e1 = inverseLinearInterpolation(propIsoValue, {p1[2],p2[2]}, {p1[1], p2[1]});
-                        double e2 = inverseLinearInterpolation(propIsoValue, {p3[2],p2[2]}, {p3[0], p2[0]});
-					                      
-                        vec2 v1 = {p1[0], e1};
-                        vec2 v2 = {e2, p2[1]};
-
-                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(), vertices);
-                        break;
-                        }
-                    case (5): 
-                    case (10): {
-						
-                        double e0 = inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]},{p0[0], p1[0]});
-                        double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},{p1[1], p2[1]}); //y-dir
-                        double e2 = inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]},{p2[0], p3[0]});
-                        double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},{p0[1], p3[1]}); //y-dir
-
-                        int caseFive = 1;
-
-                        if (propDeciderType.get() == 0) {
-                            if (e2 > e0) {
-                                caseFive = 0;
-                            }
-                        }
-                        else { 
-                            caseFive = randomValue(0, 2);
-                        }
-
-						if (caseFive == 1) {
-							//case 5
-							vec2 v1 = {e0, p0[1]};
-							vec2 v2 = {p1[0], e1};
-							vec2 v3 = {e2, p2[1]};
-							vec2 v4 = {p3[0], e3};
-
-							drawLineSegment(v1, v2, propIsoColor.get(),
-											indexBufferIsoContour.get(),
-											vertices);
-							drawLineSegment(v3, v4, propIsoColor.get(),
-											indexBufferIsoContour.get(),
-											vertices);
-							
-						} else {
-                            //case 10
-                            vec2 v1 = {e0, p0[1]};
-                            vec2 v2 = {p1[0], e1};
-                            vec2 v3 = {e2, p2[1]};
-                            vec2 v4 = {p3[0], e3};
-
-                            drawLineSegment(
-                                v1, v4, propIsoColor.get(),
-                                indexBufferIsoContour.get(),
-                                vertices);
-                            drawLineSegment(
-                                v2, v3, propIsoColor.get(),
-                                indexBufferIsoContour.get(),
-                                vertices);
-						}
-						break;
-					}
-                    case (6): 
-                    case (9): {
-                        double e0 = inverseLinearInterpolation(propIsoValue, { p0[2], p1[2] }, { p0[0], p1[0] });
-                        double e2 = inverseLinearInterpolation(propIsoValue, { p2[2], p3[2] }, { p2[0], p3[0] });
-
-                        vec2 v1 = { e0, p0[1] };
-                        vec2 v2 = { e2, p2[1] };
-                        
-                        drawLineSegment(
-                            v1, v2, propIsoColor.get(),
-                            indexBufferIsoContour.get(),
-                            vertices);
-                        break;
-                        }
-                    case (7):
-                    case (8): {
-                        double e2 = inverseLinearInterpolation(propIsoValue, { p2[2], p3[2] }, { p2[0], p3[0] });
-                        double e3 = inverseLinearInterpolation(propIsoValue, { p0[2], p3[2] }, { p0[1], p3[1] }); //y-dir
-                        vec2 v1 = { e2, p2[1] };
-                        vec2 v2 = { p3[0], e3 };
-                        drawLineSegment(
-                            v1, v2, propIsoColor.get(),
-                            indexBufferIsoContour.get(),
-                            vertices);
-
-                        break;
-                        }
-                    default:
-                        break;
-                }
-            }
-        }
+        renderIsoline(propIsoValue, &grid, mesh, &vertices);
     }
 
     else {
@@ -438,6 +268,193 @@ void MarchingSquares::process() {
 
     mesh->addVertices(vertices);
     meshIsoOut.setData(mesh);
+}
+
+void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
+                                    std::shared_ptr<inviwo::BasicMesh> mesh,
+                                    std::vector<BasicMesh::Vertex>* vertices) {
+    // Get the definition of our structured grid with
+    // - number of vertices in each dimension {nx, ny}
+    const ivec2 nVertPerDim = grid->getNumVerticesPerDim();  //[5, 5] for simplegrid
+	
+    // TODO: Draw a single isoline at the specified isovalue (propIsoValue)
+    // and color it with the specified color (propIsoColor)
+
+    // mark all vertices
+    std::vector<std::vector<int>> binaryImage(nVertPerDim[0], std::vector<int>(nVertPerDim[1]));
+
+    for (auto i = 0; i < nVertPerDim[0]; ++i) {
+        for (auto j = 0; j < nVertPerDim[1]; ++j) {
+            if (grid->getValueAtVertex({i, j}) >= propIsoValue) {
+                binaryImage[i][j] = 1;
+            } else {
+                binaryImage[i][j] = 0;
+            }
+            // LogProcessorInfo("Binary (" << i << ", " << j << "): " << binaryImage[i][j])
+        }
+    }
+
+    // Build binary index
+    for (auto i = 0; i < nVertPerDim[0] - 1; i++) {
+        for (auto j = 0; j < nVertPerDim[1] - 1; j++) {
+            auto cIndex = 0;
+            cIndex |= binaryImage[i][j];
+            cIndex |= (binaryImage[i + 1][j] << 1);
+            cIndex |= (binaryImage[i + 1][j + 1] << 2);
+            cIndex |= (binaryImage[i][j + 1] << 3);
+
+            vec3 p0 = {grid->getPositionAtVertex({i, j}), grid->getValueAtVertex({i, j})};
+            vec3 p1 = {grid->getPositionAtVertex({i + 1, j}), grid->getValueAtVertex({i + 1, j})};
+            vec3 p2 = {grid->getPositionAtVertex({i + 1, j + 1}),
+                       grid->getValueAtVertex({i + 1, j + 1})};
+            vec3 p3 = {grid->getPositionAtVertex({i, j + 1}), grid->getValueAtVertex({i, j + 1})};
+
+            auto indexBufferIsoContour =
+                mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
+
+            switch (cIndex) {
+                case (0):
+                case (15):
+                    break;
+                case (1):
+                case (14): {
+                    double e0 =
+                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                                                           {p0[1], p3[1]});  // y-dir
+
+                    vec2 v1 = {e0, p0[1]};
+                    vec2 v2 = {p3[0], e3};
+
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+                    break;
+                }
+                case (2):
+                case (13): {
+                    double e0 =
+                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                                                           {p1[1], p2[1]});  // y-dir
+
+                    vec2 v1 = {e0, p0[1]};
+                    vec2 v2 = {p1[0], e1};
+
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+
+                    break;
+                }
+                case (3):
+                case (12): {
+                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                                                           {p1[1], p2[1]});  // y-dir
+                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                                                           {p0[1], p3[1]});  // y-dir
+
+                    vec2 v1 = {p1[0], e1};
+                    vec2 v2 = {p3[0], e3};
+
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+
+                    break;
+                }
+                case (4):
+                case (11): {
+                    double e1 =
+                        inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]}, {p1[1], p2[1]});
+                    double e2 =
+                        inverseLinearInterpolation(propIsoValue, {p3[2], p2[2]}, {p3[0], p2[0]});
+
+                    vec2 v1 = {p1[0], e1};
+                    vec2 v2 = {e2, p2[1]};
+
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+                    break;
+                }
+                case (5):
+                case (10): {
+
+                    double e0 =
+                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                                                           {p1[1], p2[1]});  // y-dir
+                    double e2 =
+                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                                                           {p0[1], p3[1]});  // y-dir
+
+                    int caseFive = 1;
+
+                    if (propDeciderType.get() == 0) {
+                        if (e2 > e0) {
+                            caseFive = 0;
+                        }
+                    } else {
+                        caseFive = randomValue(0, 2);
+                    }
+
+                    if (caseFive == 1) {
+                        // case 5
+                        vec2 v1 = {e0, p0[1]};
+                        vec2 v2 = {p1[0], e1};
+                        vec2 v3 = {e2, p2[1]};
+                        vec2 v4 = {p3[0], e3};
+
+                        drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                        *vertices);
+                        drawLineSegment(v3, v4, propIsoColor.get(), indexBufferIsoContour.get(),
+                                        *vertices);
+
+                    } else {
+                        // case 10
+                        vec2 v1 = {e0, p0[1]};
+                        vec2 v2 = {p1[0], e1};
+                        vec2 v3 = {e2, p2[1]};
+                        vec2 v4 = {p3[0], e3};
+
+                        drawLineSegment(v1, v4, propIsoColor.get(), indexBufferIsoContour.get(),
+                                        *vertices);
+                        drawLineSegment(v2, v3, propIsoColor.get(), indexBufferIsoContour.get(),
+                                        *vertices);
+                    }
+                    break;
+                }
+                case (6):
+                case (9): {
+                    double e0 =
+                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e2 =
+                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+
+                    vec2 v1 = {e0, p0[1]};
+                    vec2 v2 = {e2, p2[1]};
+
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+                    break;
+                }
+                case (7):
+                case (8): {
+                    double e2 =
+                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                                                           {p0[1], p3[1]});  // y-dir
+                    vec2 v1 = {e2, p2[1]};
+                    vec2 v2 = {p3[0], e3};
+                    drawLineSegment(v1, v2, propIsoColor.get(), indexBufferIsoContour.get(),
+                                    *vertices);
+
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+	
 }
 
 double MarchingSquares::inverseLinearInterpolation(const double isoValue, vec2 z, vec2 p) {
