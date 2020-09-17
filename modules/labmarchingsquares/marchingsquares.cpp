@@ -22,24 +22,6 @@ const ProcessorInfo MarchingSquares::processorInfo_{
     Tags::None,                    // Tags
 };
 
-const std::array<std::array<int, 4>, 16> lookupTable = {{
-    {},
-    {0, 3},
-    {0, 1},
-    {1, 3},
-    {1, 2},
-    {0, 1, 2, 3},
-    {0, 2},
-    {2, 3},
-    {2, 3},
-    {0, 2},
-    {0, 1, 2, 3},
-    {1, 2},
-    {1, 3},
-    {0, 1},
-    {0, 3},
-    {}}};
-
 const ProcessorInfo MarchingSquares::getProcessorInfo() const { return processorInfo_; }
 
 MarchingSquares::MarchingSquares()
@@ -88,6 +70,7 @@ MarchingSquares::MarchingSquares()
     // The default transfer function has just two blue points
     propIsoTransferFunc.get().clear();
     propIsoTransferFunc.get().add(0.0f, vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    propIsoTransferFunc.get().add(0.5f, vec4(0.0f, 1.0f, 0.0f, 1.0f));
     propIsoTransferFunc.get().add(1.0f, vec4(1.0f, 0.0f, 0.0f, 1.0f));
     propIsoTransferFunc.setCurrentStateAsDefault();
 
@@ -256,14 +239,10 @@ void MarchingSquares::process() {
         //LogProcessorInfo("MinVal: " << minValue);
 
 		for (float k = 1; k <= propNumContours; k++) {
-			LogProcessorInfo("k: " << k);
 			// propIsoTransferFunc.get().add(0.0f, vec4(0.0f, 0.0f, 1.0f, 1.0f));
             vec4 color = propIsoTransferFunc.get().sample(k/(propNumContours+1));
-            LogProcessorInfo("Color: " << color);
 			renderIsoline(minValue + k*stepSize, &color, &grid, mesh, &vertices);
 		}
-
-		 LogProcessorInfo("MaxVal: " << maxValue);
 
 
         // TODO (Bonus): Use the transfer function property to assign a color
