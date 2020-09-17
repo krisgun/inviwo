@@ -240,15 +240,27 @@ void MarchingSquares::process() {
     // Initialize the output: mesh and vertices
     auto mesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> vertices;
-
+    
     if (propMultiple.get() == 0) {
+        //LogProcessorInfo("Hit kommer vi också");
         renderIsoline(propIsoValue, &grid, mesh, &vertices);
     }
-
     else {
+        
         // TODO: Draw the given number (propNumContours) of isolines between
         // the minimum and maximum value
+		auto stepSize = (abs(maxValue - minValue))/(propNumContours + 1);
 
+		//vec4 color
+
+        //LogProcessorInfo("MinVal: " << minValue);
+
+		for (auto k = 1; k <= propNumContours; k++) {
+			LogProcessorInfo("k: " << k);
+			renderIsoline(minValue + k*stepSize, &grid, mesh, &vertices);
+		}
+
+		 LogProcessorInfo("MaxVal: " << maxValue);
 
 
         // TODO (Bonus): Use the transfer function property to assign a color
@@ -265,7 +277,7 @@ void MarchingSquares::process() {
     // each isoline
     // Also, consider to write helper functions to avoid code duplication
     // e.g. for the computation of a single iso contour
-
+	
     mesh->addVertices(vertices);
     meshIsoOut.setData(mesh);
 }
@@ -285,7 +297,7 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
 
     for (auto i = 0; i < nVertPerDim[0]; ++i) {
         for (auto j = 0; j < nVertPerDim[1]; ++j) {
-            if (grid->getValueAtVertex({i, j}) >= propIsoValue) {
+            if (grid->getValueAtVertex({i, j}) >= isoValue) {
                 binaryImage[i][j] = 1;
             } else {
                 binaryImage[i][j] = 0;
@@ -319,8 +331,8 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (1):
                 case (14): {
                     double e0 =
-                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
-                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                        inverseLinearInterpolation(isoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e3 = inverseLinearInterpolation(isoValue, {p0[2], p3[2]},
                                                            {p0[1], p3[1]});  // y-dir
 
                     vec2 v1 = {e0, p0[1]};
@@ -333,8 +345,8 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (2):
                 case (13): {
                     double e0 =
-                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
-                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                        inverseLinearInterpolation(isoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e1 = inverseLinearInterpolation(isoValue, {p1[2], p2[2]},
                                                            {p1[1], p2[1]});  // y-dir
 
                     vec2 v1 = {e0, p0[1]};
@@ -347,9 +359,9 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 }
                 case (3):
                 case (12): {
-                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                    double e1 = inverseLinearInterpolation(isoValue, {p1[2], p2[2]},
                                                            {p1[1], p2[1]});  // y-dir
-                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                    double e3 = inverseLinearInterpolation(isoValue, {p0[2], p3[2]},
                                                            {p0[1], p3[1]});  // y-dir
 
                     vec2 v1 = {p1[0], e1};
@@ -363,9 +375,9 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (4):
                 case (11): {
                     double e1 =
-                        inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]}, {p1[1], p2[1]});
+                        inverseLinearInterpolation(isoValue, {p1[2], p2[2]}, {p1[1], p2[1]});
                     double e2 =
-                        inverseLinearInterpolation(propIsoValue, {p3[2], p2[2]}, {p3[0], p2[0]});
+                        inverseLinearInterpolation(isoValue, {p3[2], p2[2]}, {p3[0], p2[0]});
 
                     vec2 v1 = {p1[0], e1};
                     vec2 v2 = {e2, p2[1]};
@@ -378,12 +390,12 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (10): {
 
                     double e0 =
-                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
-                    double e1 = inverseLinearInterpolation(propIsoValue, {p1[2], p2[2]},
+                        inverseLinearInterpolation(isoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                    double e1 = inverseLinearInterpolation(isoValue, {p1[2], p2[2]},
                                                            {p1[1], p2[1]});  // y-dir
                     double e2 =
-                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
-                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                        inverseLinearInterpolation(isoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+                    double e3 = inverseLinearInterpolation(isoValue, {p0[2], p3[2]},
                                                            {p0[1], p3[1]});  // y-dir
 
                     int caseFive = 1;
@@ -425,9 +437,9 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (6):
                 case (9): {
                     double e0 =
-                        inverseLinearInterpolation(propIsoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
+                        inverseLinearInterpolation(isoValue, {p0[2], p1[2]}, {p0[0], p1[0]});
                     double e2 =
-                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+                        inverseLinearInterpolation(isoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
 
                     vec2 v1 = {e0, p0[1]};
                     vec2 v2 = {e2, p2[1]};
@@ -439,8 +451,8 @@ void MarchingSquares::renderIsoline(double isoValue, ScalarField2* grid,
                 case (7):
                 case (8): {
                     double e2 =
-                        inverseLinearInterpolation(propIsoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
-                    double e3 = inverseLinearInterpolation(propIsoValue, {p0[2], p3[2]},
+                        inverseLinearInterpolation(isoValue, {p2[2], p3[2]}, {p2[0], p3[0]});
+                    double e3 = inverseLinearInterpolation(isoValue, {p0[2], p3[2]},
                                                            {p0[1], p3[1]});  // y-dir
                     vec2 v1 = {e2, p2[1]};
                     vec2 v2 = {p3[0], e3};
