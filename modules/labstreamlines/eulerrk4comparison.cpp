@@ -34,6 +34,10 @@ EulerRK4Comparison::EulerRK4Comparison()
     , mouseMoveStart(
           "mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
           MouseButton::Left, MouseState::Press | MouseState::Move)
+    , propIntegrationStepsEuler("propIntegrationStepsEuler", "Euler Steps", 5, 1)
+    , propIntegrationStepsRK4("propIntegrationStepsRK4", "RK4 Steps", 5, 1)
+    , propStepSizeEuler("propStepSizeEuler", "Euler Step Size", 0.5f, 0.001f, 1.0f) 
+    , propStepSizeRK4("propStepSizeRK4", "RK4 Step Size", 0.5f, 0.001f, 1.0f)
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
 // default value (optional), minimum value (optional), maximum value (optional), increment
@@ -46,6 +50,10 @@ EulerRK4Comparison::EulerRK4Comparison()
     // Register Properties
     addProperty(propStartPoint);
     addProperty(mouseMoveStart);
+    addProperty(propIntegrationStepsEuler);
+    addProperty(propIntegrationStepsRK4);
+    addProperty(propStepSizeEuler);
+    addProperty(propStepSizeRK4);
 
     // TODO: Register additional properties
     // addProperty(propertyName);
