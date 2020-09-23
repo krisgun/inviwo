@@ -32,12 +32,11 @@ EulerRK4Comparison::EulerRK4Comparison()
     , meshOut("meshOut")
     , meshBBoxOut("meshBBoxOut")
     , propStartPoint("startPoint", "Start Point", vec2(0.5, 0.5), vec2(0), vec2(1024), vec2(0.5))
-    , mouseMoveStart(
-          "mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
-          MouseButton::Left, MouseState::Press | MouseState::Move)
+    , mouseMoveStart("mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
+                     MouseButton::Left, MouseState::Press | MouseState::Move)
     , propIntegrationStepsEuler("propIntegrationStepsEuler", "Euler Steps", 5, 1)
     , propIntegrationStepsRK4("propIntegrationStepsRK4", "RK4 Steps", 5, 1)
-    , propStepSizeEuler("propStepSizeEuler", "Euler Step Size", 0.5f, 0.001f, 1.0f) 
+    , propStepSizeEuler("propStepSizeEuler", "Euler Step Size", 0.5f, 0.001f, 1.0f)
     , propStepSizeRK4("propStepSizeRK4", "RK4 Step Size", 0.5f, 0.001f, 1.0f)
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
@@ -98,7 +97,8 @@ void EulerRK4Comparison::process() {
 
     auto indexBufferEuler = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
     auto indexBufferRK = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
-    auto indexBufferPoints = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
+    auto indexBufferPointsEuler = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
+    auto indexBufferPointsRK4 = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
 
     auto bboxMesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> bboxVertices;
@@ -109,6 +109,8 @@ void EulerRK4Comparison::process() {
     auto indexBufferBBox = bboxMesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
     // Bounding Box vertex 0
     vec4 black = vec4(0, 0, 0, 1);
+    vec4 red = vec4(1,0,0,1);
+    vec4 blue = vec4(0,0,1,1);
     Integrator::drawNextPointInPolyline(BBoxMin_, black, indexBufferBBox.get(), bboxVertices);
     Integrator::drawNextPointInPolyline(vec2(BBoxMin_[0], BBoxMax_[1]), black,
                                         indexBufferBBox.get(), bboxVertices);
@@ -122,11 +124,41 @@ void EulerRK4Comparison::process() {
 
     // Draw start point
     dvec2 startPoint = propStartPoint.get();
-    Integrator::drawPoint(startPoint, black, indexBufferPoints.get(), vertices);
+    
+    Integrator::drawPoint(startPoint, black, indexBufferPointsEuler.get(), vertices);
+    /*Integrator::drawPoint(nextP, black, indexBufferPoints.get(), vertices);
+    Integrator::drawPoint(nextnextP, black, indexBufferPoints.get(), vertices);
+    Integrator::drawLineSegment(nextP, nextnextP, black, indexBufferEuler.get(), vertices);
+	*/
 
     // TODO: Implement the Euler and Runge-Kutta of 4th order integration schemes
     // and then integrate forward for a specified number of integration steps and a given stepsize
     // (these should be additional properties of the processor)
+    //dvec2 result = Integrator::Euler(vectorField, startPoint, propStepSizeEuler);
+
+	//Euler
+	dvec2 oldPoint = startPoint;
+
+    for (int i = 0; i < propIntegrationStepsEuler; i++) {
+        startPoint = Integrator::Euler(vectorField, startPoint, propStepSizeEuler);
+        Integrator::drawPoint(startPoint, red, indexBufferPointsEuler.get(), vertices);
+        Integrator::drawLineSegment(oldPoint, startPoint, red, indexBufferEuler.get(), vertices);
+		oldPoint = startPoint;
+    }
+
+	startPoint = propStartPoint.get();
+	oldPoint = startPoint;
+		
+	//RK4
+	for (int i = 0; i < propIntegrationStepsRK4; i++) {
+        startPoint = Integrator::RK4(vectorField, startPoint, propStepSizeRK4);
+        Integrator::drawPoint(startPoint, blue, indexBufferPointsRK4.get(), vertices);
+        Integrator::drawLineSegment(oldPoint, startPoint, blue, indexBufferRK.get(), vertices);
+        oldPoint = startPoint;
+    }
+
+    LogProcessorInfo("startPoint: " << startPoint);
+    LogProcessorInfo("vector " << vectorField.interpolate(startPoint));
 
     // Integrator::Euler(vectorField, startPoint, ...);
     // Integrator::Rk4(vectorField, dims, startPoint, ...);
@@ -134,5 +166,6 @@ void EulerRK4Comparison::process() {
     mesh->addVertices(vertices);
     meshOut.setData(mesh);
 }
+
 
 }  // namespace inviwo

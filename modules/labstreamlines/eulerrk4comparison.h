@@ -61,10 +61,12 @@ public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
 
+
 protected:
     /// Our main computation function
     virtual void process() override;
     void eventMoveStart(Event* event);
+
 
     // Ports
 public:

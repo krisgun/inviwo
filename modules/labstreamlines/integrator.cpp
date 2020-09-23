@@ -14,15 +14,25 @@ namespace inviwo {
 
 // TODO: Implement a single integration step here
 
-// dvec2 Integrator::Euler(const VectorField2& vectorField, const dvec2& position, ...)
-// {
-//     Access the vector field with vectorField.interpolate(...)
-// }
+dvec2 Integrator::Euler(const VectorField2& vectorField, const dvec2& position, const float stepSize) {
+	//x_i+1 = x_i + stepSize * v(x_i)
+    dvec2 v_x_i = vectorField.interpolate(position);
+    return position + dvec2(stepSize*v_x_i[0], stepSize*v_x_i[1]);
+    //     Access the vector field with vectorField.interpolate(...)
+}
 
-// dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, ...)
-// {
-//
-// }
+
+dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, const float stepSize) {
+    dvec2 v1 = vectorField.interpolate(position);
+    dvec2 v2 = vectorField.interpolate(position + dvec2((stepSize/2) * v1[0], (stepSize/2) * v1[1]));
+    dvec2 v3 = vectorField.interpolate(position + dvec2((stepSize/2) * v2[0], (stepSize/2) * v2[1]));
+    dvec2 v4 = vectorField.interpolate(position + dvec2(stepSize * v3[0], stepSize * v3[1]));
+	
+	double xCord = stepSize*((v1[0] + 2 * v2[0] + 2 * v3[0] + v4[0])/6);
+	double yCord = stepSize*((v1[1] + 2 * v2[1] + 2 * v3[1] + v4[1])/6);
+	
+	return position + dvec2(xCord, yCord);
+}
 
 void Integrator::drawPoint(const dvec2& p, const vec4& color, IndexBufferRAM* indexBuffer,
                            std::vector<BasicMesh::Vertex>& vertices) {
