@@ -40,6 +40,11 @@ StreamlineIntegrator::StreamlineIntegrator()
                      MouseButton::Left, MouseState::Press | MouseState::Move)
     , propForward("forward", "Forward Integration")
     , propBackward("backward", "Backward Integration")
+    , propDirectionField("directionField", "Integrate in the Direction Field")
+    , propStepSize("stepSize", "Step Size", 0.5f, 0.001f, 1.0f)
+    , propNumberOfSteps("numberOfSteps", "Steps", 50, 1, 100)
+    , propArcLength("arcLength", "Arc Length Limit")
+    , propVelocityLimit("velocityLimit", "Velocity Limit")
 				
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
@@ -66,6 +71,12 @@ StreamlineIntegrator::StreamlineIntegrator()
     // addProperty(propertyName);
     addProperty(propForward);
     addProperty(propBackward);
+    addProperty(propStepSize);
+    addProperty(propDirectionField);
+    addProperty(propNumberOfSteps);
+    addProperty(propArcLength);
+    addProperty(propVelocityLimit);
+    
 
     // Show properties for a single seed and hide properties for multiple seeds
     // (TODO)
@@ -132,11 +143,15 @@ void StreamlineIntegrator::process() {
 
     if (propSeedMode.get() == 0) {
         auto indexBufferPoints = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
+        auto indexBufferLines = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
         vec2 startPoint = propStartPoint.get();
         // Draw start point
         Integrator::drawPoint(startPoint, vec4(0, 0, 0, 1), indexBufferPoints.get(), vertices);
 
         // TODO: Create one stream line from the given start point
+        vec4 color = vec4(1, 0, 0, 1);
+        StreamlineIntegrator::createStreamLine(vectorField, startPoint, propForward, propBackward, propStepSize, 
+            propDirectionField, propNumberOfSteps, propArcLength, propVelocityLimit, color, indexBufferLines, vertices);
 
         // TODO: Use the propNumStepsTaken property to show how many steps have actually been
         // integrated This could be different from the desired number of steps due to stopping
@@ -151,5 +166,35 @@ void StreamlineIntegrator::process() {
     mesh->addVertices(vertices);
     meshOut.setData(mesh);
 }  // namespace inviwo
+
+void StreamlineIntegrator::createStreamLine(VectorField2& vectorField, vec2& startPoint, bool forward, bool backward,
+    const float stepSize, bool directionField, int steps, float arcLength, float velocityLimit, vec4 color, 
+    std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
+
+    if (forward && !backward) {
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, steps, color, indexBuffer, vertices);
+    }
+    
+    else if (!forward && backward) {
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps, color, indexBuffer, vertices);
+    }
+    else {
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, (steps/2)+steps%2, color, indexBuffer, vertices);
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps/2, color, indexBuffer, vertices);
+    }
+    
+}
+
+void StreamlineIntegrator::integratePoints(VectorField2& vectorField, vec2 startPoint,
+    const float stepSize, int steps, vec4 color,
+    std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
+
+    dvec2 oldPoint = startPoint;
+    for (int i = 0; i < steps; i++) {
+        startPoint = Integrator::RK4(vectorField, startPoint, stepSize);
+        Integrator::drawLineSegment(oldPoint, startPoint, color, indexBuffer.get(), vertices);
+        oldPoint = startPoint;
+    }
+}
 
 }  // namespace inviwo

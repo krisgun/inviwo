@@ -74,6 +74,13 @@ protected:
 
     // (TODO: You could define some helper functions here,
     // e.g. a function creating a single streamline from one seed point)
+    void createStreamLine(VectorField2& vectorField, vec2& startPoint, bool forward, bool backward,
+        const float stepSize, bool directionField, int steps, float arcLength, float velocityLimit, 
+        vec4 color, std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
+
+    void integratePoints(VectorField2& vectorField, vec2 startPoint,
+        const float stepSize, int steps, vec4 color,
+        std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
 
     // Ports
 public:
@@ -104,6 +111,11 @@ public:
     // BoolProperty propertyName4;
 	BoolProperty propForward;
 	BoolProperty propBackward;
+    FloatProperty propStepSize;
+    BoolProperty propDirectionField;
+    IntProperty propNumberOfSteps;
+    FloatProperty propArcLength;
+    FloatProperty propVelocityLimit;
 
     // Attributes
 private:
