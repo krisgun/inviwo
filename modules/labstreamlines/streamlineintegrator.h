@@ -21,6 +21,7 @@
 #include <inviwo/core/properties/eventproperty.h>
 #include <inviwo/core/properties/optionproperty.h>
 #include <inviwo/core/properties/ordinalproperty.h>
+#include <inviwo/core/properties/cameraproperty.h>
 #include <labstreamlines/labstreamlinesmoduledefine.h>
 #include <labutils/scalarvectorfield.h>
 
@@ -40,25 +41,26 @@ namespace inviwo {
     will be processed.
 
     ### Outports
-    * __outMesh__ The output mesh contains linesegments making up either a single or
+    * __meshout__ The output mesh contains linesegments making up either a single or
     multiple stream lines
+    * __meshBBoxOut__ Mesh with boundling box
 
     ### Properties
     * __propSeedMode__ Mode for the number of seeds, either a single start point
    or multiple
     * __propStartPoint__ Location of the start point
     * __mouseMoveStart__ Move the start point when a selected mouse button is
+    * __numStepsTaken__ Number of steps actually taken for a single streamline
    pressed (default left)
 */
 
 class IVW_MODULE_LABSTREAMLINES_API StreamlineIntegrator : public Processor {
-
-// Construction / Deconstruction
+    // Construction / Deconstruction
 public:
     StreamlineIntegrator();
     virtual ~StreamlineIntegrator() = default;
 
-// Methods
+    // Methods
 public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
@@ -66,22 +68,31 @@ public:
 protected:
     /// Our main computation function
     virtual void process() override;
+
+    /// Function to handle mouse interaction for a single streamline
     void eventMoveStart(Event* event);
 
     // (TODO: You could define some helper functions here,
     // e.g. a function creating a single streamline from one seed point)
 
-// Ports
+    // Ports
 public:
     // Input Vector Field
     VolumeInport inData;
-    // Output mesh
-    MeshOutport outMesh;
 
-// Properties
+    // Output mesh
+    MeshOutport meshOut;
+
+    // Output mesh for bounding box and gridlines
+    MeshOutport meshBBoxOut;
+
+    // Properties
 public:
+
     FloatVec2Property propStartPoint;
     TemplateOptionProperty<int> propSeedMode;
+
+    IntProperty propNumStepsTaken;
     EventProperty mouseMoveStart;
 
     // TODO: Declare additional properties
@@ -90,10 +101,12 @@ public:
     // FloatProperty propertyName2;
     // IntVec2Property propertyName3;
     // TemplateOptionProperty<int> propertyName4;
-    // BoolProperty propertyName5;
+    // BoolProperty propertyName4;
 
-// Attributes
+    // Attributes
 private:
+    dvec2 BBoxMin_{0, 0};
+    dvec2 BBoxMax_{0, 0};
 };
 
 }  // namespace inviwo

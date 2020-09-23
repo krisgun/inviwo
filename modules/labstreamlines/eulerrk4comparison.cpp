@@ -19,7 +19,7 @@ namespace inviwo {
 const ProcessorInfo EulerRK4Comparison::processorInfo_{
     "org.inviwo.EulerRK4Comparison",  // Class identifier
     "Euler RK4 Comparison",           // Display name
-    "KTH Labs",                       // Category
+    "KTH Lab",                        // Category
     CodeState::Experimental,          // Code state
     Tags::None,                       // Tags
 };
@@ -29,7 +29,8 @@ const ProcessorInfo EulerRK4Comparison::getProcessorInfo() const { return proces
 EulerRK4Comparison::EulerRK4Comparison()
     : Processor()
     , inData("inData")
-    , outMesh("meshOut")
+    , meshOut("meshOut")
+    , meshBBoxOut("meshBBoxOut")
     , propStartPoint("startPoint", "Start Point", vec2(0.5, 0.5), vec2(0), vec2(1024), vec2(0.5))
     , mouseMoveStart(
           "mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
@@ -44,7 +45,8 @@ EulerRK4Comparison::EulerRK4Comparison()
 // (optional)); propertyIdentifier cannot have spaces
 {
     // Register Ports
-    addPort(outMesh);
+    addPort(meshOut);
+    addPort(meshBBoxOut);
     addPort(inData);
 
     // Register Properties
@@ -64,8 +66,10 @@ void EulerRK4Comparison::eventMoveStart(Event* event) {
     auto mouseEvent = static_cast<MouseEvent*>(event);
     vec2 mousePos = mouseEvent->posNormalized();
 
-    // Map to range [0,1]^2
-    mousePos = mousePos * 2 - vec2(1, 1);
+    // Map to bounding box range
+    mousePos[0] *= static_cast<float>(BBoxMax_[0] - BBoxMin_[0]);
+    mousePos[1] *= static_cast<float>(BBoxMax_[1] - BBoxMin_[1]);
+    mousePos += static_cast<vec2>(BBoxMin_);
 
     // Update starting point
     propStartPoint.set(mousePos);
@@ -81,24 +85,44 @@ void EulerRK4Comparison::process() {
 
     // Retreive data in a form that we can access it
     const VectorField2 vectorField = VectorField2::createFieldFromVolume(vol);
+    BBoxMin_ = vectorField.getBBoxMin();
+    BBoxMax_ = vectorField.getBBoxMax();
+
     // The start point should be inside the volume (set maximum to the upper right corner)
-    auto bboxMin = vectorField.getBBoxMin();
-    propStartPoint.setMinValue(bboxMin);
-    propStartPoint.setMaxValue(vectorField.getBBoxMax());
+    propStartPoint.setMinValue(BBoxMin_ - dvec2(1, 1));
+    propStartPoint.setMaxValue(BBoxMax_ + dvec2(1, 1));
 
     // Initialize mesh, vertices and index buffers for the two streamlines and the points
     auto mesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> vertices;
+
     auto indexBufferEuler = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
     auto indexBufferRK = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
     auto indexBufferPoints = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
 
+    auto bboxMesh = std::make_shared<BasicMesh>();
+    std::vector<BasicMesh::Vertex> bboxVertices;
+
+    // Make bounding box without vertex duplication, instead of line segments which duplicate
+    // vertices, create line segments between each added points with connectivity type of the index
+    // buffer
+    auto indexBufferBBox = bboxMesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
+    // Bounding Box vertex 0
+    vec4 black = vec4(0, 0, 0, 1);
+    Integrator::drawNextPointInPolyline(BBoxMin_, black, indexBufferBBox.get(), bboxVertices);
+    Integrator::drawNextPointInPolyline(vec2(BBoxMin_[0], BBoxMax_[1]), black,
+                                        indexBufferBBox.get(), bboxVertices);
+    Integrator::drawNextPointInPolyline(BBoxMax_, black, indexBufferBBox.get(), bboxVertices);
+    Integrator::drawNextPointInPolyline(vec2(BBoxMax_[0], BBoxMin_[1]), black,
+                                        indexBufferBBox.get(), bboxVertices);
+    // Connect back to the first point, to make a full rectangle
+    indexBufferBBox->add(static_cast<std::uint32_t>(0));
+    bboxMesh->addVertices(bboxVertices);
+    meshBBoxOut.setData(bboxMesh);
+
     // Draw start point
     dvec2 startPoint = propStartPoint.get();
-    vertices.push_back({vec3(startPoint.x, startPoint.y, 0), vec3(1), vec3(1), vec4(0, 0, 0, 1)});
-    indexBufferPoints->add(static_cast<std::uint32_t>(0));
-    indexBufferEuler->add(static_cast<std::uint32_t>(0));
-    indexBufferRK->add(static_cast<std::uint32_t>(0));
+    Integrator::drawPoint(startPoint, black, indexBufferPoints.get(), vertices);
 
     // TODO: Implement the Euler and Runge-Kutta of 4th order integration schemes
     // and then integrate forward for a specified number of integration steps and a given stepsize
@@ -108,7 +132,7 @@ void EulerRK4Comparison::process() {
     // Integrator::Rk4(vectorField, dims, startPoint, ...);
 
     mesh->addVertices(vertices);
-    outMesh.setData(mesh);
+    meshOut.setData(mesh);
 }
 
 }  // namespace inviwo
