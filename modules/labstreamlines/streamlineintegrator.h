@@ -102,6 +102,8 @@ public:
     // IntVec2Property propertyName3;
     // TemplateOptionProperty<int> propertyName4;
     // BoolProperty propertyName4;
+	BoolProperty propForward;
+	BoolProperty propBackward;
 
     // Attributes
 private:

@@ -38,6 +38,9 @@ StreamlineIntegrator::StreamlineIntegrator()
     , propNumStepsTaken("numstepstaken", "Number of actual steps", 0, 0, 100000)
     , mouseMoveStart("mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
                      MouseButton::Left, MouseState::Press | MouseState::Move)
+    , propForward("forward", "Forward Integration")
+    , propBackward("backward", "Backward Integration")
+				
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
 // default value (optional), minimum value (optional), maximum value (optional),
@@ -51,6 +54,7 @@ StreamlineIntegrator::StreamlineIntegrator()
     // Register Properties
     propSeedMode.addOption("one", "Single Start Point", 0);
     propSeedMode.addOption("multiple", "Multiple Seeds", 1);
+	
     addProperty(propSeedMode);
     addProperty(propStartPoint);
     addProperty(propNumStepsTaken);
@@ -60,6 +64,8 @@ StreamlineIntegrator::StreamlineIntegrator()
 
     // TODO: Register additional properties
     // addProperty(propertyName);
+    addProperty(propForward);
+    addProperty(propBackward);
 
     // Show properties for a single seed and hide properties for multiple seeds
     // (TODO)
