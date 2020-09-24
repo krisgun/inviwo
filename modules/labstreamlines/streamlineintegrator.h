@@ -80,7 +80,7 @@ protected:
 
     void integratePoints(VectorField2& vectorField, vec2 startPoint,
         const float stepSize, int steps, float velocityLimit, vec4 color,
-        std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
+        std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices, float arcLength);
 
     VectorField2 StreamlineIntegrator::normalizeVectorField(VectorField2 vectorField);
     double StreamlineIntegrator::vectorNorm(dvec2 vector);
@@ -119,6 +119,9 @@ public:
     IntProperty propNumberOfSteps;
     FloatProperty propArcLength;
     FloatProperty propVelocityLimit;
+	IntProperty propNumberOfRandomSeeds;
+    IntProperty propUniformGridSeedsX;
+    IntProperty propUniformGridSeedsY;
 
     // Attributes
 private:
