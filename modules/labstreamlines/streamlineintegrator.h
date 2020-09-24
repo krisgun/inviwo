@@ -79,8 +79,11 @@ protected:
         vec4 color, std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
 
     void integratePoints(VectorField2& vectorField, vec2 startPoint,
-        const float stepSize, int steps, vec4 color,
+        const float stepSize, int steps, float velocityLimit, vec4 color,
         std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
+
+    VectorField2 StreamlineIntegrator::normalizeVectorField(VectorField2 vectorField);
+    double StreamlineIntegrator::vectorNorm(dvec2 vector);
 
     // Ports
 public:

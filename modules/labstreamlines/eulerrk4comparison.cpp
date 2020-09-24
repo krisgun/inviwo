@@ -157,9 +157,6 @@ void EulerRK4Comparison::process() {
         oldPoint = startPoint;
     }
 
-    LogProcessorInfo("startPoint: " << startPoint);
-    LogProcessorInfo("vector " << vectorField.interpolate(startPoint));
-
     // Integrator::Euler(vectorField, startPoint, ...);
     // Integrator::Rk4(vectorField, dims, startPoint, ...);
 

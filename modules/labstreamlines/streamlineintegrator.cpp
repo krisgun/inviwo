@@ -38,8 +38,8 @@ StreamlineIntegrator::StreamlineIntegrator()
     , propNumStepsTaken("numstepstaken", "Number of actual steps", 0, 0, 100000)
     , mouseMoveStart("mouseMoveStart", "Move Start", [this](Event* e) { eventMoveStart(e); },
                      MouseButton::Left, MouseState::Press | MouseState::Move)
-    , propForward("forward", "Forward Integration")
-    , propBackward("backward", "Backward Integration")
+    , propForward("forward", "Forward Integration", true)
+    , propBackward("backward", "Backward Integration", true)
     , propDirectionField("directionField", "Integrate in the Direction Field")
     , propStepSize("stepSize", "Step Size", 0.5f, 0.001f, 1.0f)
     , propNumberOfSteps("numberOfSteps", "Steps", 50, 1, 100)
@@ -171,30 +171,71 @@ void StreamlineIntegrator::createStreamLine(VectorField2& vectorField, vec2& sta
     const float stepSize, bool directionField, int steps, float arcLength, float velocityLimit, vec4 color, 
     std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
 
+    if (directionField) {
+         vectorField = StreamlineIntegrator::normalizeVectorField(vectorField);
+    }
+
     if (forward && !backward) {
-        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, steps, color, indexBuffer, vertices);
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, steps, velocityLimit, color, indexBuffer, vertices);
     }
     
     else if (!forward && backward) {
-        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps, color, indexBuffer, vertices);
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps, velocityLimit, color, indexBuffer, vertices);
     }
-    else {
-        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, (steps/2)+steps%2, color, indexBuffer, vertices);
-        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps/2, color, indexBuffer, vertices);
+    else if (forward && backward) {
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, stepSize, (steps/2)+steps%2, velocityLimit, color, indexBuffer, vertices);
+        StreamlineIntegrator::integratePoints(vectorField, startPoint, -stepSize, steps/2, velocityLimit, color, indexBuffer, vertices);
     }
     
 }
 
 void StreamlineIntegrator::integratePoints(VectorField2& vectorField, vec2 startPoint,
-    const float stepSize, int steps, vec4 color,
+    const float stepSize, int steps, float velocityLimit, vec4 color,
     std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
+
+    ivec2 dimensions = vectorField.getNumVerticesPerDim();
 
     dvec2 oldPoint = startPoint;
     for (int i = 0; i < steps; i++) {
+        
+        dvec2 fieldVec = vectorField.interpolate(startPoint);
+        //Stop when norm is smaller than velocity limit
+        if(StreamlineIntegrator::vectorNorm(fieldVec) < velocityLimit) break;
+
+        //Stop when encountering zeros in vector field 
+        bool isVecFieldZero = (fieldVec[0] > -0.001 && fieldVec[0] < 0.001) && (fieldVec[1] > -0.001 && fieldVec[1] < 0.001);
+        if (isVecFieldZero) break;
+        
         startPoint = Integrator::RK4(vectorField, startPoint, stepSize);
+
+        //Stop at boundary of bbox
+        if (!vectorField.isInside(startPoint)) {
+            startPoint = vectorField.clampPositionToBBox(startPoint);
+            Integrator::drawLineSegment(oldPoint, startPoint, color, indexBuffer.get(), vertices);
+            break;
+        }
+
+        //Draw line segments between points
         Integrator::drawLineSegment(oldPoint, startPoint, color, indexBuffer.get(), vertices);
         oldPoint = startPoint;
     }
+}
+
+VectorField2 StreamlineIntegrator::normalizeVectorField(VectorField2 vectorField) {
+    ivec2 dimensions = vectorField.getNumVerticesPerDim();
+
+    for (int i = 0; i < dimensions[0]; i++) {
+        for (int j = 0; j < dimensions[1]; j++) {
+            dvec2 vector = vectorField.getValueAtVertex({i, j});
+            double length = StreamlineIntegrator::vectorNorm(vector);
+            vectorField.setValueAtVertex({i, j}, dvec2(vector[0]/length,vector[1]/length));
+        }
+    }
+    return vectorField;
+}
+
+double StreamlineIntegrator::vectorNorm(dvec2 vector) {
+    return sqrt(pow(vector[0], 2) + pow(vector[1], 2));
 }
 
 }  // namespace inviwo
