@@ -60,8 +60,7 @@ void LICProcessor::process() {
     texDims_ = tex->getDimensions();
 
     double value = texture.readPixelGrayScale(size2_t(0, 0));
-
-    LogProcessorInfo(value);
+    LogProcessorInfo("rand val: " << value);
 
     // Prepare the output, it has the same dimensions as the texture and rgba values in [0,255]
     auto outImage = std::make_shared<Image>(texDims_, DataVec4UInt8::get());
@@ -74,14 +73,24 @@ void LICProcessor::process() {
     // TODO: Implement LIC and FastLIC
     // This code instead sets all pixels to the same gray value
 
+   
+    
     for (size_t j = 0; j < texDims_.y; j++) {
         for (size_t i = 0; i < texDims_.x; i++) {
             int val = int(licTexture[i][j]);
-            licImage.setPixel(size2_t(i, j), dvec4(val, val, val, 255));
-            // or
             licImage.setPixelGrayScale(size2_t(i, j), val);
         }
     }
+
+    LogProcessorInfo("vectorfield bbox: " << vectorField.getBBoxMax()[0] << " texdims: " << texDims_.x);
+
+    std::vector<dvec2> points = Integrator::integratePoints(vectorField, vec2(0, 0), 0.1, 100);
+    int count = 0;
+    for (int i = 0; i < points.size(); i++) {
+        LogProcessorInfo("point: " << points[i]);
+        count++;
+    }
+    LogProcessorInfo("count: " << count);
 
     licOut_.setData(outImage);
 }

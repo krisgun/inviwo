@@ -46,6 +46,7 @@ public:
     // Examples would be the stepsize, inegreation direction, ...
     static dvec2 RK4(const VectorField2& vectorField, const dvec2& position, const float stepSize);
     static dvec2 Euler(const VectorField2& vectorField, const dvec2& position, const float stepSize);
+    static std::vector<dvec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPoint, float stepSize, int steps);
 };
 
 }  // namespace inviwo

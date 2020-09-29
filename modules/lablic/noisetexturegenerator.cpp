@@ -52,32 +52,34 @@ void NoiseTextureGenerator::process() {
 
     // Setting pixels in the image/texture
     // setPixelGrayScale will set the value to (val,val,val,255) at the pixel with indices (i,j)
-    int val = 4;
-    noiseTexture.setPixelGrayScale(size2_t(0, 0), val);
+    // int val = 4;
+    // noiseTexture.setPixelGrayScale(size2_t(0, 0), val);
     // setPixel allows to set all color components (red,green,blue,alpha) at the pixel with indices
     // (i,j)
-    noiseTexture.setPixel(size2_t(0, 0), vec4(val, val, val, 255));
+    // noiseTexture.setPixel(size2_t(0, 0), vec4(val, val, val, 255));
 
     // Reading from the image
     // readPixelGrayScale returns the averge of the three colors (red+green+blue)/3 at the pixel
     // with indices (i,j)
-    double value = noiseTexture.readPixelGrayScale(size2_t(0, 0));
+    // double value = noiseTexture.readPixelGrayScale(size2_t(0, 0));
     // readPixel returns all color components (red,green,blue,alpha) at the pixel with indices (i,j)
-    dvec4 color = noiseTexture.readPixel(size2_t(0, 0));
-    LogProcessorInfo("The color at index (0,0) is " << color << " with grayscale value " << value
-                                                    << ".");
+    // dvec4 color = noiseTexture.readPixel(size2_t(0, 0));
+    // LogProcessorInfo("The color at index (0,0) is " << color << " with grayscale value " << value
+    //                                                << ".");
     // sample peforms bilinear interpolation. For (0.5,0.5) this would involve the values at pixels
     // (0,0), (1,0), (0,1), and (1,1)
-    color = noiseTexture.sample(dvec2(0.5, 0.5));
+    // color = noiseTexture.sample(dvec2(0.5, 0.5));
     // The grayscale version again does the same but returns an average of the three color values
-    value = noiseTexture.sampleGrayScale(dvec2(0.5, 0.5));
-    LogProcessorInfo("The interpolated color at (0.5,0.5) is " << color << " with grayscale value "
-                                                               << value << ".");
+    // value = noiseTexture.sampleGrayScale(dvec2(0.5, 0.5));
+    // LogProcessorInfo("The interpolated color at (0.5,0.5) is " << color << " with grayscale value "
+    //                                                           << value << ".");
+    int val = 0;
 
+    srand(1);
     for (int j = 0; j < texSize_.get().y; j++) {
         for (int i = 0; i < texSize_.get().x; i++) {
 
-            val = 256 / 2;
+            val = (rand() % 2) * 255;
             // TODO: Randomly sample values for the texture, this produces the same gray value for
             // all pixels
             // A value within the ouput image is set by specifying pixel position and color

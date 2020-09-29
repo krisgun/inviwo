@@ -34,6 +34,41 @@ dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, co
 	return position + dvec2(xCord, yCord);
 }
 
+std::vector<dvec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPoint, float stepSize, int steps) {
+    
+    ivec2 dimensions = vectorField.getNumVerticesPerDim();
+    dvec2 BBoxMin_ = vectorField.getBBoxMin();
+    dvec2 BBoxMax_ = vectorField.getBBoxMax();
+    
+    std::vector<dvec2> points;
+
+    dvec2 oldPoint = startPoint;
+    //Add start point to vector
+    points.push_back(oldPoint);
+
+    for (int i = 0; i < steps; i++) {
+
+        dvec2 fieldVec = vectorField.interpolate(startPoint);
+        //Stop when encountering zeros in vector field 
+        bool isVecFieldZero = (fieldVec[0] > -0.001 && fieldVec[0] < 0.001) && (fieldVec[1] > -0.001 && fieldVec[1] < 0.001);
+        if (isVecFieldZero) break;
+
+        //Get new point from Rung Kut
+        startPoint = Integrator::RK4(vectorField, startPoint, stepSize);
+        
+        //Stop at boundary of bbox
+        if (!vectorField.isInside(startPoint)) {
+            startPoint = vectorField.clampPositionToBBox(startPoint);
+            points.push_back(startPoint);
+            break;
+        }
+        //Add new point to vector
+        points.push_back(startPoint);
+        oldPoint = startPoint;
+    }
+    return points;
+}
+
 void Integrator::drawPoint(const dvec2& p, const vec4& color, IndexBufferRAM* indexBuffer,
                            std::vector<BasicMesh::Vertex>& vertices) {
     indexBuffer->add(static_cast<std::uint32_t>(vertices.size()));
