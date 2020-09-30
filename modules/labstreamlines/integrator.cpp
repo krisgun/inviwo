@@ -33,18 +33,41 @@ dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, co
 	
 	return position + dvec2(xCord, yCord);
 }
+//translate 
+/*
+i både x och y-led
+mappa 0 till bboxmin
+mappa bboxmax till dims
 
-std::vector<dvec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPoint, float stepSize, int steps) {
+vi måste rasteriza
+				 
+pixRatio = startPixel[x] / (dims[x])  
+startPoint = pixRatio * (bboxmax[x] - bboxmin[x])
+/   
+
+
+*/
+
+std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPixel, int direction, int steps, size2_t dims) {
     
     ivec2 dimensions = vectorField.getNumVerticesPerDim();
     dvec2 BBoxMin_ = vectorField.getBBoxMin();
     dvec2 BBoxMax_ = vectorField.getBBoxMax();
     
-    std::vector<dvec2> points;
+	double stepSize = direction * std::min((BBoxMax_[0] - BBoxMin_[0]) / dims[0], (BBoxMax_[1] - BBoxMin_[1]) / dims[1]);
+
+	//std::cout << stepSize;
+
+	std::vector<ivec2> pixels;
+	std::vector<dvec2> ratio;
+
+	vec2 pixRatio = {1 / dims[0], 1 / dims[1]};
+	vec2 startPoint = {pixRatio[0] * startPixel[0] * (BBoxMax_[0] - BBoxMin_[0]) + BBoxMin_[0], pixRatio[1] * startPixel[1] * (BBoxMax_[1] - BBoxMin_[1]) + BBoxMin_[1]};
 
     dvec2 oldPoint = startPoint;
     //Add start point to vector
-    points.push_back(oldPoint);
+    //points.push_back(oldPoint);
+	pixels.push_back({oldPoint[0]/pixRatio[0], oldPoint[1]/pixRatio[1]});
 
     for (int i = 0; i < steps; i++) {
 
@@ -55,18 +78,21 @@ std::vector<dvec2> Integrator::integratePoints(const VectorField2& vectorField, 
 
         //Get new point from Rung Kut
         startPoint = Integrator::RK4(vectorField, startPoint, stepSize);
-        
+		     
         //Stop at boundary of bbox
         if (!vectorField.isInside(startPoint)) {
             startPoint = vectorField.clampPositionToBBox(startPoint);
-            points.push_back(startPoint);
+            //points.push_back(startPoint);
+			pixels.push_back({ startPoint[0] / pixRatio[0], startPoint[1] / pixRatio[1] });
             break;
         }
         //Add new point to vector
-        points.push_back(startPoint);
+        //points.push_back(startPoint);
+		pixels.push_back({ startPoint[0] / pixRatio[0], startPoint[1] / pixRatio[1] });
         oldPoint = startPoint;
     }
-    return points;
+
+    return pixels;
 }
 
 void Integrator::drawPoint(const dvec2& p, const vec4& color, IndexBufferRAM* indexBuffer,
