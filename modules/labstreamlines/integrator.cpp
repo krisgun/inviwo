@@ -56,18 +56,17 @@ std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, 
     
 	double stepSize = direction * std::min((BBoxMax_[0] - BBoxMin_[0]) / dims[0], (BBoxMax_[1] - BBoxMin_[1]) / dims[1]);
 
-	//std::cout << stepSize;
-
 	std::vector<ivec2> pixels;
 	std::vector<dvec2> ratio;
 
-	vec2 pixRatio = {1 / dims[0], 1 / dims[1]};
-	vec2 startPoint = {pixRatio[0] * startPixel[0] * (BBoxMax_[0] - BBoxMin_[0]) + BBoxMin_[0], pixRatio[1] * startPixel[1] * (BBoxMax_[1] - BBoxMin_[1]) + BBoxMin_[1]};
-
-    dvec2 oldPoint = startPoint;
     //Add start point to vector
-    //points.push_back(oldPoint);
-	pixels.push_back({oldPoint[0]/pixRatio[0], oldPoint[1]/pixRatio[1]});
+    if (direction == 1) {
+        pixels.push_back(startPixel);
+    }
+
+    //Convert pixel to point
+	dvec2 startPoint = {(startPixel[0]/dims[0])*(BBoxMax_[0]-BBoxMin_[0])+BBoxMin_[0]+stepSize/2, (startPixel[1] / dims[1])*(BBoxMax_[1] - BBoxMin_[1]) + BBoxMin_[1] + stepSize/2};
+    dvec2 oldPoint = startPoint;
 
     for (int i = 0; i < steps; i++) {
 
@@ -78,17 +77,18 @@ std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, 
 
         //Get new point from Rung Kut
         startPoint = Integrator::RK4(vectorField, startPoint, stepSize);
-		     
+
         //Stop at boundary of bbox
         if (!vectorField.isInside(startPoint)) {
-            startPoint = vectorField.clampPositionToBBox(startPoint);
-            //points.push_back(startPoint);
-			pixels.push_back({ startPoint[0] / pixRatio[0], startPoint[1] / pixRatio[1] });
+            //startPoint = vectorField.clampPositionToBBox(startPoint); //OG stuff
+           // startPoint = {1.0, 1.0};
+            
+            //pixels.push_back({(int)(((startPoint[0] - BBoxMin_[0]) / (BBoxMax_[0] - BBoxMin_[0])) * dims[0]), (int)(((startPoint[1] - BBoxMin_[1]) / (BBoxMax_[1] - BBoxMin_[1])) * dims[1]) });
             break;
         }
         //Add new point to vector
         //points.push_back(startPoint);
-		pixels.push_back({ startPoint[0] / pixRatio[0], startPoint[1] / pixRatio[1] });
+        pixels.push_back({(int)(((startPoint[0] - BBoxMin_[0]) / (BBoxMax_[0] - BBoxMin_[0])) * dims[0]), (int)(((startPoint[1] - BBoxMin_[1]) / (BBoxMax_[1] - BBoxMin_[1])) * dims[1]) });
         oldPoint = startPoint;
     }
 
