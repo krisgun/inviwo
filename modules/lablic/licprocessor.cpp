@@ -153,12 +153,8 @@ void LICProcessor::process() {
 	auto totalPix = texDims_.y*texDims_.x;
 	auto mean = pixelValSum / numOfNonBlack;
 	auto stdDev = sqrt((pixelValSumSquared - (numOfNonBlack * (mean * mean))) / (numOfNonBlack- 1));
-
-	LogProcessorInfo("Mean: " << mean << " stdDev: " << stdDev);
     
 	auto f = propDeviation / stdDev;
-
-	LogProcessorInfo("f: " << f);
 
 	for (auto j = 0; j < texDims_.y; j++) {
 		for (auto i = 0; i < texDims_.x; i++) {
