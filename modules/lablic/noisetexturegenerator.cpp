@@ -28,6 +28,8 @@ NoiseTextureGenerator::NoiseTextureGenerator()
     : Processor()
     , texOut_("texOut")
     , texSize_("texSize", "Texture Size", vec2(512, 512), vec2(1, 1), vec2(2048, 2048), vec2(1, 1))
+    , propSeed_("seed", "Random Seed", 1, 0, INT_MAX)
+    , propTextureType_("textureType", "Type of Texture")
 // TODO: Register additional properties
 {
     // Register ports
@@ -35,6 +37,11 @@ NoiseTextureGenerator::NoiseTextureGenerator()
 
     // Register properties
     addProperty(texSize_);
+    addProperty(propSeed_);
+    addProperty(propTextureType_);
+    propTextureType_.addOption("bw", "B&W Texture", 1);
+    propTextureType_.addOption("grayscale", "Grayscale Texture", 0);
+    propSeed_.setSemantics(PropertySemantics::Text);
 
     // TODO: Register additional properties
 }
@@ -75,11 +82,16 @@ void NoiseTextureGenerator::process() {
     //                                                           << value << ".");
     int val = 0;
 
-    srand(1);
+    srand(propSeed_);
     for (int j = 0; j < texSize_.get().y; j++) {
         for (int i = 0; i < texSize_.get().x; i++) {
-
-            val = (rand() % 2) * 255;
+            
+            if(propTextureType_) {
+                val = (rand() % 2) * 255;
+            }
+            else {
+                val = (rand() % 255);
+            }
             // TODO: Randomly sample values for the texture, this produces the same gray value for
             // all pixels
             // A value within the ouput image is set by specifying pixel position and color

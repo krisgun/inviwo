@@ -75,8 +75,10 @@ public:
     // Properties
 public:
     // TODO: Declare properties
-    // IntProperty prop1;
-    // BoolProperty prop2;
+     IntProperty propKernel_;
+     BoolProperty propFastLIC_;
+     FloatProperty propMean;
+     FloatProperty propDeviation;
 
     // Attributes
 private:

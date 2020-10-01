@@ -30,6 +30,10 @@ LICProcessor::LICProcessor()
     , volumeIn_("volIn")
     , noiseTexIn_("noiseTexIn")
     , licOut_("licOut")
+    , propKernel_("kernel", "Kernel Size", 150, 1, 500)
+    , propFastLIC_("fastLIC", "FastLIC", true)
+    , propMean("mean", "Mean", 0.5, 0.0, 1.0)
+    , propDeviation("deviation", "Standard Deviation", 0.1, 0.0, 1.0)
 // TODO: Register additional properties
 {
     // Register ports
@@ -37,8 +41,12 @@ LICProcessor::LICProcessor()
     addPort(noiseTexIn_);
     addPort(licOut_);
 
-    // Register properties
+    // Register properties 
     // TODO: Register additional properties
+    addProperty(propKernel_);
+    addProperty(propFastLIC_);
+    addProperty(propMean);
+    addProperty(propDeviation);
 }
 
 void LICProcessor::process() {
@@ -70,25 +78,66 @@ void LICProcessor::process() {
 
     // Hint: Output an image showing which pixels you have visited for debugging
     std::vector<std::vector<int>> visited(texDims_.x, std::vector<int>(texDims_.y, 0));
-    // TODO: Implement LIC and FastLIC
-    for (size_t j = 0; j < texDims_.y; j++) {
-        for (size_t i = 0; i < texDims_.x; i++) {
-			std::vector<ivec2> forwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), 1, 100, texDims_);
-			std::vector<ivec2> backwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), -1, 100, texDims_);
-			forwardPixels.insert(forwardPixels.end(), backwardPixels.begin(), backwardPixels.end());
+    
+    auto pixelValSum {0};
+    auto pixelValSumSquared {0};
+    auto kernelSize {propKernel_ / 2};
+    //Check FastLIC toggle
+    if (propFastLIC_) {
+        #pragma omp parallel
+        #pragma omp for
+        for (auto j = 0; j < texDims_.y; ++j) {
+            for (auto i = 0; i < texDims_.x; ++i) {
+                if(visited[i][j]) continue;
 
-			//apply convolution kernel, fora genom forwardPixels och summera ihop deras värden i texturen och dela på antalet
-			
-			double sum = 0;
-			for (int k = 0; k < forwardPixels.size(); k++) {
-			    sum += texture.readPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]));
-			}
-            if (forwardPixels.size() > 0) {
-                sum /= forwardPixels.size();
+                std::vector<ivec2> forwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), 1, kernelSize, texDims_);
+                std::vector<ivec2> backwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), -1, kernelSize, texDims_);
+                forwardPixels.insert(forwardPixels.end(), backwardPixels.begin(), backwardPixels.end());
+
+                //apply convolution kernel, fora genom forwardPixels och summera ihop deras värden i texturen och dela på antalet
+
+                double sum = 0;
+                for (int k = 0; k < forwardPixels.size(); ++k) {
+                    sum += texture.readPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]));
+                }
+
+                if (forwardPixels.size() > 0) {
+                    sum /= forwardPixels.size();
+                }
+
+                for (auto k = 0; k < forwardPixels.size(); ++k) {
+                    auto prevPixVal {licImage.readPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]))};
+                    licImage.setPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]), sum);
+                    visited[forwardPixels[k][0]][forwardPixels[k][1]] = 1;
+                }
             }
-			licImage.setPixelGrayScale(size2_t(i, j), sum);
         }
     }
+    else {
+        #pragma omp parallel
+        #pragma omp for
+        for (auto j = 0; j < texDims_.y; j++) {
+            for (auto i = 0; i < texDims_.x; i++) {
+                std::vector<ivec2> forwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), 1, kernelSize, texDims_);
+                std::vector<ivec2> backwardPixels = Integrator::integratePoints(vectorField, vec2(i, j), -1, kernelSize, texDims_);
+                forwardPixels.insert(forwardPixels.end(), backwardPixels.begin(), backwardPixels.end());
+
+                //apply convolution kernel, fora genom forwardPixels och summera ihop deras värden i texturen och dela på antalet
+
+                double sum = 0;
+                for (int k = 0; k < forwardPixels.size(); k++) {
+                    sum += texture.readPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]));
+                }
+                if (forwardPixels.size() > 0) {
+                    sum /= forwardPixels.size();
+                }
+                licImage.setPixelGrayScale(size2_t(i, j), sum);
+            }
+        }
+    }
+    
+
+    
 
     licOut_.setData(outImage);
 }
