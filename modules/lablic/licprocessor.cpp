@@ -32,8 +32,8 @@ LICProcessor::LICProcessor()
     , licOut_("licOut")
     , propKernel_("kernel", "Kernel Size", 150, 1, 500)
     , propFastLIC_("fastLIC", "FastLIC", true)
-    , propMean("mean", "Mean", 0.5, 0.0, 1.0)
-    , propDeviation("deviation", "Standard Deviation", 0.1, 0.0, 1.0)
+    , propMean("mean", "Mean", 128, 0.0, 255)
+    , propDeviation("deviation", "Standard Deviation", 25.5, 0.0, 255)
 // TODO: Register additional properties
 {
     // Register ports
@@ -81,6 +81,7 @@ void LICProcessor::process() {
     
     auto pixelValSum {0};
     auto pixelValSumSquared {0};
+	auto numOfNonBlack {0};
     auto kernelSize {propKernel_ / 2};
     //Check FastLIC toggle
     if (propFastLIC_) {
@@ -109,6 +110,14 @@ void LICProcessor::process() {
                     auto prevPixVal {licImage.readPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]))};
                     licImage.setPixelGrayScale(size2_t(forwardPixels[k][0], forwardPixels[k][1]), sum);
                     visited[forwardPixels[k][0]][forwardPixels[k][1]] = 1;
+					pixelValSum -= prevPixVal;
+					pixelValSum += sum;
+					pixelValSumSquared -= prevPixVal * prevPixVal;
+					pixelValSumSquared += sum * sum;
+
+					if (sum != 0 && prevPixVal == 0) {
+						numOfNonBlack++;
+					}
                 }
             }
         }
@@ -132,12 +141,31 @@ void LICProcessor::process() {
                     sum /= forwardPixels.size();
                 }
                 licImage.setPixelGrayScale(size2_t(i, j), sum);
+				pixelValSum += sum;
+				pixelValSumSquared += sum * sum;
+				if (sum != 0) {
+					numOfNonBlack++;
+				}
             }
         }
     }
     
+	auto totalPix = texDims_.y*texDims_.x;
+	auto mean = pixelValSum / numOfNonBlack;
+	auto stdDev = sqrt((pixelValSumSquared - (numOfNonBlack * (mean * mean))) / (numOfNonBlack- 1));
 
+	LogProcessorInfo("Mean: " << mean << " stdDev: " << stdDev);
     
+	auto f = propDeviation / stdDev;
+
+	LogProcessorInfo("f: " << f);
+
+	for (auto j = 0; j < texDims_.y; j++) {
+		for (auto i = 0; i < texDims_.x; i++) {
+			auto oldPix = licImage.readPixelGrayScale(size2_t(i,j));
+			licImage.setPixelGrayScale(size2_t(i, j), propMean + f*(oldPix - mean));
+		}
+	}
 
     licOut_.setData(outImage);
 }
