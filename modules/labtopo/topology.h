@@ -73,7 +73,7 @@ protected:
                                 IndexBufferRAM* indexBuffer,
                                 std::vector<BasicMesh::Vertex>& vertices);
 
-    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<ivec2>& criticalPoints, 
+    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, 
                                                 double epsilon, std::vector<dvec2>& corners);
     static bool Topology::isZeroWithinBox(std::vector<dvec2>& corners);
 

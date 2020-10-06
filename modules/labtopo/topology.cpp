@@ -89,8 +89,20 @@ void Topology::process() {
     // Find the critical points and color them according to their type.
     // Integrate all separatrices.
 
-    size2_t dims = vectorField.getNumVerticesPerDim();
+    std::vector<dvec2> criticalPoints {};
+    //Set start corners to be the bounding box
+    std::vector<dvec2> startCorners = {BBoxMin, vec2{BBoxMax[0], BBoxMin[1]}, BBoxMax, vec2{BBoxMin[0], BBoxMax[1]}};
+    double epsilon = 0.001;
+    //Extract all critical points
+    findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners);
 
+    LogProcessorInfo("diff sign: " << isZeroWithinBox(startCorners));
+    for (auto const& point : startCorners) {
+        LogProcessorInfo("Start corners: " << point);
+    }
+
+
+    size2_t dims = vectorField.getNumVerticesPerDim();
     // Looping through all values in the vector field.
     for (int j = 0; j < dims[1]; ++j) {
         for (int i = 0; i < dims[0]; ++i) {
@@ -108,6 +120,8 @@ void Topology::process() {
     // Accessing the colors
     vec4 colorCenter = ColorsCP[static_cast<int>(TypeCP::Center)];
 
+
+
     mesh->addVertices(vertices);
     outMesh.setData(mesh);
 }
@@ -121,13 +135,19 @@ void Topology::drawLineSegment(const dvec2& v1, const dvec2& v2, const vec4& col
     vertices.push_back({vec3(v2[0], v2[1], 0), vec3(0, 0, 1), vec3(v2[0], v2[1], 0), color});
 }
 
-void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<ivec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners) {
-    //nollkoll
-    double minDist = std::min((corners[1][0] - corners[0][0]), (corners[2][1] - corners[1][1]));
+/*
+    3 *-------* 2
+      |       |
+      |       |
+      |       |
+    0 *-------* 1
+*/
 
+void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners) {
+    double minPointDist = std::min((corners[1][0] - corners[0][0]), (corners[2][1] - corners[1][1]));
     for (int i = 0; i < corners.size(); ++i) {
         dvec2 fieldVec = vectorField.interpolate(corners[i]);
-        bool isVecFieldZero = (fieldVec[0] > -epsilon && fieldVec[0] < epsilon) && (fieldVec[1] > -epsilon && fieldVec[1] < epsilon);
+        bool isVecFieldZero = (fieldVec[0] > -0.001 && fieldVec[0] < 0.001) && (fieldVec[1] > -0.001 && fieldVec[1] < 0.001);
         if (isVecFieldZero) {
             criticalPoints.push_back(corners[i]);
             return;
@@ -135,14 +155,28 @@ void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<i
     }
 
     if (isZeroWithinBox(corners)) {
-        if (minDist < epsilon) {
+        if (minPointDist < epsilon) {
             criticalPoints.push_back({ corners[1][0] - corners[0][0] , corners[2][1] - corners[1][1] });
             return;
         }
-        findCriticalPoints(vectorField, criticalPoints, epsilon, corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, corners);
+        //Get boundary points for inner quadrants
+        dvec2 point01 {corners[1][0]/2, corners[0][1]};
+        dvec2 point12 {corners[1][0], corners[2][1]/2};
+        dvec2 point23 {corners[2][0]/2, corners[2][1]};
+        dvec2 point03 {corners[0][0], corners[3][1]/2};
+        dvec2 pointMid {corners[1][0]/2, corners[2][1]/2};
+
+        //Create new 4 sub-quadrants of the original one
+        std::vector<dvec2> q0Corners {corners[0], point01, pointMid, point03};
+        std::vector<dvec2> q1Corners {point01, corners[1], point12, pointMid};
+        std::vector<dvec2> q2Corners {pointMid, point12, corners[2], point23};
+        std::vector<dvec2> q3Corners {point03, pointMid, point23, corners[3]};
+
+        //Recurse over the sub-quadrants
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners);
     }
 
 
@@ -155,11 +189,32 @@ void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<i
 }
 
 bool Topology::isZeroWithinBox(std::vector<dvec2>& corners) {
-    bool differentSignsX = ((corners[0][0] > 0 && corners[1][0] < 0 || corners[0][0] < 0 && corners[1][0] > 0)
-        || (corners[2][0] > 0 && corners[3][0] < 0 || corners[2][0] < 0 && corners[3][0] > 0));
+    bool differentSignsX = ( 
+        (   
+            //Different X-signs between corner 0 and 1
+            (corners[0][0] > 0 && corners[1][0] < 0) 
+            || (corners[0][0] < 0 && corners[1][0] > 0)
+        )
+        ||  //or  
+        (   //Different X-signs between corner 2 and 3
+            (corners[2][0] > 0 && corners[3][0] < 0) 
+            || (corners[2][0] < 0 && corners[3][0] > 0)
+        ) 
+    );
 
-    bool differentSignsY = ((corners[0][1] > 0 && corners[1][1] < 0 || corners[0][1] < 0 && corners[1][1] > 0)
-        || (corners[2][1] > 0 && corners[3][1] < 0 || corners[2][1] < 0 && corners[3][1] > 0));
+    bool differentSignsY = (
+        (   
+            //Different Y-signs between corner 0 and 1
+            (corners[0][1] > 0 && corners[1][1] < 0) 
+            || (corners[0][1] < 0 && corners[1][1] > 0)
+        )
+        || //or
+        (   
+            //Different Y-signs between corner 2 and 3
+            (corners[2][1] > 0 && corners[3][1] < 0) 
+            || (corners[2][1] < 0 && corners[3][1] > 0)
+        )
+    );
 
     return differentSignsX && differentSignsY;
 }
