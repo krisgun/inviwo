@@ -47,6 +47,9 @@ LICProcessor::LICProcessor()
     addProperty(propFastLIC_);
     addProperty(propMean);
     addProperty(propDeviation);
+
+    propMean.setSemantics(PropertySemantics::Text);
+    propDeviation.setSemantics(PropertySemantics::Text);
 }
 
 void LICProcessor::process() {
@@ -68,7 +71,7 @@ void LICProcessor::process() {
     texDims_ = tex->getDimensions();
 
     double value = texture.readPixelGrayScale(size2_t(0, 0));
-    LogProcessorInfo("rand val: " << value);
+    //LogProcessorInfo("rand val: " << value);
 
     // Prepare the output, it has the same dimensions as the texture and rgba values in [0,255]
     auto outImage = std::make_shared<Image>(texDims_, DataVec4UInt8::get());
@@ -85,8 +88,6 @@ void LICProcessor::process() {
     auto kernelSize {propKernel_ / 2};
     //Check FastLIC toggle
     if (propFastLIC_) {
-        #pragma omp parallel
-        #pragma omp for
         for (auto j = 0; j < texDims_.y; ++j) {
             for (auto i = 0; i < texDims_.x; ++i) {
                 if(visited[i][j]) continue;

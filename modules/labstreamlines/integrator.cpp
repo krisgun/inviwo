@@ -80,14 +80,9 @@ std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, 
 
         //Stop at boundary of bbox
         if (!vectorField.isInside(startPoint)) {
-            //startPoint = vectorField.clampPositionToBBox(startPoint); //OG stuff
-           // startPoint = {1.0, 1.0};
-            
-            //pixels.push_back({(int)(((startPoint[0] - BBoxMin_[0]) / (BBoxMax_[0] - BBoxMin_[0])) * dims[0]), (int)(((startPoint[1] - BBoxMin_[1]) / (BBoxMax_[1] - BBoxMin_[1])) * dims[1]) });
             break;
         }
         //Add new point to vector
-        //points.push_back(startPoint);
         pixels.push_back({(int)(((startPoint[0] - BBoxMin_[0]) / (BBoxMax_[0] - BBoxMin_[0])) * dims[0]), (int)(((startPoint[1] - BBoxMin_[1]) / (BBoxMax_[1] - BBoxMin_[1])) * dims[1]) });
         oldPoint = startPoint;
     }
