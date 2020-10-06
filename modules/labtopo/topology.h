@@ -77,6 +77,10 @@ protected:
                                                 double epsilon, std::vector<dvec2>& corners);
     static bool Topology::isZeroWithinBox(std::vector<dvec2>& corners);
 
+    static int Topology::sign(double number);
+
+    static bool Topology::isCornersDifferentSigns(std::vector<dvec2>& corners);
+
     // Ports
 public:
     // Input data
