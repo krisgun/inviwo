@@ -148,7 +148,7 @@ void StreamlineIntegrator::process() {
     std::vector<BasicMesh::Vertex> vertices;
 
 	auto indexBufferPoints = mesh->addIndexBuffer(DrawType::Points, ConnectivityType::None);
-    auto indexBufferLines = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
+    auto indexBufferLines = mesh->addIndexBuffer(DrawType::Lines, ConnectivityType::None);
 
     if (propSeedMode.get() == 0) {
         vec2 startPoint = propStartPoint.get();

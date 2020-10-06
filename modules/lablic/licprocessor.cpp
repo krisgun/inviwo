@@ -82,7 +82,7 @@ void LICProcessor::process() {
     auto pixelValSum {0};
     auto pixelValSumSquared {0};
 	auto numOfNonBlack {0};
-    auto kernelSize {propKernel_ / 2};
+    auto kernelSize {propKernel_};
     //Check FastLIC toggle
     if (propFastLIC_) {
         #pragma omp parallel

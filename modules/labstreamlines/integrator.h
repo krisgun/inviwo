@@ -47,6 +47,8 @@ public:
     static dvec2 RK4(const VectorField2& vectorField, const dvec2& position, const float stepSize);
     static dvec2 Euler(const VectorField2& vectorField, const dvec2& position, const float stepSize);
     static std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPoint, int direction, int steps, size2_t dims);
+	static void Integrator::findCriticalPoints(const VectorField2& vectorField, std::vector<ivec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners);
+	static bool Integrator::isZeroWithinBox(std::vector<dvec2>& corners);
 };
 
 }  // namespace inviwo
