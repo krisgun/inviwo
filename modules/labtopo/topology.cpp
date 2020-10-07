@@ -116,7 +116,6 @@ void Topology::process() {
     // Looping through all values in the vector field.
     for (size_t j = 0; j < dims[1]-1; ++j) {
         for (size_t i = 0; i < dims[0]-1; ++i) {
-
             dvec2 corner0 = vectorField.getPositionAtVertex(size2_t(i, j));
             dvec2 corner1 = vectorField.getPositionAtVertex(size2_t(i+1, j));
             dvec2 corner2 = vectorField.getPositionAtVertex(size2_t(i+1, j+1));
@@ -125,23 +124,14 @@ void Topology::process() {
             findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners);
         }
     }
-    
-   /* dvec2 pos = vectorField.getPositionAtVertex(size2_t(0, 0));
-    dmat2 jac = vectorField.derive(pos);
-    auto eigenResult = util::eigenAnalysis(jac);
-
-    bool hej = eigenResult.eigenvaluesRe[0] > 0;
-
-    LogProcessorInfo("Re: " << eigenResult.eigenvaluesRe[0] << " Im: " << eigenResult.eigenvaluesIm << " hej: " << hej);*/
-    
 
     std::vector<std::vector<dvec2>> coloredCritPoints = Topology::classifyCriticalPoints(criticalPoints, vectorField);
 
-    for (auto i = 0; i < coloredCritPoints.size(); ++i) 
+    for (auto i = 0; i < coloredCritPoints.size(); ++i) {
         for (auto j = 0; j < coloredCritPoints[i].size(); ++j) {
-        int colorIndex = i;
-       // LogProcessorInfo("Point: " << criticalPoints[i] << ", Color: " << ColorsCP[colorIndex]);
-        Integrator::drawPoint(coloredCritPoints[i][j], ColorsCP[colorIndex], indexBufferPoints.get(), vertices);
+            int colorIndex = i;
+            Integrator::drawPoint(coloredCritPoints[i][j], ColorsCP[colorIndex], indexBufferPoints.get(), vertices);
+        }
     }
 
     mesh->addVertices(vertices);
