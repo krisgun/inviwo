@@ -21,8 +21,19 @@ const vec4 Topology::ColorsCP[6] = {
     vec4(0, 0, 1, 1),    // RepellingNode - Blue
     vec4(0.5, 0, 1, 1),  // AttractingFocus - Purple
     vec4(1, 0.5, 0, 1),  // RepellingFocus - Orange
-    vec4(0, 1, 0, 1)     // Center - Green
+    vec4(0, 1, 0, 1),     // Center - Green
 };
+
+enum TypeCP {
+    Saddle = 0,
+    AttractingNode = 1,
+    RepellingNode = 2,
+    AttractingFocus = 3,
+    RepellingFocus = 4,
+    Center = 5
+};
+
+
 
 // The Class Identifier has to be globally unique. Use a reverse DNS naming scheme
 const ProcessorInfo Topology::processorInfo_{
@@ -97,49 +108,41 @@ void Topology::process() {
     // TODO: Compute the topological skeleton of the input vector field.
     // Find the critical points and color them according to their type.
     // Integrate all separatrices.
-
+    std::vector<dvec2> startCorners = {};
     std::vector<dvec2> criticalPoints {};
-    //Set start corners to be the bounding box
-    std::vector<dvec2> startCorners = {BBoxMin, vec2{BBoxMax[0], BBoxMin[1]}, BBoxMax, vec2{BBoxMin[0], BBoxMax[1]}};
-    double epsilon = 0.01;
-    //Extract all critical points
-    findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners);
-    
-
-    for (auto const& point : criticalPoints) {
-        //LogProcessorInfo("Critical points: " << point);
-        Integrator::drawPoint(point, vec4(1, 1, 1, 1), indexBufferPoints.get(), vertices);
-    }
+    double epsilon = 0.0001;
 
     size2_t dims = vectorField.getNumVerticesPerDim();
     // Looping through all values in the vector field.
-    for (size_t j = 0; j < dims[1]; ++j) {
-        for (size_t i = 0; i < dims[0]; ++i) {
-            dvec2 vectorValue = vectorField.getValueAtVertex(size2_t(i, j));
-            dvec2 pos = vectorField.getPositionAtVertex(size2_t(i, j));
-            // Computing the jacobian at a position
-            dmat2 jacobian = vectorField.derive(pos);
-            // Doing the eigen analysis
-            auto eigenResult = util::eigenAnalysis(jacobian);
-            // The result of the eigen analysis has attributed eigenvaluesRe eigenvaluesIm and
-            // eigenvectors
-            if ((i == 0 || i == dims[0]-1) && (j == 0 || j == dims[1]-1)) {
-                LogProcessorInfo("index: ("<< i << ", " << j << "): pos: " << pos << ", val: " << vectorValue)
-            }
+    for (size_t j = 0; j < dims[1]-1; ++j) {
+        for (size_t i = 0; i < dims[0]-1; ++i) {
+
+            dvec2 corner0 = vectorField.getPositionAtVertex(size2_t(i, j));
+            dvec2 corner1 = vectorField.getPositionAtVertex(size2_t(i+1, j));
+            dvec2 corner2 = vectorField.getPositionAtVertex(size2_t(i+1, j+1));
+            dvec2 corner3 = vectorField.getPositionAtVertex(size2_t(i, j+1));
+            startCorners = {corner0, corner1, corner2, corner3};
+            findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners);
         }
     }
+    
+   /* dvec2 pos = vectorField.getPositionAtVertex(size2_t(0, 0));
+    dmat2 jac = vectorField.derive(pos);
+    auto eigenResult = util::eigenAnalysis(jac);
 
-    // Other helpful functions
-    // dvec2 pos = vectorField.getPositionAtVertex(size2_t(i, j));
-    // Computing the jacobian at a position
-    // dmat2 jacobian = vectorField.derive(pos);
-    // Doing the eigen analysis
-    // auto eigenResult = util::eigenAnalysis(jacobian);
-    // The result of the eigen analysis has attributed eigenvaluesRe eigenvaluesIm and
-    // eigenvectors
+    bool hej = eigenResult.eigenvaluesRe[0] > 0;
 
-    // Accessing the colors
-    vec4 colorCenter = ColorsCP[static_cast<int>(TypeCP::Center)];
+    LogProcessorInfo("Re: " << eigenResult.eigenvaluesRe[0] << " Im: " << eigenResult.eigenvaluesIm << " hej: " << hej);*/
+    
+
+    std::vector<std::vector<dvec2>> coloredCritPoints = Topology::classifyCriticalPoints(criticalPoints, vectorField);
+
+    for (auto i = 0; i < coloredCritPoints.size(); ++i) 
+        for (auto j = 0; j < coloredCritPoints[i].size(); ++j) {
+        int colorIndex = i;
+       // LogProcessorInfo("Point: " << criticalPoints[i] << ", Color: " << ColorsCP[colorIndex]);
+        Integrator::drawPoint(coloredCritPoints[i][j], ColorsCP[colorIndex], indexBufferPoints.get(), vertices);
+    }
 
     mesh->addVertices(vertices);
     outMesh.setData(mesh);
@@ -171,60 +174,61 @@ void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<d
         dvec2 fieldVec = vectorField.interpolate(corners[i]);
         cornerVectorValues.push_back(fieldVec);
 
+        
         //Check if vector field is zero at the current corner
-        bool isVecFieldZero = (fieldVec[0] > -0.001 && fieldVec[0] < 0.001) && (fieldVec[1] > -0.001 && fieldVec[1] < 0.001);
+        double fieldZeroTol = 0.001;
+        bool isVecFieldZero = (abs(fieldVec[0]) < fieldZeroTol) && (abs(fieldVec[1]) < fieldZeroTol);
         if (isVecFieldZero) {
             if (std::find(criticalPoints.begin(), criticalPoints.end(), corners[i]) == criticalPoints.end()) {
                 criticalPoints.push_back(corners[i]);
             }
             return;
         }
+        
     }
 
-    if (minPointDist < epsilon) {
-        if (isCornersDifferentSigns(cornerVectorValues)) {
-            dvec2 elem{ corners[0][0] + (corners[1][0] - corners[0][0]) / 2 , corners[0][1] + (corners[3][1] - corners[0][1]) / 2 };
-            if (std::find(criticalPoints.begin(), criticalPoints.end(), (elem)) == criticalPoints.end()) {
-                criticalPoints.push_back(elem);
+    //Change-of-sign test 
+    if (isCornersDifferentSigns(cornerVectorValues)) {
+        //Check if size of corner-box is smaller than epsilon
+        if (minPointDist < epsilon) {
+            dvec2 boxMidPoint { corners[0][0] + (corners[1][0] - corners[0][0]) / 2 , corners[0][1] + (corners[3][1] - corners[0][1]) / 2 };
+            if (std::find(criticalPoints.begin(), criticalPoints.end(), (boxMidPoint)) == criticalPoints.end()) {
+                criticalPoints.push_back(boxMidPoint);
+                return;
             }
         }
-        return;
+    
+        //Get boundary points for inner quadrants
+        dvec2 point01 {corners[0][0] + (corners[1][0] - corners[0][0])/2, corners[0][1]};
+        dvec2 point12 {corners[1][0], corners[1][1] + (corners[2][1] - corners[1][1])/2};
+        dvec2 point23 {corners[3][0] + (corners[2][0] - corners[3][0])/2, corners[2][1]};
+        dvec2 point03 {corners[0][0], corners[1][1] + (corners[2][1] - corners[1][1]) / 2};
+        dvec2 pointMid {corners[0][0] + (corners[1][0] - corners[0][0]) / 2, corners[1][1] + (corners[2][1] - corners[1][1]) / 2 };
+
+        //Create new 4 sub-quadrants of the original one
+        std::vector<dvec2> q0Corners {corners[0], point01, pointMid, point03};
+        std::vector<dvec2> q1Corners {point01, corners[1], point12, pointMid};
+        std::vector<dvec2> q2Corners {pointMid, point12, corners[2], point23};
+        std::vector<dvec2> q3Corners {point03, pointMid, point23, corners[3]};
+
+        //Recurse over the sub-quadrants
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners);
     }
-
-    //Get boundary points for inner quadrants
-    dvec2 point01 {corners[0][0] + (corners[1][0] - corners[0][0])/2, corners[0][1]};
-    dvec2 point12 {corners[1][0], corners[1][1] + (corners[2][1] - corners[1][1])/2};
-    dvec2 point23 {corners[3][0] + (corners[2][0] - corners[3][0])/2, corners[2][1]};
-    dvec2 point03 {corners[0][0], corners[1][1] + (corners[2][1] - corners[1][1]) / 2};
-    dvec2 pointMid {corners[0][0] + (corners[1][0] - corners[0][0]) / 2, corners[1][1] + (corners[2][1] - corners[1][1]) / 2 };
-
-    //Create new 4 sub-quadrants of the original one
-    std::vector<dvec2> q0Corners {corners[0], point01, pointMid, point03};
-    std::vector<dvec2> q1Corners {point01, corners[1], point12, pointMid};
-    std::vector<dvec2> q2Corners {pointMid, point12, corners[2], point23};
-    std::vector<dvec2> q3Corners {point03, pointMid, point23, corners[3]};
-
-    //Recurse over the sub-quadrants
-    findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners);
-    findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners);
-    findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners);
-    findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners);
-
-
-    //if (std::min(size[0],size[1]) < epsilon) {
-        //nollkoll => om det finns l�gg till mitten av rutan
-    //}
-    //f�r in criticalpointslista, fyll p� om den hittar inom en ruta som �r 
-    //kolla points i h�rnen -> om det inte kan finnas nolla returna, annars g�r rutan mindre i fyra delar
-    //n�r vi kommer till threshhold och det kan finnas en nolla l�gg till punkten i mitten
 }
 
+//Returns 1 if number is greater than 0
+//Returns -1 if number is smaller than 0
+//Returns 0 otherwise
 int Topology::sign(double number) {
     if (number > 0) return 1;
     if (number < 0) return -0;
     return 0;
 }
 
+//Check if both components of each corner vector are not the same
 bool Topology::isCornersDifferentSigns(std::vector<dvec2>& corners) {
     int x0 = Topology::sign(corners[0][0]);
     int x1 = Topology::sign(corners[1][0]);
@@ -243,35 +247,50 @@ bool Topology::isCornersDifferentSigns(std::vector<dvec2>& corners) {
     return differentSignX && differentSignY;
 }
 
-bool Topology::isZeroWithinBox(std::vector<dvec2>& corners) {
-    bool differentSignsX = ( 
-        (   
-            //Different X-signs between corner 0 and 1
-            (corners[0][0] > 0 && corners[1][0] < 0) 
-            || (corners[0][0] < 0 && corners[1][0] > 0)
-        )
-        ||  //or  
-        (   //Different X-signs between corner 2 and 3
-            (corners[2][0] > 0 && corners[3][0] < 0) 
-            || (corners[2][0] < 0 && corners[3][0] > 0)
-        ) 
-    );
+std::vector<std::vector<dvec2>> Topology::classifyCriticalPoints(std::vector<dvec2> criticalPoints, const VectorField2& vectorField) {
+     
+    std::vector<std::vector<dvec2> > classifiedCritPoints(
+        6, std::vector<dvec2> ());
 
-    bool differentSignsY = (
-        (   
-            //Different Y-signs between corner 0 and 3
-            (corners[0][1] > 0 && corners[3][1] < 0) 
-            || (corners[0][1] < 0 && corners[3][1] > 0)
-        )
-        || //or
-        (   
-            //Different Y-signs between corner 1 and 2
-            (corners[1][1] > 0 && corners[2][1] < 0) 
-            || (corners[1][1] < 0 && corners[2][1] > 0)
-        )
-    );
+    for (auto const &point : criticalPoints) {
+        
+        dmat2 jacobian {vectorField.derive(point)};
+        auto eigenResult = util::eigenAnalysis(jacobian);
+        dvec2 imEigen = eigenResult.eigenvaluesIm;
+        dvec2 reEigen = eigenResult.eigenvaluesRe;
 
-    return differentSignsX && differentSignsY;
+        //Saddle point
+        if (((reEigen[0] < 0 && reEigen[1] > 0) || (reEigen[1] < 0 && reEigen[0] > 0)) && imEigen[0] == 0 && imEigen[1] == 0) {
+            classifiedCritPoints[Saddle].push_back(point);
+        }
+        
+        //Repelling Node
+        else if (reEigen[0] > 0 && reEigen[1] > 0 && imEigen[0] == 0 && imEigen[1] == 0) {
+            classifiedCritPoints[RepellingNode].push_back(point);
+        }
+
+        //Attracting Node
+        else if (reEigen[0] < 0 && reEigen[1] < 0 && imEigen[0] == 0 && imEigen[1] == 0) {
+            classifiedCritPoints[AttractingNode].push_back(point);
+        }
+
+        //Center
+        else if (reEigen[0] == 0 && reEigen[1] == 0 && imEigen[0] == -imEigen[1] && -imEigen[1] != 0) {
+            classifiedCritPoints[Center].push_back(point);
+        }
+
+        //Attracting Focus
+        else if (reEigen[0] == reEigen[1] && reEigen[1] < 0 && imEigen[0] == -imEigen[1] && -imEigen[1] != 0) {
+            classifiedCritPoints[AttractingFocus].push_back(point);
+        }
+
+        //Repelling Focus
+        else if (reEigen[0] == reEigen[1] && reEigen[1] > 0 && imEigen[0] == -imEigen[1] && -imEigen[1] != 0) {
+            classifiedCritPoints[RepellingFocus].push_back(point);
+        }
+    }
+    return classifiedCritPoints;
 }
+
 
 }  // namespace inviwo

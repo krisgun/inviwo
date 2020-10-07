@@ -166,7 +166,7 @@ void StreamlineIntegrator::process() {
         propNumStepsTaken.set(0);
 
     } else {
-		vec4 color = vec4(1, 0, 0, 1);
+		vec4 color = vec4(0.8, 0.8, 0.8, 1);
 		vec2 startPoint;
         for (int i = 0; i < propNumberOfRandomSeeds; i++) {
             double f = (double)rand() / RAND_MAX;

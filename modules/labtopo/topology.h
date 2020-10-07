@@ -76,11 +76,12 @@ protected:
 
     static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, 
                                                 double epsilon, std::vector<dvec2>& corners);
-    static bool Topology::isZeroWithinBox(std::vector<dvec2>& corners);
 
     static int Topology::sign(double number);
 
     static bool Topology::isCornersDifferentSigns(std::vector<dvec2>& corners);
+
+    static std::vector<std::vector<dvec2>> Topology::classifyCriticalPoints(std::vector<dvec2> criticalPoints, const VectorField2& vectorField);
 
     // Ports
 public:
