@@ -12,6 +12,7 @@
 #include <labutils/scalarvectorfield.h>
 #include <labtopo/topology.h>
 #include <labtopo/utils/gradients.h>
+#include <labstreamlines/streamlineintegrator.h>
 
 namespace inviwo {
 
@@ -145,6 +146,29 @@ void Topology::drawLineSegment(const dvec2& v1, const dvec2& v2, const vec4& col
     vertices.push_back({vec3(v1[0], v1[1], 0), vec3(0, 0, 1), vec3(v1[0], v1[1], 0), color});
     indexBuffer->add(static_cast<std::uint32_t>(vertices.size()));
     vertices.push_back({vec3(v2[0], v2[1], 0), vec3(0, 0, 1), vec3(v2[0], v2[1], 0), color});
+}
+
+void Topology::drawSeparatrices(const VectorField2& vectorField, std::vector<dvec2>& saddlePoints, std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
+	
+	for (const auto &saddlePoint : saddlePoints) {
+		dmat2 jacobian{ vectorField.derive(saddlePoint) };
+		auto eigenResult = util::eigenAnalysis(jacobian);
+		auto eigenVectors = eigenResult.eigenvectors;
+		vec2 integrationStartPos = { saddlePoint[0] + eigenVectors[0][0], saddlePoint[1] + eigenVectors[0][1] };
+		vec2 integrationStartNeg = { saddlePoint[0] - eigenVectors[0][0], saddlePoint[1] - eigenVectors[0][1] };
+
+		//StreamlineIntegrator::createStreamLine(vectorField, integrationStartPos, true, false, 0.01, false, 100, 100, 0.01, vec4(1, 1, 1, 1), indexBuffer, vertices);
+	}
+}
+
+
+bool Topology::isDuplicate(std::vector<dvec2>& criticalPoints, dvec2 newCriticalPoint, double epsilon) {
+	for (int i = 0; i < criticalPoints.size(); ++i) {
+		if (abs(criticalPoints[i][0] - newCriticalPoint[0]) < epsilon * 10 && abs(criticalPoints[i][1] - newCriticalPoint[1]) < epsilon * 10) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /*

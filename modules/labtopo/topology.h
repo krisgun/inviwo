@@ -83,6 +83,10 @@ protected:
 
     static std::vector<std::vector<dvec2>> Topology::classifyCriticalPoints(std::vector<dvec2> criticalPoints, const VectorField2& vectorField);
 
+	static bool Topology::isDuplicate(std::vector<dvec2>& criticalPoints, dvec2 newCriticalPoint, double epsilon);
+
+	void Topology::drawSeparatrices(const VectorField2& vectorField, std::vector<dvec2>& saddlePoints, std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices);
+
     // Ports
 public:
     // Input data
