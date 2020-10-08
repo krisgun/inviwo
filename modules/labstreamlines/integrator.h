@@ -46,7 +46,10 @@ public:
     // Examples would be the stepsize, inegreation direction, ...
     static dvec2 RK4(const VectorField2& vectorField, const dvec2& position, const float stepSize);
     static dvec2 Euler(const VectorField2& vectorField, const dvec2& position, const float stepSize);
+    static dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, const double stepSize, int direction, bool normalize, double velocityLimit, bool &schwarzenegger);
     static std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPoint, int direction, int steps, size2_t dims);
+    static double Integrator::vectorNorm(dvec2 vector);
+    static dvec2 Integrator::normalizeVector(dvec2 &vector);
 };
 
 }  // namespace inviwo

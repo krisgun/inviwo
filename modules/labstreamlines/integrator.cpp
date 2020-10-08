@@ -33,20 +33,43 @@ dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, co
 	
 	return position + dvec2(xCord, yCord);
 }
-//translate 
-/*
-i både x och y-led
-mappa 0 till bboxmin
-mappa bboxmax till dims
 
-vi måste rasteriza
-				 
-pixRatio = startPixel[x] / (dims[x])  
-startPoint = pixRatio * (bboxmax[x] - bboxmin[x])
-/   
+//More sofisticated RK4
+dvec2 Integrator::RK4(const VectorField2& vectorField, const dvec2& position, const double stepSize, int direction, bool normalize, double velocityLimit, bool &schwarzenegger) {
+    dvec2 v1 = vectorField.interpolate(position) * direction;
+    if (normalize) { v1 = normalizeVector(v1); }
 
+    dvec2 v2 = vectorField.interpolate(position + dvec2((stepSize / 2) * v1[0], (stepSize / 2) * v1[1])) * direction;
+    if (normalize) { v2 = normalizeVector(v2); }
 
-*/
+    dvec2 v3 = vectorField.interpolate(position + dvec2((stepSize / 2) * v2[0], (stepSize / 2) * v2[1])) * direction;
+    if (normalize) { v3 = normalizeVector(v3); }
+
+    dvec2 v4 = vectorField.interpolate(position + dvec2(stepSize * v3[0], stepSize * v3[1])) * direction;
+    if (normalize) { v4 = normalizeVector(v4); }
+
+    double xCord = stepSize * ((v1[0] + 2 * v2[0] + 2 * v3[0] + v4[0]) / 6);
+    double yCord = stepSize * ((v1[1] + 2 * v2[1] + 2 * v3[1] + v4[1]) / 6);
+    dvec2 stepVector = {xCord, yCord};
+
+    bool isLessThanVelocityLimit = Integrator::vectorNorm(stepVector) < velocityLimit;
+    bool isVecFieldZero = abs(stepVector[0]) < 0.001 && (abs(stepVector[1]) < 0.001);
+    if (isLessThanVelocityLimit || isVecFieldZero) schwarzenegger = true;
+
+    if (!vectorField.isInside(position + stepVector)) {
+        schwarzenegger = true;
+        if (position[0] == vectorField.getBBoxMin()[0] ||
+            position[0] == vectorField.getBBoxMax()[0] ||
+            position[1] == vectorField.getBBoxMin()[1] ||
+            position[1] == vectorField.getBBoxMax()[1]
+            ) {
+            return position;
+        }
+        return vectorField.clampPositionToBBox(position + stepVector);
+    }
+
+    return position + stepVector;
+}
 
 std::vector<ivec2> Integrator::integratePoints(const VectorField2& vectorField, vec2 startPixel, int direction, int steps, size2_t dims) {
     
@@ -115,6 +138,15 @@ void Integrator::drawLineSegment(const dvec2& v1, const dvec2& v2, const vec4& c
     vertices.push_back({vec3(v1[0], v1[1], 0), vec3(0, 0, 1), vec3(v1[0], v1[1], 0), color});
     indexBuffer->add(static_cast<std::uint32_t>(vertices.size()));
     vertices.push_back({vec3(v2[0], v2[1], 0), vec3(0, 0, 1), vec3(v2[0], v2[1], 0), color});
+}
+
+double Integrator::vectorNorm(dvec2 vector) {
+    return sqrt(pow(vector[0], 2) + pow(vector[1], 2));
+}
+
+dvec2 Integrator::normalizeVector(dvec2 &vector) {
+    double norm = Integrator::vectorNorm(vector);
+    return {vector[0]/norm, vector[1]/norm};
 }
 
 }  // namespace inviwo

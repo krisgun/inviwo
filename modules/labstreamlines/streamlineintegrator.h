@@ -64,6 +64,8 @@ public:
 public:
     virtual const ProcessorInfo getProcessorInfo() const override;
     static const ProcessorInfo processorInfo_;
+    static VectorField2 StreamlineIntegrator::normalizeVectorField(VectorField2 vectorField);
+    static double StreamlineIntegrator::vectorNorm(dvec2 vector);
 
 protected:
     /// Our main computation function
@@ -82,8 +84,8 @@ protected:
         const float stepSize, int steps, float velocityLimit, vec4 color,
         std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices, float arcLength);
 
-    VectorField2 StreamlineIntegrator::normalizeVectorField(VectorField2 vectorField);
-    double StreamlineIntegrator::vectorNorm(dvec2 vector);
+    
+    
 
     // Ports
 public:

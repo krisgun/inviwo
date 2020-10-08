@@ -52,6 +52,11 @@ Topology::Topology()
     , inData("inData")
     , outMesh("meshOut")
     , meshBBoxOut("meshBBoxOut")
+    , propDirectionField("directionField", "Integrate in the Direction Field")
+    , propEigenScale("eigenScale", "Eigen Vector Scaling", 0.1, 0.01, 1.0)
+    , propSeparatricesSteps("separatricesSteps", "Int. Steps", 50, 1, 100)
+    , propSeparatricesStepSize("separatricesStepSize", "Step Size", 0.1, 0.01, 1,0)
+    , propSeparatricesVelocity("separatricesVelocity", "Vel. Lim.", 0.0, 0.0, 1.0)
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
 // default value (optional), minimum value (optional), maximum value (optional), increment
@@ -63,7 +68,11 @@ Topology::Topology()
     addPort(meshBBoxOut);
 
     // TODO: Register additional properties
-    // addProperty(propertyName);
+    addProperty(propDirectionField);
+    addProperty(propEigenScale);
+    addProperty(propSeparatricesSteps);
+    addProperty(propSeparatricesStepSize);
+    addProperty(propSeparatricesVelocity);
 }
 
 void Topology::process() {
@@ -122,7 +131,7 @@ void Topology::process() {
             dvec2 corner2 = vectorField.getPositionAtVertex(size2_t(i+1, j+1));
             dvec2 corner3 = vectorField.getPositionAtVertex(size2_t(i, j+1));
             startCorners = {corner0, corner1, corner2, corner3};
-            findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners);
+            findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners, propDirectionField);
         }
     }
 
@@ -134,6 +143,10 @@ void Topology::process() {
             Integrator::drawPoint(coloredCritPoints[i][j], ColorsCP[colorIndex], indexBufferPoints.get(), vertices);
         }
     }
+
+    //Compute separatrices
+    drawSeparatrices(vectorField, coloredCritPoints[Saddle], indexBufferSeparatrices, vertices);
+
 
     mesh->addVertices(vertices);
     outMesh.setData(mesh);
@@ -154,10 +167,39 @@ void Topology::drawSeparatrices(const VectorField2& vectorField, std::vector<dve
 		dmat2 jacobian{ vectorField.derive(saddlePoint) };
 		auto eigenResult = util::eigenAnalysis(jacobian);
 		auto eigenVectors = eigenResult.eigenvectors;
-		vec2 integrationStartPos = { saddlePoint[0] + eigenVectors[0][0], saddlePoint[1] + eigenVectors[0][1] };
-		vec2 integrationStartNeg = { saddlePoint[0] - eigenVectors[0][0], saddlePoint[1] - eigenVectors[0][1] };
+        dvec2 eigenVector1 = eigenVectors[0];
+        dvec2 eigenVector2 = eigenVectors[1];
 
-		//StreamlineIntegrator::createStreamLine(vectorField, integrationStartPos, true, false, 0.01, false, 100, 100, 0.01, vec4(1, 1, 1, 1), indexBuffer, vertices);
+        const double eigenScale{ propEigenScale };
+
+        std::vector<dvec2> startPoints {
+            {saddlePoint + eigenScale*eigenVector1}, {saddlePoint - eigenScale*eigenVector1}, 
+            {saddlePoint + eigenScale*eigenVector2}, {saddlePoint - eigenScale*eigenVector2}
+        };
+
+        for (auto i = 0; i < startPoints.size(); ++i) {
+            double stepSize = propSeparatricesStepSize;
+            int steps = propSeparatricesSteps;
+            int currStep = 0;
+            double velocityLimit = propSeparatricesVelocity;
+            bool arnold = false;
+            dvec2 oldPoint = startPoints[i];
+
+            double eigenValue = eigenResult.eigenvaluesRe[0];
+
+            if (i > 1) {
+                eigenValue = eigenResult.eigenvaluesRe[1];
+            }
+            int direction = eigenValue > 0 ? 1 : -1;
+            Topology::drawLineSegment(startPoints[i], saddlePoint, vec4(1, 1, 1, 1), indexBuffer.get(), vertices);
+            while (!arnold &&  currStep < steps) {
+                startPoints[i] = Integrator::RK4(vectorField, startPoints[i], stepSize, direction, propDirectionField, velocityLimit, arnold);
+                //Draw line segments between points
+                Topology::drawLineSegment(oldPoint, startPoints[i], vec4(1, 1, 1, 1), indexBuffer.get(), vertices);
+                oldPoint = startPoints[i];
+                ++currStep;
+            }
+        } 
 	}
 }
 
@@ -179,13 +221,17 @@ bool Topology::isDuplicate(std::vector<dvec2>& criticalPoints, dvec2 newCritical
     0 *-------* 1
 */
 
-void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners) {
+void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners, bool normalizeVecField) {
     std::vector<dvec2> cornerVectorValues{};
     
+    VectorField2 usedVectorField = vectorField;
+
+    if (normalizeVecField) { usedVectorField = StreamlineIntegrator::normalizeVectorField(usedVectorField); }
+
     double minPointDist = std::min((corners[1][0] - corners[0][0]), (corners[2][1] - corners[1][1]));
 
     for (int i = 0; i < corners.size(); ++i) {
-        dvec2 fieldVec = vectorField.interpolate(corners[i]);
+        dvec2 fieldVec = usedVectorField.interpolate(corners[i]);
         cornerVectorValues.push_back(fieldVec);
 
         
@@ -226,10 +272,10 @@ void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<d
         std::vector<dvec2> q3Corners {point03, pointMid, point23, corners[3]};
 
         //Recurse over the sub-quadrants
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners, normalizeVecField);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners, normalizeVecField);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners, normalizeVecField);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners, normalizeVecField);
     }
 }
 
@@ -266,12 +312,16 @@ std::vector<std::vector<dvec2>> Topology::classifyCriticalPoints(std::vector<dve
     std::vector<std::vector<dvec2> > classifiedCritPoints(
         6, std::vector<dvec2> ());
 
+
     for (auto const &point : criticalPoints) {
         
         dmat2 jacobian {vectorField.derive(point)};
         auto eigenResult = util::eigenAnalysis(jacobian);
         dvec2 imEigen = eigenResult.eigenvaluesIm;
         dvec2 reEigen = eigenResult.eigenvaluesRe;
+
+        double threshold = 0.0001;
+        bool reWithinThresh = (abs(reEigen[0]) < threshold) && (abs(reEigen[1]) < threshold);
 
         //Saddle point
         if (((reEigen[0] < 0 && reEigen[1] > 0) || (reEigen[1] < 0 && reEigen[0] > 0)) && imEigen[0] == 0 && imEigen[1] == 0) {
@@ -289,7 +339,7 @@ std::vector<std::vector<dvec2>> Topology::classifyCriticalPoints(std::vector<dve
         }
 
         //Center
-        else if (reEigen[0] == 0 && reEigen[1] == 0 && imEigen[0] == -imEigen[1] && -imEigen[1] != 0) {
+        else if (reWithinThresh && imEigen[0] == -imEigen[1] && -imEigen[1] != 0) {
             classifiedCritPoints[Center].push_back(point);
         }
 

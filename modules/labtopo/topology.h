@@ -74,8 +74,7 @@ protected:
                                 IndexBufferRAM* indexBuffer,
                                 std::vector<BasicMesh::Vertex>& vertices);
 
-    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, 
-                                                double epsilon, std::vector<dvec2>& corners);
+    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners, bool normalizeVecField);
 
     static int Topology::sign(double number);
 
@@ -97,6 +96,14 @@ public:
 
 	// Output mesh for bounding box and gridlines
     MeshOutport meshBBoxOut;
+    
+    //Properties
+public:
+    BoolProperty propDirectionField;
+    FloatProperty propEigenScale;
+    IntProperty propSeparatricesSteps;
+    FloatProperty propSeparatricesStepSize;
+    FloatProperty propSeparatricesVelocity;
 
 };  // namespace inviwo
 

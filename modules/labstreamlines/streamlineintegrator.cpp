@@ -43,11 +43,11 @@ StreamlineIntegrator::StreamlineIntegrator()
     , propDirectionField("directionField", "Integrate in the Direction Field")
     , propStepSize("stepSize", "Step Size", 0.1f, 0.001f, 1.0f)
     , propNumberOfSteps("numberOfSteps", "Steps", 100, 1, 10000)
-    , propArcLength("arcLength", "Arc Length Limit", 5, 0, 10)
+    , propArcLength("arcLength", "Arc Length Limit", 10, 0, 100)
     , propVelocityLimit("velocityLimit", "Velocity Limit")
     , propNumberOfRandomSeeds("numberOfRandomSeeds", "Random Seeds", 0, 0, 100)
-    , propUniformGridSeedsX("uniformGridSeedsX", "X Seeds", 0, 0, 25)
-    , propUniformGridSeedsY("uniformGridSeedsY", "Y Seeds", 0, 0, 25)
+    , propUniformGridSeedsX("uniformGridSeedsX", "X Seeds", 6, 0, 25)
+    , propUniformGridSeedsY("uniformGridSeedsY", "Y Seeds", 6, 0, 25)
 				
 // TODO: Initialize additional properties
 // propertyName("propertyIdentifier", "Display Name of the Propery",
@@ -166,7 +166,7 @@ void StreamlineIntegrator::process() {
         propNumStepsTaken.set(0);
 
     } else {
-		vec4 color = vec4(0.8, 0.8, 0.8, 1);
+		vec4 color = vec4(0.1, 0.1, 0.1, 1);
 		vec2 startPoint;
         for (int i = 0; i < propNumberOfRandomSeeds; i++) {
             double f = (double)rand() / RAND_MAX;
