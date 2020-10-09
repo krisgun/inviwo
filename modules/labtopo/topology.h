@@ -74,7 +74,7 @@ protected:
                                 IndexBufferRAM* indexBuffer,
                                 std::vector<BasicMesh::Vertex>& vertices);
 
-    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners, bool normalizeVecField);
+    static void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners);
 
     static int Topology::sign(double number);
 

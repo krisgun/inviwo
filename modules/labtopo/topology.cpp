@@ -84,10 +84,12 @@ void Topology::process() {
 
     // Retreive data in a form that we can access it
     const VectorField2 vectorField = VectorField2::createFieldFromVolume(vol);
+    VectorField2 usedVectorField = vectorField;
+    if (propDirectionField) { usedVectorField = StreamlineIntegrator::normalizeVectorField(usedVectorField); }
 
     // Add a bounding box to the mesh
-    const dvec2& BBoxMin = vectorField.getBBoxMin();
-    const dvec2& BBoxMax = vectorField.getBBoxMax();
+    const dvec2& BBoxMin = usedVectorField.getBBoxMin();
+    const dvec2& BBoxMax = usedVectorField.getBBoxMax();
     auto bboxMesh = std::make_shared<BasicMesh>();
     std::vector<BasicMesh::Vertex> bboxVertices;
     auto indexBufferBBox = bboxMesh->addIndexBuffer(DrawType::Lines, ConnectivityType::Strip);
@@ -122,20 +124,20 @@ void Topology::process() {
     std::vector<dvec2> criticalPoints {};
     double epsilon = 0.0001;
 
-    size2_t dims = vectorField.getNumVerticesPerDim();
+    size2_t dims = usedVectorField.getNumVerticesPerDim();
     // Looping through all values in the vector field.
     for (size_t j = 0; j < dims[1]-1; ++j) {
         for (size_t i = 0; i < dims[0]-1; ++i) {
-            dvec2 corner0 = vectorField.getPositionAtVertex(size2_t(i, j));
-            dvec2 corner1 = vectorField.getPositionAtVertex(size2_t(i+1, j));
-            dvec2 corner2 = vectorField.getPositionAtVertex(size2_t(i+1, j+1));
-            dvec2 corner3 = vectorField.getPositionAtVertex(size2_t(i, j+1));
+            dvec2 corner0 = usedVectorField.getPositionAtVertex(size2_t(i, j));
+            dvec2 corner1 = usedVectorField.getPositionAtVertex(size2_t(i+1, j));
+            dvec2 corner2 = usedVectorField.getPositionAtVertex(size2_t(i+1, j+1));
+            dvec2 corner3 = usedVectorField.getPositionAtVertex(size2_t(i, j+1));
             startCorners = {corner0, corner1, corner2, corner3};
-            findCriticalPoints(vectorField, criticalPoints, epsilon, startCorners, propDirectionField);
+            findCriticalPoints(usedVectorField, criticalPoints, epsilon, startCorners);
         }
     }
 
-    std::vector<std::vector<dvec2>> coloredCritPoints = Topology::classifyCriticalPoints(criticalPoints, vectorField);
+    std::vector<std::vector<dvec2>> coloredCritPoints = Topology::classifyCriticalPoints(criticalPoints, usedVectorField);
 
     for (auto i = 0; i < coloredCritPoints.size(); ++i) {
         for (auto j = 0; j < coloredCritPoints[i].size(); ++j) {
@@ -145,7 +147,7 @@ void Topology::process() {
     }
 
     //Compute separatrices
-    drawSeparatrices(vectorField, coloredCritPoints[Saddle], indexBufferSeparatrices, vertices);
+    drawSeparatrices(usedVectorField, coloredCritPoints[Saddle], indexBufferSeparatrices, vertices);
 
 
     mesh->addVertices(vertices);
@@ -162,7 +164,7 @@ void Topology::drawLineSegment(const dvec2& v1, const dvec2& v2, const vec4& col
 }
 
 void Topology::drawSeparatrices(const VectorField2& vectorField, std::vector<dvec2>& saddlePoints, std::shared_ptr<inviwo::IndexBufferRAM>& indexBuffer, std::vector<BasicMesh::Vertex>& vertices) {
-	
+
 	for (const auto &saddlePoint : saddlePoints) {
 		dmat2 jacobian{ vectorField.derive(saddlePoint) };
 		auto eigenResult = util::eigenAnalysis(jacobian);
@@ -221,17 +223,13 @@ bool Topology::isDuplicate(std::vector<dvec2>& criticalPoints, dvec2 newCritical
     0 *-------* 1
 */
 
-void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners, bool normalizeVecField) {
+void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<dvec2>& criticalPoints, double epsilon, std::vector<dvec2>& corners) {
     std::vector<dvec2> cornerVectorValues{};
-    
-    VectorField2 usedVectorField = vectorField;
-
-    if (normalizeVecField) { usedVectorField = StreamlineIntegrator::normalizeVectorField(usedVectorField); }
 
     double minPointDist = std::min((corners[1][0] - corners[0][0]), (corners[2][1] - corners[1][1]));
 
     for (int i = 0; i < corners.size(); ++i) {
-        dvec2 fieldVec = usedVectorField.interpolate(corners[i]);
+        dvec2 fieldVec = vectorField.interpolate(corners[i]);
         cornerVectorValues.push_back(fieldVec);
 
         
@@ -272,10 +270,10 @@ void Topology::findCriticalPoints(const VectorField2& vectorField, std::vector<d
         std::vector<dvec2> q3Corners {point03, pointMid, point23, corners[3]};
 
         //Recurse over the sub-quadrants
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners, normalizeVecField);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners, normalizeVecField);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners, normalizeVecField);
-        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners, normalizeVecField);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q0Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q1Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q2Corners);
+        findCriticalPoints(vectorField, criticalPoints, epsilon, q3Corners);
     }
 }
 
